@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyTorch Web App - 24CT CNPM DAU</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-secondary: #111827;
+            --card-bg: rgba(17, 24, 39, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --pytorch-orange: #EE4C2C;
+            --pytorch-gradient: linear-gradient(135deg, #EE4C2C 0%, #FF7F50 50%, #FFA07A 100%);
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(238, 76, 44, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.06) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11, 15, 25, 0.8);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pytorch-flame {
+            width: 36px;
+            height: 36px;
+            background: var(--pytorch-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(238, 76, 44, 0.5);
+        }
+
+        .pytorch-flame svg {
+            width: 22px;
+            height: 22px;
+            fill: white;
+        }
+
+        .brand-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-badge {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: rgba(238, 76, 44, 0.15);
+            color: #FF7F50;
+            border: 1px solid rgba(238, 76, 44, 0.3);
+            font-weight: 600;
+        }
+
+        .student-tag {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1px solid var(--card-border);
+        }
+
+        .student-tag span {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        main {
+            flex: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        /* Hero Banner */
+        .hero-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 3.5rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(16px);
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--pytorch-gradient);
+        }
+
+        .hero-subtitle {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #FF7F50;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #EE4C2C;
+            box-shadow: 0 0 10px #EE4C2C;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
+        }
+
+        .main-message {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 30%, #e2e8f0 70%, #FF9E80 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .hero-desc {
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* Stats Grid */
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 1.5rem;
+            border-radius: 18px;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-4px);
+            border-color: rgba(238, 76, 44, 0.4);
+            box-shadow: 0 12px 24px -10px rgba(238, 76, 44, 0.2);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-val {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .status-badge.cuda-on {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .status-badge.cuda-off {
+            background: rgba(156, 163, 175, 0.15);
+            color: #d1d5db;
+            border: 1px solid rgba(156, 163, 175, 0.3);
+        }
+
+        /* Interactive Section */
+        .interactive-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(16px);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-text {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 12px 18px;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+
+        .input-text:focus {
+            border-color: #EE4C2C;
+            box-shadow: 0 0 0 2px rgba(238, 76, 44, 0.2);
+        }
+
+        .btn-run {
+            background: var(--pytorch-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-run:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(238, 76, 44, 0.4);
+        }
+
+        /* Code / Tensor Viewer */
+        .tensor-box {
+            background: #060911;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: #a5b4fc;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .tensor-tag {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .tensor-comment {
+            color: #6b7280;
+        }
+
+        .tensor-keyword {
+            color: #f43f5e;
+        }
+
+        .tensor-val {
+            color: #38bdf8;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-message {
+                font-size: 1.85rem;
+            }
+            .input-group {
+                flex-direction: column;
+            }
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <div class="pytorch-flame">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12c0 3.86 2.19 7.21 5.41 8.9l1.83-2.15C7.03 17.58 6 15.42 6 13c0-3.31 2.69-6 6-6s6 2.69 6 6c0 1.25-.38 2.41-1.04 3.37l1.79 1.79C20.73 16.63 22 14.46 22 12c0-5.52-4.48-10-10-10zm6.5 13.5l-1.42 1.42 2.12 2.12 1.42-1.42-2.12-2.12zM12 9c-1.66 0-3 1.34-3 3 0 .7.24 1.34.64 1.86l4.22-4.22C13.34 9.24 12.7 9 12 9z"/>
+                </svg>
+            </div>
+            <div>
+                <span class="brand-title">PyTorch Engine</span>
+                <span class="brand-badge">v{{ pytorch_data.pytorch_version }}</span>
+            </div>
+        </div>
+        <div class="student-tag">
+            Sinh viên: <span>Ông Thân Quốc Trường</span> | Lớp: <span>24CT2</span> - DAU
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-card">
+            <div class="hero-subtitle">
+                <div class="pulse-dot"></div>
+                PyTorch Powered Web Interface
+            </div>
+            <h1 class="main-message" id="display-text">
+                {{ message }}
+            </h1>
+            <p class="hero-desc">
+                Trang web được xây dựng tích hợp thư viện AI <strong>PyTorch</strong> (Phiên bản {{ pytorch_data.pytorch_version }}) để biểu diễn và tính toán dữ liệu Tensor cho học phần Công nghệ Phần mềm - Trường Đại học Kiến trúc Đà Nẵng (DAU).
+            </p>
+        </section>
+
+        <!-- System & Hardware Metrics -->
+        <div class="grid-stats">
+            <div class="stat-box">
+                <div class="stat-label">PyTorch Framework</div>
+                <div class="stat-val" style="color: #FF7F50;">
+                    {{ pytorch_data.pytorch_version }}
+                </div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-label">Device Compute Unit</div>
+                <div class="stat-val">
+                    {{ pytorch_data.device_name }}
+                </div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-label">NVIDIA CUDA Status</div>
+                <div class="stat-val">
+                    {% if pytorch_data.cuda_available %}
+                        <span class="status-badge cuda-on">CUDA {{ pytorch_data.cuda_version }}</span>
+                    {% else %}
+                        <span class="status-badge cuda-off">CPU Mode</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-label">Tensor Representation</div>
+                <div class="stat-val" id="tensor-shape-tag" style="color: var(--accent-cyan);">
+                    Shape: {{ pytorch_data.tensor_shape }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive PyTorch Tensor Explorer -->
+        <section class="interactive-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF7F50" stroke-width="2">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                    PyTorch Tensor Interactive Explorer
+                </h2>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="user-input" class="input-text" value="{{ message }}" placeholder="Nhập chuỗi văn bản muốn nạp vào PyTorch Tensor...">
+                <button class="btn-run" id="btn-process" onclick="processCustomText()">
+                    <span>Chuyển đổi Tensor</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="tensor-box" id="tensor-display">
+                <div class="tensor-tag">PyTorch Tensor Runtime</div>
+                <span class="tensor-comment"># PyTorch Tensor tạo từ chuỗi văn bản:</span><br>
+                <span class="tensor-keyword">import</span> torch<br><br>
+                <span>text_tensor = torch.tensor(</span><br>
+                <span class="tensor-val" id="tensor-array-preview">  {{ pytorch_data.tensor_sample_values }}</span><br>
+                <span>  dtype=<span class="tensor-keyword">torch.float32</span>, device=<span class="tensor-val">'{{ pytorch_data.tensor_device }}'</span></span><br>
+                <span>)</span><br><br>
+                <span class="tensor-comment"># Thống kê Tensor từ PyTorch:</span><br>
+                <span>Shape: <span class="tensor-val" id="tensor-shape">{{ pytorch_data.tensor_shape }}</span> | Length: <span class="tensor-val" id="tensor-len">{{ pytorch_data.tensor_stats.length }}</span> | Mean: <span class="tensor-val" id="tensor-mean">{{ pytorch_data.tensor_stats.mean }}</span> | Std: <span class="tensor-val" id="tensor-std">{{ pytorch_data.tensor_stats.std }}</span></span><br><br>
+                <span class="tensor-comment"># Projection Vector (Linear layer simulation [1, 8]):</span><br>
+                <span class="tensor-val" id="tensor-proj">{{ pytorch_data.projected_vector }}</span>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Học phần: <strong>Công nghệ phần mềm (CNPM24)</strong> &bull; Khoa Công nghệ Thông tin &bull; Đại học Kiến trúc Đà Nẵng (DAU)</p>
+        <p style="margin-top: 6px; font-size: 0.8rem; opacity: 0.7;">Được thiết kế cho sinh viên: <strong>Ông Thân Quốc Trường</strong> (24CT2)</p>
+    </footer>
+
+    <script>
+        async function processCustomText() {
+            const input = document.getElementById('user-input').value.trim();
+            if (!input) return;
+
+            const btn = document.getElementById('btn-process');
+            btn.innerHTML = '<span>Đang tính toán...</span>';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/process', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: input })
+                });
+
+                const data = await response.json();
+
+                // Cập nhật text hiển thị trên Hero
+                document.getElementById('display-text').textContent = input;
+
+                // Cập nhật thông số Tensor
+                document.getElementById('tensor-shape-tag').textContent = `Shape: [${data.tensor_shape.join(', ')}]`;
+                document.getElementById('tensor-shape').textContent = `[${data.tensor_shape.join(', ')}]`;
+                document.getElementById('tensor-len').textContent = data.tensor_stats.length;
+                document.getElementById('tensor-mean').textContent = data.tensor_stats.mean;
+                document.getElementById('tensor-std').textContent = data.tensor_stats.std;
+                document.getElementById('tensor-array-preview').textContent = `  [${data.tensor_sample_values.join(', ')}...]`;
+                document.getElementById('tensor-proj').textContent = `[${data.projected_vector.join(', ')}]`;
+            } catch (err) {
+                console.error(err);
+                alert("Lỗi khi kết nối với PyTorch Backend");
+            } finally {
+                btn.innerHTML = '<span>Chuyển đổi Tensor</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
