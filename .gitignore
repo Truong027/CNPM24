@@ -1,0 +1,24 @@
+# Chừa thư mục & file BienSoXe theo yêu cầu
+BienSoXe/
+BienSoXe
+BienSoXe.rar
+BienSoXe*.rar
+BienSoXe*.zip
+
+# Python & môi trường ảo
+.venv/
+env/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# IDE / Editor configs
+.vscode/
+.idea/
+
+# Hệ điều hành
+Thumbs.db
+.DS_Store
