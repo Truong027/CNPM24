@@ -2617,8 +2617,9 @@ def api_analytics_peak_hours():
 # ================== CHAY UNG DUNG ==================
 if __name__ == "__main__":
     database.init_db()
+    port = int(os.environ.get("PORT", 5000))
     print("===================================================")
-    print("Server Flask dang khoi dong...")
-    print("Truy cap: http://127.0.0.1:5000")
+    print(f"Server Flask dang khoi dong tren port {port}...")
+    print(f"Truy cap: http://0.0.0.0:{port}")
     print("===================================================")
-    app.run(host="0.0.0.0", port=5000, debug=True, threaded=True, use_reloader=False)
+    app.run(host="0.0.0.0", port=port, debug=False, threaded=True, use_reloader=False)

@@ -77,10 +77,11 @@ def api_process():
     return jsonify(result)
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
     print("=" * 60)
     print("  ỨNG DỤNG WEB PYTORCH - CNPM DAU (KHOÁ 24CT)")
     print(f"  PyTorch Version: {torch.__version__}")
     print(f"  CUDA Available: {torch.cuda.is_available()}")
-    print("  Server đang chạy tại: http://127.0.0.1:5000")
+    print(f"  Server đang chạy tại cổng: {port}")
     print("=" * 60)
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=False)
