@@ -1,0 +1,14 @@
+opencv-python==4.8.0.76
+easyocr==1.7.0
+ultralytics==8.0.226
+torch==2.1.1
+torchvision==0.16.1
+Flask==3.0.0
+mysql-connector-python==8.2.0
+PyMySQL==1.1.0
+Pillow==10.1.0
+numpy==1.24.3
+scipy==1.11.4
+pyyaml==6.0.1
+requests==2.31.0
+tqdm==4.66.1

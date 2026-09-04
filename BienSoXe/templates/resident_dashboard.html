@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cổng Cư Dân | Quản Lý Biển Số Xe & Bãi Đỗ Thông Minh AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --background: #f8fafc;
+            --foreground: #020817;
+            --card: #ffffff;
+            --card-foreground: #020817;
+            --popover: #ffffff;
+            --popover-foreground: #020817;
+            --primary: #0f172a;
+            --primary-foreground: #f8fafc;
+            --secondary: #f1f5f9;
+            --secondary-foreground: #0f172a;
+            --muted: #f1f5f9;
+            --muted-foreground: #64748b;
+            --accent: #f1f5f9;
+            --accent-foreground: #0f172a;
+            --destructive: #ef4444;
+            --destructive-foreground: #f8fafc;
+            --border: #e2e8f0;
+            --input: #e2e8f0;
+            --ring: #0f172a;
+            --radius: 0.5rem;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        .navbar {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .brand-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .brand-sub {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .apartment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.75rem;
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--secondary-foreground);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.5rem 0.95rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+
+        .btn-default, .btn-primary {
+            background: var(--primary);
+            color: var(--primary-foreground);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .btn-default:hover, .btn-primary:hover { background: #1e293b; }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--secondary-foreground);
+            border-color: var(--border);
+        }
+        .btn-secondary:hover { background: #e2e8f0; }
+
+        .btn-outline {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--foreground);
+        }
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--accent-foreground);
+        }
+
+        .btn-destructive {
+            background: #fef2f2;
+            border: 1px solid #fee2e2;
+            color: var(--destructive);
+        }
+        .btn-destructive:hover { background: #fee2e2; }
+
+        .btn-sm {
+            padding: 0.35rem 0.65rem;
+            font-size: 0.8rem;
+            border-radius: 0.375rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            padding: 1.25rem 1.5rem;
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--muted-foreground);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .stat-card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            margin-top: 0.5rem;
+            color: var(--foreground);
+        }
+
+        /* Segmented Tabs */
+        .tabs-list {
+            display: inline-flex;
+            background: var(--muted);
+            padding: 4px;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .tab-trigger {
+            border: none;
+            background: transparent;
+            padding: 0.5rem 1.15rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--muted-foreground);
+            border-radius: calc(var(--radius) - 2px);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .tab-trigger.active {
+            background: var(--card);
+            color: var(--foreground);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Header */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .section-desc {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-top: 0.15rem;
+        }
+
+        /* Vehicle Grid */
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .vehicle-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.35rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.15s ease;
+        }
+
+        .vehicle-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+        }
+
+        .vehicle-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .plate-box {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-align: center;
+            padding: 0.45rem 0.85rem;
+            background: #ffffff;
+            border: 2px solid #0f172a;
+            border-radius: 6px;
+            color: #0f172a;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+        }
+
+        .badge-active { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+        .badge-warning { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .badge-danger { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+        .badge-in { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+        .badge-out { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            background: var(--muted);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+        }
+
+        .meta-grid span { color: var(--muted-foreground); font-size: 0.75rem; display: block; }
+        .meta-grid strong { color: var(--foreground); font-size: 0.875rem; }
+
+        .ticket-box {
+            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+        }
+
+        .ticket-box.alert-warning { background: #fffbeb; border-color: #fde68a; }
+        .ticket-box.alert-danger { background: #fef2f2; border-color: #fecaca; }
+
+        .card-actions {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        /* Table */
+        .table-wrap {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow-x: auto;
+            background: var(--card);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            text-align: left;
+        }
+
+        th {
+            background: var(--muted);
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            color: var(--muted-foreground);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--foreground);
+        }
+
+        tbody tr:hover { background: #f8fafc; }
+        tbody tr:last-child td { border-bottom: none; }
+
+        /* Profile & Settings Layout */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 840px) {
+            .settings-grid { grid-template-columns: 1fr; }
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+
+        .profile-card-item {
+            background: var(--muted);
+            padding: 1.15rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .profile-card-item label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--muted-foreground);
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-card-item p {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--foreground);
+        }
+
+        /* Form elements */
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--foreground);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            height: 2.5rem;
+            padding: 0 0.85rem;
+            background: var(--card);
+            border: 1px solid var(--input);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            color: var(--foreground);
+            transition: all 0.15s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--ring);
+            box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
+        }
+
+        /* Modals / Dialogs */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 1rem;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.75rem;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.96); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .alert-box {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            display: none;
+            margin-top: 0.75rem;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .alert-box.error { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; display: flex; }
+        .alert-box.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; display: flex; }
+
+        /* Renew Grid */
+        .renew-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .renew-item {
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.85rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .renew-item:hover { border-color: #94a3b8; }
+        .renew-item.selected { border-color: var(--primary); background: var(--muted); }
+        .renew-item .months { font-weight: 700; font-size: 0.95rem; }
+        .renew-item .tag { font-size: 0.75rem; color: var(--muted-foreground); margin-top: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navbar -->
+    <header class="navbar">
+        <div class="navbar-brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-car"></i>
+            </div>
+            <div>
+                <div class="brand-title">Cổng Cư Dân</div>
+                <div class="brand-sub">Quản Lý Biển Số Xe AI</div>
+            </div>
+        </div>
+
+        <div class="navbar-user">
+            <div class="apartment-badge">
+                <i class="fa-solid fa-house"></i>
+                <span id="userApartment">Căn hộ: ---</span>
+            </div>
+            <span style="font-weight: 600; font-size: 0.875rem;" id="userFullName">Cư dân</span>
+            <button class="btn btn-outline btn-sm" onclick="logout()">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Top Metrics Cards -->
+        <div class="stats-grid">
+            <div class="card">
+                <div class="stat-card-header">
+                    <span>Phương tiện đã đăng ký</span>
+                    <i class="fa-solid fa-car-side"></i>
+                </div>
+                <div class="stat-card-value" id="statTotalVehicles">0</div>
+            </div>
+
+            <div class="card">
+                <div class="stat-card-header">
+                    <span>Đang trong bãi đỗ</span>
+                    <i class="fa-solid fa-square-parking" style="color: var(--success);"></i>
+                </div>
+                <div class="stat-card-value" id="statInParking" style="color: var(--success);">0</div>
+            </div>
+
+            <div class="card">
+                <div class="stat-card-header">
+                    <span>Vé tháng còn hạn</span>
+                    <i class="fa-solid fa-id-card"></i>
+                </div>
+                <div class="stat-card-value" id="statActiveTickets">0</div>
+            </div>
+
+            <div class="card">
+                <div class="stat-card-header">
+                    <span>Cần gia hạn</span>
+                    <i class="fa-solid fa-triangle-exclamation" style="color: var(--warning);"></i>
+                </div>
+                <div class="stat-card-value" id="statWarningTickets" style="color: var(--warning);">0</div>
+            </div>
+        </div>
+
+        <!-- Segmented Tab Navigation -->
+        <div class="tabs-list">
+            <button class="tab-trigger active" onclick="switchTab('vehiclesTab', this)">
+                <i class="fa-solid fa-car"></i> Phương Tiện & Vé Tháng
+            </button>
+            <button class="tab-trigger" onclick="switchTab('historyTab', this)">
+                <i class="fa-solid fa-clock-rotate-left"></i> Tra Cứu Lịch Sử Ra / Vào
+            </button>
+            <button class="tab-trigger" onclick="switchTab('profileTab', this)">
+                <i class="fa-solid fa-house-user"></i> Căn Hộ & Cư Dân
+            </button>
+            <button class="tab-trigger" onclick="switchTab('settingsTab', this)">
+                <i class="fa-solid fa-user-gear"></i> Cài Đặt Tài Khoản & Bảo Mật
+            </button>
+        </div>
+
+        <!-- TAB 1: VEHICLES & TICKETS -->
+        <div class="tab-content active" id="vehiclesTab">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Danh sách xe của căn hộ</h2>
+                    <p class="section-desc">Theo dõi tình trạng xe, hạn vé tháng, gia hạn và chuyển nhượng xe cho cư dân khác.</p>
+                </div>
+                <button class="btn btn-default" onclick="openAddModal()">
+                    <i class="fa-solid fa-plus"></i> Đăng ký thêm xe
+                </button>
+            </div>
+
+            <div id="loadingVehicles" style="text-align: center; padding: 3rem 0; color: var(--muted-foreground);">
+                <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                <p style="margin-top: 0.75rem;">Đang tải danh sách phương tiện...</p>
+            </div>
+
+            <div id="emptyVehicles" style="display: none; text-align: center; padding: 3.5rem 1rem; background: var(--card); border-radius: var(--radius); border: 1px dashed var(--border);">
+                <i class="fa-solid fa-car" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.35rem; font-size: 1.1rem;">Chưa có phương tiện nào</h3>
+                <p style="color: var(--muted-foreground); font-size: 0.875rem; margin-bottom: 1.25rem;">Thêm biển số xe để hệ thống Camera AI tự động nhận diện và mở barrier khi ra vào.</p>
+                <button class="btn btn-default" onclick="openAddModal()">Đăng ký xe ngay</button>
+            </div>
+
+            <div class="vehicle-grid" id="vehicleGrid"></div>
+
+            <!-- THEO DÕI ĐƠN CHUYỂN NHƯỢNG XE -->
+            <div class="card" style="margin-top: 1.75rem; padding: 1.25rem 1.5rem;">
+                <div class="section-header" style="margin-bottom: 0.75rem;">
+                    <div>
+                        <h3 style="font-size: 1.05rem; font-weight: 700;">
+                            <i class="fa-solid fa-arrow-right-arrow-left" style="color: #2563eb;"></i> Yêu Cầu Chuyển Nhượng Phương Tiện
+                        </h3>
+                        <p class="section-desc">Theo dõi tiến độ duyệt đơn chuyển quyền sở hữu xe từ Ban Quản Trị.</p>
+                    </div>
+                    <button class="btn btn-outline btn-sm" onclick="loadResidentTransferRequests()">
+                        <i class="fa-solid fa-rotate"></i> Làm mới
+                    </button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã Đơn</th>
+                                <th>Biển Số Xe</th>
+                                <th>Người Chuyển</th>
+                                <th>Người Nhận</th>
+                                <th>Ngày Gửi</th>
+                                <th>Trạng Thái</th>
+                                <th>Phản Hồi BQT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="residentTransferRequestsTableBody">
+                            <tr><td colspan="7" style="text-align: center; padding: 1.5rem; color: var(--muted-foreground);">Chưa có đơn chuyển nhượng nào</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: IN / OUT HISTORY -->
+        <div class="tab-content" id="historyTab">
+            <div class="card" style="padding: 1.5rem;">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Nhật ký ra vào bãi</h2>
+                        <p class="section-desc">Lịch sử các lượt xe ra vào, thời gian gửi và biểu phí tương ứng.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <select class="form-select" id="historyPlateFilter" onchange="loadParkingHistory()" style="width: auto; height: 2.25rem; font-size: 0.85rem;">
+                            <option value="">-- Tất cả phương tiện --</option>
+                        </select>
+                        <button class="btn btn-outline btn-sm" onclick="loadParkingHistory()">
+                            <i class="fa-solid fa-rotate"></i> Làm mới
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Biển Số Xe</th>
+                                <th>Loại Xe</th>
+                                <th>Thời Gian Vào</th>
+                                <th>Thời Gian Ra</th>
+                                <th>Thời Lượng Đỗ</th>
+                                <th>Phí Gửi Xe</th>
+                                <th>Trạng Thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 2rem; color: var(--muted-foreground);">
+                                    <i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: RESIDENT PROFILE -->
+        <div class="tab-content" id="profileTab">
+            <div class="card" style="padding: 1.5rem;">
+                <h2 class="section-title" style="margin-bottom: 0.25rem;">Thông tin hồ sơ căn hộ</h2>
+                <p class="section-desc" style="margin-bottom: 1.5rem;">Thông tin chủ hộ đã liên kết trên hệ thống quản lý bãi đỗ xe thông minh.</p>
+
+                <div class="profile-grid">
+                    <div class="profile-card-item">
+                        <label>Mã Căn Hộ</label>
+                        <p id="profApartment">---</p>
+                    </div>
+                    <div class="profile-card-item">
+                        <label>Chủ Hộ / Người Đại Diện</label>
+                        <p id="profFullName">---</p>
+                    </div>
+                    <div class="profile-card-item">
+                        <label>Mã Cư Dân / CCCD</label>
+                        <p id="profCitizenId">---</p>
+                    </div>
+                    <div class="profile-card-item">
+                        <label>Số Điện Thoại</label>
+                        <p id="profPhone">---</p>
+                    </div>
+                    <div class="profile-card-item">
+                        <label>Địa Chỉ Email</label>
+                        <p id="profEmail">---</p>
+                    </div>
+                    <div class="profile-card-item">
+                        <label>Ngày Đăng Ký Hệ Thống</label>
+                        <p id="profCreatedAt">---</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--muted); border-radius: var(--radius); border: 1px solid var(--border); font-size: 0.875rem;">
+                    <strong style="color: var(--foreground); display: block; margin-bottom: 0.4rem;">
+                        <i class="fa-solid fa-circle-info" style="color: #2563eb;"></i> Quy định gửi xe cư dân:
+                    </strong>
+                    <ul style="margin-left: 1.25rem; color: var(--muted-foreground); line-height: 1.6;">
+                        <li>Phương tiện có vé tháng hợp lệ sẽ được AI tự động nhận diện và mở barrier miễn phí (0 đ).</li>
+                        <li>Vé tháng hết hạn sẽ tự động chuyển sang chế độ tính phí theo lượt xe vãng lai khi ra cổng.</li>
+                        <li>Cư dân có thể chủ động gia hạn vé tháng trực tuyến hoặc gửi đơn chuyển nhượng xe cho Ban Quản Trị phê duyệt.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: ACCOUNT SETTINGS & SECURITY -->
+        <div class="tab-content" id="settingsTab">
+            <div class="settings-grid">
+                <!-- Setting Card 1: Update Profile -->
+                <div class="card" style="padding: 1.5rem;">
+                    <div style="margin-bottom: 1.25rem;">
+                        <h2 class="section-title" style="font-size: 1.15rem;">Cài đặt thông tin cá nhân</h2>
+                        <p class="section-desc">Thay đổi họ tên, số điện thoại liên hệ và email nhận thông báo.</p>
+                    </div>
+
+                    <form id="updateProfileForm">
+                        <div class="form-item">
+                            <label class="form-label" for="settingFullName">Họ và tên</label>
+                            <input class="form-input" id="settingFullName" name="full_name" required placeholder="Nhập họ và tên">
+                        </div>
+
+                        <div class="form-item">
+                            <label class="form-label" for="settingPhone">Số điện thoại</label>
+                            <input class="form-input" id="settingPhone" name="phone" placeholder="Ví dụ: 0901234567">
+                        </div>
+
+                        <div class="form-item">
+                            <label class="form-label" for="settingEmail">Địa chỉ Email</label>
+                            <input class="form-input" id="settingEmail" name="email" type="email" placeholder="email@domain.com">
+                        </div>
+
+                        <div class="alert-box" id="profileAlert"></div>
+
+                        <button type="submit" class="btn btn-default" id="btnUpdateProfileSubmit" style="margin-top: 0.75rem;">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi thông tin
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Setting Card 2: Change Password -->
+                <div class="card" style="padding: 1.5rem;">
+                    <div style="margin-bottom: 1.25rem;">
+                        <h2 class="section-title" style="font-size: 1.15rem;">Đổi mật khẩu tài khoản</h2>
+                        <p class="section-desc">Cập nhật mật khẩu định kỳ để bảo vệ tài khoản cá nhân.</p>
+                    </div>
+
+                    <form id="changePasswordForm">
+                        <div class="form-item">
+                            <label class="form-label" for="currentPassword">Mật khẩu hiện tại</label>
+                            <input class="form-input" id="currentPassword" name="current_password" type="password" required placeholder="Nhập mật khẩu hiện tại">
+                        </div>
+
+                        <div class="form-item">
+                            <label class="form-label" for="newPassword">Mật khẩu mới</label>
+                            <input class="form-input" id="newPassword" name="new_password" type="password" required placeholder="Tối thiểu 6 ký tự">
+                        </div>
+
+                        <div class="form-item">
+                            <label class="form-label" for="confirmNewPassword">Xác nhận mật khẩu mới</label>
+                            <input class="form-input" id="confirmNewPassword" name="confirm_password" type="password" required placeholder="Nhập lại mật khẩu mới">
+                        </div>
+
+                        <div class="alert-box" id="passwordAlert"></div>
+
+                        <button type="submit" class="btn btn-default" id="btnChangePassSubmit" style="margin-top: 0.75rem;">
+                            <i class="fa-solid fa-key"></i> Cập nhật mật khẩu
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL 1: ADD VEHICLE -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Đăng ký phương tiện mới</h3>
+                <button class="btn btn-outline btn-sm" onclick="closeAddModal()" style="border: none;">&times;</button>
+            </div>
+            <form id="addVehicleForm">
+                <div class="form-item">
+                    <label class="form-label" for="addPlate">Biển số xe</label>
+                    <input class="form-input" id="addPlate" required placeholder="Ví dụ: 30A-123.45" style="text-transform: uppercase; font-weight: 700;">
+                </div>
+                <div class="form-item">
+                    <label class="form-label" for="addType">Loại phương tiện</label>
+                    <select class="form-select" id="addType">
+                        <option value="Ô tô con">Ô tô con (4 - 7 chỗ)</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label class="form-label" for="addColor">Màu sắc</label>
+                    <input class="form-input" id="addColor" placeholder="Trắng, Đen, Đỏ, Bạc...">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Hủy</button>
+                    <button type="submit" class="btn btn-default" id="btnAddSubmit">Xác nhận đăng ký</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: EDIT VEHICLE -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Sửa thông tin xe</h3>
+                <button class="btn btn-outline btn-sm" onclick="closeEditModal()" style="border: none;">&times;</button>
+            </div>
+            <form id="editVehicleForm">
+                <input type="hidden" id="editPlateHidden">
+                <div class="form-item">
+                    <label class="form-label">Biển số xe</label>
+                    <input class="form-input" id="editPlateDisplay" disabled style="background: var(--muted); font-weight: 700;">
+                </div>
+                <div class="form-item">
+                    <label class="form-label" for="editType">Loại phương tiện</label>
+                    <select class="form-select" id="editType">
+                        <option value="Ô tô con">Ô tô con (4 - 7 chỗ)</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label class="form-label" for="editColor">Màu sắc</label>
+                    <input class="form-input" id="editColor">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Hủy</button>
+                    <button type="submit" class="btn btn-default">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: TRANSFER VEHICLE (CHUYỂN NHƯỢNG XE) -->
+    <div class="modal" id="transferModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Tạo Đơn Chuyển Nhượng Xe</h3>
+                <button class="btn btn-outline btn-sm" onclick="closeTransferModal()" style="border: none;">&times;</button>
+            </div>
+            <form id="transferVehicleForm">
+                <input type="hidden" id="transferPlateHidden">
+                
+                <div style="background: var(--muted); padding: 0.85rem 1rem; border-radius: var(--radius); margin-bottom: 1rem; border: 1px solid var(--border);">
+                    <div style="font-size: 0.75rem; color: var(--muted-foreground);">Biển số xe chuyển nhượng:</div>
+                    <div style="font-size: 1.2rem; font-weight: 800;" id="transferPlateDisplay">---</div>
+                </div>
+
+                <div class="form-item">
+                    <label class="form-label" for="recipientIdentifier">Cư dân nhận chuyển nhượng</label>
+                    <input class="form-input" id="recipientIdentifier" required placeholder="Nhập Mã căn hộ (ví dụ: B-0802), Tên tài khoản hoặc SĐT">
+                    <small style="color: var(--muted-foreground); font-size: 0.75rem; margin-top: 3px;">
+                        Đơn chuyển nhượng sẽ được gửi tới Ban Quản Trị để phê duyệt trước khi chuyển giao quyền sở hữu.
+                    </small>
+                </div>
+
+                <div class="alert-box" id="transferAlert"></div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeTransferModal()">Hủy</button>
+                    <button type="submit" class="btn btn-default" id="btnTransferSubmit">
+                        <i class="fa-solid fa-paper-plane"></i> Gửi Đơn Xin Chuyển Nhượng
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 4: RENEW TICKET -->
+    <div class="modal" id="renewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Gia hạn vé tháng</h3>
+                <button class="btn btn-outline btn-sm" onclick="closeRenewModal()" style="border: none;">&times;</button>
+            </div>
+            <form id="renewForm">
+                <input type="hidden" id="renewPlate">
+                
+                <div style="background: var(--muted); padding: 0.85rem 1rem; border-radius: var(--radius); margin-bottom: 1rem; border: 1px solid var(--border);">
+                    <div style="font-size: 0.75rem; color: var(--muted-foreground);">Biển số xe:</div>
+                    <div style="font-size: 1.15rem; font-weight: 800;" id="renewPlateDisplay">---</div>
+                    <div style="font-size: 0.8rem; color: var(--muted-foreground); margin-top: 2px;" id="renewCurrentExpiry">Hạn hiện tại: ---</div>
+                </div>
+
+                <label class="form-label" style="margin-bottom: 0.5rem; display: block;">Chọn thời hạn gia hạn:</label>
+                <div class="renew-grid">
+                    <div class="renew-item selected" onclick="selectDuration(1, this)">
+                        <div class="months">1 Tháng</div>
+                        <div class="tag">+30 Ngày</div>
+                    </div>
+                    <div class="renew-item" onclick="selectDuration(3, this)">
+                        <div class="months">3 Tháng</div>
+                        <div class="tag">+90 Ngày</div>
+                    </div>
+                    <div class="renew-item" onclick="selectDuration(6, this)">
+                        <div class="months">6 Tháng</div>
+                        <div class="tag">+180 Ngày</div>
+                    </div>
+                    <div class="renew-item" onclick="selectDuration(12, this)">
+                        <div class="months">12 Tháng</div>
+                        <div class="tag">+360 Ngày</div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="renewMonths" value="1">
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeRenewModal()">Đóng</button>
+                    <button type="submit" class="btn btn-default" id="btnRenewSubmit">
+                        <i class="fa-solid fa-check"></i> Xác nhận gia hạn
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        let cachedVehicles = [];
+        let currentProfile = {};
+
+        async function initPage() {
+            await loadProfile();
+            await loadVehicles();
+            loadParkingHistory();
+            loadResidentTransferRequests();
+        }
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-trigger').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            el.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+
+            if (tabId === 'historyTab') {
+                loadParkingHistory();
+            }
+        }
+
+        async function loadProfile() {
+            try {
+                const res = await fetch('/api/resident/profile');
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = '/login';
+                    return;
+                }
+                const data = await res.json();
+                currentProfile = data;
+
+                document.getElementById('userApartment').textContent = 'Căn hộ: ' + (data.apartment || 'A-1205');
+                document.getElementById('userFullName').textContent = data.full_name || data.username;
+                
+                document.getElementById('profApartment').textContent = data.apartment || 'Chưa gán';
+                document.getElementById('profFullName').textContent = data.full_name || data.username;
+                document.getElementById('profCitizenId').textContent = data.citizen_id || '---';
+                document.getElementById('profPhone').textContent = data.phone || '0901234567';
+                document.getElementById('profEmail').textContent = data.email || '---';
+                document.getElementById('profCreatedAt').textContent = data.created_at || '---';
+
+                // Điền sẵn vào form Settings
+                document.getElementById('settingFullName').value = data.full_name || '';
+                document.getElementById('settingPhone').value = data.phone || '';
+                document.getElementById('settingEmail').value = data.email || '';
+            } catch (err) {
+                console.error("Lỗi tải hồ sơ:", err);
+            }
+        }
+
+        async function loadVehicles() {
+            try {
+                document.getElementById('loadingVehicles').style.display = 'block';
+                document.getElementById('emptyVehicles').style.display = 'none';
+
+                const res = await fetch('/api/resident/vehicles');
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = '/login';
+                    return;
+                }
+                const data = await res.json();
+                cachedVehicles = data;
+
+                document.getElementById('loadingVehicles').style.display = 'none';
+
+                const total = data.length;
+                const inPark = data.filter(v => v.status === 'Trong bãi').length;
+                const activeTix = data.filter(v => v.ticket_status === 'active').length;
+                const warnTix = data.filter(v => v.ticket_status === 'warning' || v.ticket_status === 'expired').length;
+
+                document.getElementById('statTotalVehicles').textContent = total;
+                document.getElementById('statInParking').textContent = inPark;
+                document.getElementById('statActiveTickets').textContent = activeTix;
+                document.getElementById('statWarningTickets').textContent = warnTix;
+
+                const plateFilter = document.getElementById('historyPlateFilter');
+                plateFilter.innerHTML = '<option value="">-- Tất cả phương tiện (' + total + ') --</option>' +
+                    data.map(v => `<option value="${v.BienSoXe}">${v.BienSoXe} (${v.LoaiXe || 'Xe'})</option>`).join('');
+
+                if (total === 0) {
+                    document.getElementById('emptyVehicles').style.display = 'block';
+                    document.getElementById('vehicleGrid').innerHTML = '';
+                } else {
+                    renderVehicleCards(data);
+                }
+            } catch (err) {
+                console.error("Lỗi tải xe:", err);
+                document.getElementById('loadingVehicles').style.display = 'none';
+            }
+        }
+
+        function renderVehicleCards(vehicles) {
+            const grid = document.getElementById('vehicleGrid');
+            grid.innerHTML = vehicles.map(v => {
+                let badgeClass = 'badge-active';
+                let alertBoxClass = '';
+                if (v.ticket_status === 'warning') {
+                    badgeClass = 'badge-warning';
+                    alertBoxClass = 'alert-warning';
+                } else if (v.ticket_status === 'expired' || v.ticket_status === 'none') {
+                    badgeClass = 'badge-danger';
+                    alertBoxClass = 'alert-danger';
+                }
+
+                return `
+                <div class="vehicle-card">
+                    <div class="vehicle-card-header">
+                        <span class="badge ${badgeClass}"><i class="fa-solid fa-id-card"></i> ${v.ticket_badge}</span>
+                        <span class="badge ${v.status === 'Trong bãi' ? 'badge-in' : 'badge-out'}">
+                            ${v.status === 'Trong bãi' ? '<i class="fa-solid fa-circle-check"></i> Đang trong bãi' : '<i class="fa-solid fa-road"></i> Đã ra ngoài'}
+                        </span>
+                    </div>
+
+                    <div class="plate-box">${v.BienSoXe}</div>
+
+                    <div class="meta-grid">
+                        <div>
+                            <span>Loại phương tiện</span>
+                            <strong>${v.LoaiXe || 'Ô tô con'}</strong>
+                        </div>
+                        <div>
+                            <span>Màu sắc</span>
+                            <strong>${v.MauXe || 'Chưa rõ'}</strong>
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <span>Thời gian quét vào gần nhất</span>
+                            <strong>${v.time_in ? v.time_in : 'Chưa có thông tin'}</strong>
+                        </div>
+                    </div>
+
+                    <div class="ticket-box ${alertBoxClass}">
+                        <div>
+                            <span style="display: block; font-size: 0.75rem; color: var(--muted-foreground);">Hạn vé tháng:</span>
+                            <strong style="color: var(--foreground); font-size: 0.85rem;">${v.expiry_str}</strong>
+                        </div>
+                        <button class="btn btn-sm btn-default" onclick="openRenewModal('${v.BienSoXe}', '${v.expiry_str}')">
+                            <i class="fa-solid fa-rotate"></i> Gia hạn
+                        </button>
+                    </div>
+
+                    <div class="card-actions">
+                        <button class="btn btn-sm btn-outline" style="flex: 1;" onclick="openEditModal('${v.BienSoXe}', '${v.LoaiXe || 'Ô tô con'}', '${v.MauXe || ''}')">
+                            <i class="fa-solid fa-pen"></i> Sửa
+                        </button>
+                        <button class="btn btn-sm btn-secondary" style="flex: 1.2;" onclick="openTransferModal('${v.BienSoXe}')">
+                            <i class="fa-solid fa-arrow-right-arrow-left"></i> Chuyển nhượng
+                        </button>
+                        <button class="btn btn-sm btn-destructive" style="flex: 0.8;" onclick="deleteVehicle('${v.BienSoXe}')">
+                            <i class="fa-solid fa-trash"></i> Xóa
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        async function loadResidentTransferRequests() {
+            const tbody = document.getElementById('residentTransferRequestsTableBody');
+            try {
+                const res = await fetch('/api/resident/transfer_requests');
+                const data = await res.json();
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 1.5rem; color: var(--muted-foreground);">Chưa có đơn chuyển nhượng nào</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.map(r => {
+                    let stBadge = '<span class="badge badge-warning"><i class="fa-solid fa-clock"></i> Chờ duyệt</span>';
+                    if (r.TrangThai === 'Approved') stBadge = '<span class="badge badge-active"><i class="fa-solid fa-check"></i> Đã duyệt</span>';
+                    if (r.TrangThai === 'Rejected') stBadge = '<span class="badge badge-danger"><i class="fa-solid fa-xmark"></i> Từ chối</span>';
+
+                    return `
+                    <tr>
+                        <td><strong>${r.MaDon}</strong></td>
+                        <td><strong class="plate-box" style="font-size: 0.85rem; padding: 0.15rem 0.45rem; display: inline-block;">${r.BienSoXe}</strong></td>
+                        <td>${r.TenCuDanChuyen} (${r.CanHoChuyen})</td>
+                        <td>${r.TenCuDanNhan} (${r.CanHoNhan})</td>
+                        <td>${r.created_str || '---'}</td>
+                        <td>${stBadge}</td>
+                        <td><small style="color: var(--muted-foreground);">${r.GhiChu || 'Đang chờ xem xét'}</small></td>
+                    </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error("Lỗi tải đơn chuyển nhượng:", err);
+            }
+        }
+
+        async function loadParkingHistory() {
+            const plate = document.getElementById('historyPlateFilter').value;
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu...</td></tr>`;
+
+            try {
+                const url = '/api/resident/history' + (plate ? `?plate=${encodeURIComponent(plate)}` : '');
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--muted-foreground);">Chưa có lượt gửi xe nào cho phương tiện này.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.map(s => `
+                    <tr>
+                        <td><strong class="plate-box" style="font-size: 0.85rem; padding: 0.15rem 0.45rem; display: inline-block;">${s.plate_text}</strong></td>
+                        <td>${s.vehicle_type || 'Ô tô con'}</td>
+                        <td><i class="fa-solid fa-arrow-right-to-bracket" style="color: var(--success);"></i> ${s.check_in_time || '---'}</td>
+                        <td><i class="fa-solid fa-arrow-right-from-bracket" style="color: var(--muted-foreground);"></i> ${s.check_out_time || 'Đang gửi'}</td>
+                        <td>${s.duration_minutes !== null ? s.duration_minutes + ' phút' : 'Đang đỗ'}</td>
+                        <td><strong style="color: #2563eb;">${s.fee === 0 ? '0 đ (Vé tháng)' : s.fee.toLocaleString() + ' đ'}</strong></td>
+                        <td>
+                            <span class="badge ${s.status === 'Parked' ? 'badge-in' : 'badge-out'}">
+                                ${s.status === 'Parked' ? 'Đang trong bãi' : 'Đã hoàn thành'}
+                            </span>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--destructive);">Lỗi tải lịch sử ra vào.</td></tr>`;
+            }
+        }
+
+        // ================= FORM CÀI ĐẶT THÔNG TIN CÁ NHÂN =================
+        document.getElementById('updateProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnUpdateProfileSubmit');
+            const alertBox = document.getElementById('profileAlert');
+            alertBox.style.display = 'none';
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+
+            const payload = {
+                full_name: document.getElementById('settingFullName').value.trim(),
+                phone: document.getElementById('settingPhone').value.trim(),
+                email: document.getElementById('settingEmail').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/resident/update_profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.error || 'Lỗi cập nhật');
+
+                alertBox.className = 'alert-box success';
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${data.message}`;
+                alertBox.style.display = 'flex';
+
+                await loadProfile();
+            } catch (err) {
+                alertBox.className = 'alert-box error';
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${err.message}`;
+                alertBox.style.display = 'flex';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi thông tin';
+            }
+        });
+
+        // ================= FORM ĐỔI MẬT KHẨU =================
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnChangePassSubmit');
+            const alertBox = document.getElementById('passwordAlert');
+            alertBox.style.display = 'none';
+
+            const payload = {
+                current_password: document.getElementById('currentPassword').value,
+                new_password: document.getElementById('newPassword').value,
+                confirm_password: document.getElementById('confirmNewPassword').value
+            };
+
+            if (payload.new_password !== payload.confirm_password) {
+                alertBox.className = 'alert-box error';
+                alertBox.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Mật khẩu xác nhận không trùng khớp';
+                alertBox.style.display = 'flex';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+
+            try {
+                const res = await fetch('/api/resident/change_password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.error || 'Đổi mật khẩu thất bại');
+
+                alertBox.className = 'alert-box success';
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${data.message}`;
+                alertBox.style.display = 'flex';
+                document.getElementById('changePasswordForm').reset();
+            } catch (err) {
+                alertBox.className = 'alert-box error';
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${err.message}`;
+                alertBox.style.display = 'flex';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-key"></i> Cập nhật mật khẩu';
+            }
+        });
+
+        // ================= MODAL CHUYỂN NHƯỢNG XE =================
+        function openTransferModal(plate) {
+            document.getElementById('transferPlateHidden').value = plate;
+            document.getElementById('transferPlateDisplay').textContent = plate;
+            document.getElementById('recipientIdentifier').value = '';
+            document.getElementById('transferAlert').style.display = 'none';
+            document.getElementById('transferModal').classList.add('active');
+        }
+
+        function closeTransferModal() {
+            document.getElementById('transferModal').classList.remove('active');
+        }
+
+        document.getElementById('transferVehicleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnTransferSubmit');
+            const alertBox = document.getElementById('transferAlert');
+            alertBox.style.display = 'none';
+
+            const plate = document.getElementById('transferPlateHidden').value;
+            const recipient = document.getElementById('recipientIdentifier').value.trim();
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang gửi yêu cầu...';
+
+            try {
+                const res = await fetch('/api/resident/transfer_vehicle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        plate_text: plate,
+                        recipient_identifier: recipient
+                    })
+                });
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.error || 'Lỗi chuyển nhượng');
+
+                alert(data.message);
+                closeTransferModal();
+                loadResidentTransferRequests();
+            } catch (err) {
+                alertBox.className = 'alert-box error';
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${err.message}`;
+                alertBox.style.display = 'flex';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Gửi Đơn Xin Chuyển Nhượng';
+            }
+        });
+
+        // ================= MODAL ADD XE =================
+        function openAddModal() { document.getElementById('addModal').classList.add('active'); }
+        function closeAddModal() { 
+            document.getElementById('addModal').classList.remove('active'); 
+            document.getElementById('addVehicleForm').reset();
+        }
+
+        document.getElementById('addVehicleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnAddSubmit');
+            btn.disabled = true;
+            btn.textContent = 'Đang lưu...';
+
+            const payload = {
+                plate_text: document.getElementById('addPlate').value.trim().toUpperCase(),
+                vehicle_type: document.getElementById('addType').value,
+                color: document.getElementById('addColor').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/resident/add_vehicle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Lỗi hệ thống');
+                
+                alert('Đăng ký phương tiện thành công! Vé tháng 30 ngày đã được cấp tự động.');
+                closeAddModal();
+                loadVehicles();
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Xác nhận đăng ký';
+            }
+        });
+
+        // ================= MODAL EDIT XE =================
+        function openEditModal(plate, type, color) {
+            document.getElementById('editPlateHidden').value = plate;
+            document.getElementById('editPlateDisplay').value = plate;
+            document.getElementById('editType').value = type;
+            document.getElementById('editColor').value = color;
+            document.getElementById('editModal').classList.add('active');
+        }
+        function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
+
+        document.getElementById('editVehicleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const plate = document.getElementById('editPlateHidden').value;
+            const payload = {
+                vehicle_type: document.getElementById('editType').value,
+                color: document.getElementById('editColor').value.trim()
+            };
+
+            try {
+                const res = await fetch(`/api/resident/vehicles/${plate}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Lỗi cập nhật');
+                closeEditModal();
+                loadVehicles();
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+
+        async function deleteVehicle(plate) {
+            if (!confirm(`Bạn có chắc chắn muốn hủy đăng ký phương tiện ${plate}?`)) return;
+            try {
+                const res = await fetch(`/api/resident/vehicles/${plate}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Lỗi xóa xe');
+                alert('Đã xóa thành công!');
+                loadVehicles();
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        // ================= MODAL GIA HẠN VÉ THÁNG =================
+        function openRenewModal(plate, expiryStr) {
+            document.getElementById('renewPlate').value = plate;
+            document.getElementById('renewPlateDisplay').textContent = plate;
+            document.getElementById('renewCurrentExpiry').textContent = 'Hạn hiện tại: ' + expiryStr;
+            document.getElementById('renewModal').classList.add('active');
+        }
+        function closeRenewModal() { document.getElementById('renewModal').classList.remove('active'); }
+
+        function selectDuration(months, elem) {
+            document.querySelectorAll('.renew-item').forEach(el => el.classList.remove('selected'));
+            elem.classList.add('selected');
+            document.getElementById('renewMonths').value = months;
+        }
+
+        document.getElementById('renewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnRenewSubmit');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+
+            const payload = {
+                plate_text: document.getElementById('renewPlate').value,
+                months: parseInt(document.getElementById('renewMonths').value)
+            };
+
+            try {
+                const res = await fetch('/api/resident/renew_ticket', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Lỗi gia hạn');
+                
+                alert(`Gia hạn thành công! Hạn mới của vé tháng: ${data.new_expiry}`);
+                closeRenewModal();
+                loadVehicles();
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Xác nhận gia hạn';
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('user');
+            fetch('/api/logout', { method: 'POST' }).then(() => {
+                window.location.href = '/login';
+            });
+        }
+
+        initPage();
+    </script>
+</body>
+</html>

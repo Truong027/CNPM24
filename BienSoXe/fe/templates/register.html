@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký tài khoản | Quản Lý Biển Số Xe AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --background: #f8fafc;
+            --foreground: #020817;
+            --card: #ffffff;
+            --card-foreground: #020817;
+            --primary: #0f172a;
+            --primary-foreground: #f8fafc;
+            --secondary: #f1f5f9;
+            --secondary-foreground: #0f172a;
+            --muted: #f1f5f9;
+            --muted-foreground: #64748b;
+            --destructive: #ef4444;
+            --success: #10b981;
+            --border: #e2e8f0;
+            --input: #e2e8f0;
+            --ring: #0f172a;
+            --radius: 0.5rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(15, 23, 42, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.04) 0px, transparent 50%);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            padding: 2.25rem 2rem;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 1.75rem;
+        }
+
+        .brand-badge {
+            width: 44px;
+            height: 44px;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .card-description {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-top: 0.25rem;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            height: 2.5rem;
+            padding: 0 0.85rem;
+            background: var(--card);
+            border: 1px solid var(--input);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            color: var(--foreground);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--ring);
+            box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 2.65rem;
+            padding: 0 1rem;
+            font-size: 0.925rem;
+            font-weight: 600;
+            border-radius: var(--radius);
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .btn-primary:hover { background: #1e293b; }
+
+        .alert-box {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .alert-box.error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-box.success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-footer {
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .card-footer a {
+            color: var(--foreground);
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-card">
+        <div class="card-header">
+            <div class="brand-badge">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+            <h1 class="card-title">Tạo tài khoản mới</h1>
+            <p class="card-description">Đăng ký thành viên hệ thống quản lý bãi xe</p>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-grid">
+                <div class="form-item">
+                    <label class="form-label" for="role">Vai trò tài khoản</label>
+                    <select class="form-select" id="role" name="role">
+                        <option value="Resident">Cư dân tòa nhà (Xem xe & Vé tháng)</option>
+                        <option value="User">Nhân viên bảo vệ / Vận hành</option>
+                    </select>
+                </div>
+
+                <div class="form-item">
+                    <label class="form-label" for="username">Tên tài khoản</label>
+                    <input class="form-input" id="username" name="username" placeholder="Ví dụ: cudan_a1205" required>
+                </div>
+
+                <div class="form-item">
+                    <label class="form-label" for="fullName">Họ và tên</label>
+                    <input class="form-input" id="fullName" name="full_name" placeholder="Nguyễn Văn A" required>
+                </div>
+
+                <div class="form-item">
+                    <label class="form-label" for="email">Địa chỉ Email</label>
+                    <input class="form-input" id="email" name="email" type="email" placeholder="email@domain.com">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="form-item">
+                        <label class="form-label" for="password">Mật khẩu</label>
+                        <input class="form-input" id="password" name="password" type="password" placeholder="Tối thiểu 6 ký tự" required>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label" for="confirmPassword">Xác nhận</label>
+                        <input class="form-input" id="confirmPassword" name="confirm_password" type="password" placeholder="Nhập lại mật khẩu" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert-box" id="alertBox"></div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn" style="margin-top: 1.25rem;">
+                Tạo tài khoản
+            </button>
+        </form>
+
+        <div class="card-footer">
+            Đã có tài khoản? <a href="/login">Đăng nhập ngay</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const alertBox = document.getElementById('alertBox');
+            
+            alertBox.className = 'alert-box';
+            alertBox.style.display = 'none';
+
+            const payload = {
+                role: document.getElementById('role').value,
+                username: document.getElementById('username').value.trim(),
+                full_name: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value,
+                confirm_password: document.getElementById('confirmPassword').value
+            };
+
+            if (payload.password !== payload.confirm_password) {
+                alertBox.className = 'alert-box error';
+                alertBox.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Mật khẩu xác nhận không trùng khớp';
+                alertBox.style.display = 'flex';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo tài khoản...';
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    alertBox.className = 'alert-box error';
+                    alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${data.error || 'Đăng ký thất bại'}`;
+                    alertBox.style.display = 'flex';
+                    btn.disabled = false;
+                    btn.textContent = 'Tạo tài khoản';
+                    return;
+                }
+
+                alertBox.className = 'alert-box success';
+                alertBox.innerHTML = '<i class="fa-solid fa-circle-check"></i> Đăng ký thành công! Đang chuyển hướng đăng nhập...';
+                alertBox.style.display = 'flex';
+
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1200);
+            } catch (err) {
+                alertBox.className = 'alert-box error';
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Lỗi kết nối: ${err.message}`;
+                alertBox.style.display = 'flex';
+                btn.disabled = false;
+                btn.textContent = 'Tạo tài khoản';
+            }
+        });
+    </script>
+</body>
+</html>

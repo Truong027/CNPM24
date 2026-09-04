@@ -1,24 +1,78 @@
-# Chừa thư mục & file BienSoXe theo yêu cầu
-BienSoXe/
-BienSoXe
+# =======================================================
+# BẢO MẬT: BIẾN MÔI TRƯỜNG & MẬT KHẨU
+# =======================================================
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# =======================================================
+# FILE NÉN DUNG LƯỢNG LỚN (>50MB / >100MB)
+# =======================================================
 BienSoXe.rar
 BienSoXe*.rar
 BienSoXe*.zip
+*.rar
+*.zip
+*.7z
+*.tar
+*.gz
 
-# Python & môi trường ảo
+# =======================================================
+# DATASET ẢNH THÔ & CHECKPOINTS HUẤN LUYỆN
+# =======================================================
+BienSoXe/data/
+BienSoXe/archive/
+BienSoXe/runs/
+BienSoXe/be/runs/
+BienSoXe/instance/
+**/runs/
+**/data/
+**/archive/
+
+# =======================================================
+# MÔI TRƯỜNG ẢO & PYTHON CACHE
+# =======================================================
 .venv/
+BienSoXe/.venv/
 env/
 venv/
 ENV/
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 *.pyc
 
-# IDE / Editor configs
-.vscode/
-.idea/
+# =======================================================
+# CƠ SỞ DỮ LIỆU CỤC BỘ & LOGS
+# =======================================================
+*.db
+*.sqlite
+*.sqlite3
+*.log
 
-# Hệ điều hành
+# =======================================================
+# TỆP TẠM OFFICE & HỆ ĐIỀU HÀNH
+# =======================================================
+~$*
+~*.tmp
+*.tmp
 Thumbs.db
 .DS_Store
+desktop.ini
+
+# =======================================================
+# IDE / EDITOR CONFIGS
+# =======================================================
+.vscode/
+BienSoXe/.vscode/
+.idea/
+
+# =======================================================
+# BỎ QUA CÁC FILE BÁO CÁO NGOÀI THƯ MỤC BIENSOXE
+# (Theo yêu cầu: Chỉ đẩy thư mục BienSoXe)
+# =======================================================
+/baitap.docx
+/baitap.md
