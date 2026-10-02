@@ -1,0 +1,306 @@
+' ====================================================================
+' FILE TỔNG HỢP CÁC SƠ ĐỒ USE CASE PHÂN RÃ THEO TỪNG TÁC NHÂN
+' DỰ ÁN: HỆ THỐNG NHẬN DIỆN BIỂN SỐ XE & QUẢN LÝ BÃI XE THÔNG MINH (AI SMART PARKING)
+' ====================================================================
+
+' ====================================================================
+' SƠ ĐỒ 1: USE CASE CHO TÁC NHÂN "QUẢN TRỊ VIÊN" (ADMIN)
+' ====================================================================
+@startuml Admin_UseCase_Diagram
+!theme plain
+title SƠ ĐỒ USE CASE - QUẢN TRỊ VIÊN (ADMIN)
+left to right direction
+
+skinparam roundcorner 10
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+
+skinparam actor {
+    BackgroundColor #FEE2E2
+    BorderColor #DC2626
+    FontColor #7F1D1D
+    FontStyle bold
+}
+
+skinparam usecase {
+    BackgroundColor #FFFFFF
+    BorderColor #DC2626
+    FontColor #1E293B
+}
+
+actor "Quản Trị Viên\n(Admin)" as Admin
+
+rectangle "Phân Hệ Quản Trị Hệ Thống" {
+    usecase "FR-01: Đăng nhập hệ thống" as UC_Login
+    usecase "Đổi mật khẩu & Hồ sơ quản trị" as UC_Profile
+    
+    package "Quản Lý Người Dùng & Phân Quyền" {
+        usecase "Xem danh sách tài khoản" as UC_ViewUsers
+        usecase "Cấp tài khoản mới (Bảo vệ / Cư dân)" as UC_CreateUser
+        usecase "Chỉnh sửa thông tin người dùng" as UC_EditUser
+        usecase "Khóa / Mở khóa tài khoản" as UC_ToggleUser
+        usecase "Đặt lại mật khẩu (Reset password)" as UC_ResetPassword
+    }
+
+    package "Quản Lý Danh Mục Phương Tiện" {
+        usecase "FR-13: Quản lý danh mục phương tiện" as UC_ManageVehicles
+        usecase "Thêm / Chỉnh sửa thông tin xe" as UC_EditVehicle
+        usecase "Xóa phương tiện khỏi hệ thống" as UC_DeleteVehicle
+        usecase "Phân nhóm xe (Normal / Whitelist / Blacklist)" as UC_ClassifyVehicle
+    }
+
+    package "Quản Lý Bãi Đỗ & Chuyển Nhượng" {
+        usecase "FR-04: Quản lý sơ đồ bãi đỗ Cinema 100 ô" as UC_CinemaMap
+        usecase "Phân bổ / Thu hồi ô đỗ xe" as UC_AssignSlot
+        usecase "Xem danh sách đơn chuyển nhượng đang chờ" as UC_ViewTransfers
+        usecase "Phê duyệt / Từ chối đơn chuyển nhượng xe" as UC_ApproveTransfer
+    }
+
+    package "Báo Cáo Thống Kê & Vận Hành" {
+        usecase "FR-15: Xem Dashboard KPI vận hành" as UC_Dashboard
+        usecase "Thống kê doanh thu theo ngày/tháng" as UC_Revenue
+        usecase "Phân tích mật độ lưu lượng & Giờ cao điểm" as UC_PeakHours
+        usecase "Thống kê tỷ lệ nhận diện & Loại xe" as UC_StatsAI
+        usecase "Xuất dữ liệu báo cáo (CSV / Excel)" as UC_ExportData
+        usecase "FR-06: Tải ảnh thử nghiệm nhận diện AI" as UC_TestAIImage
+    }
+}
+
+Admin --> UC_Login
+Admin --> UC_Profile
+Admin --> UC_ViewUsers
+Admin --> UC_CreateUser
+Admin --> UC_EditUser
+Admin --> UC_ToggleUser
+Admin --> UC_ResetPassword
+
+Admin --> UC_ManageVehicles
+Admin --> UC_EditVehicle
+Admin --> UC_DeleteVehicle
+Admin --> UC_ClassifyVehicle
+
+Admin --> UC_CinemaMap
+Admin --> UC_AssignSlot
+Admin --> UC_ViewTransfers
+Admin --> UC_ApproveTransfer
+
+Admin --> UC_Dashboard
+Admin --> UC_Revenue
+Admin --> UC_PeakHours
+Admin --> UC_StatsAI
+Admin --> UC_ExportData
+Admin --> UC_TestAIImage
+
+UC_ManageVehicles <.. UC_ClassifyVehicle : <<extend>>
+UC_ViewTransfers <.. UC_ApproveTransfer : <<extend>>
+@enduml
+
+
+' ====================================================================
+' SƠ ĐỒ 2: USE CASE CHO TÁC NHÂN "NHÂN VIÊN BẢO VỆ" (GUARD / OPERATOR)
+' ====================================================================
+@startuml Guard_UseCase_Diagram
+!theme plain
+title SƠ ĐỒ USE CASE - NHÂN VIÊN BẢO VỆ (GUARD / OPERATOR)
+left to right direction
+
+skinparam roundcorner 10
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+
+skinparam actor {
+    BackgroundColor #FEF3C7
+    BorderColor #D97706
+    FontColor #78350F
+    FontStyle bold
+}
+
+skinparam usecase {
+    BackgroundColor #FFFFFF
+    BorderColor #D97706
+    FontColor #1E293B
+}
+
+actor "Nhân Viên Bảo Vệ\n(Guard / Operator)" as Guard
+
+rectangle "Phân Hệ Bàn Trực & Kiểm Soát Cổng" {
+    usecase "FR-01: Đăng nhập ca trực" as UC_Login
+    usecase "Giám sát luồng Camera trực tiếp (Live Stream)" as UC_LiveStream
+    
+    package "Kiểm Soát Làn Xe Vào / Ra" {
+        usecase "FR-07: Kiểm soát xe vào (Check-In)" as UC_CheckIn
+        usecase "FR-08: Kiểm soát xe ra (Check-Out)" as UC_CheckOut
+        usecase "FR-09: Đối chiếu hình ảnh Vào - Ra (Side-by-Side)" as UC_VerifyImages
+        usecase "Nhập biển số thủ công (Manual Entry)" as UC_ManualEntry
+    }
+
+    package "An Ninh & Xử Lý Sự Cố" {
+        usecase "FR-11: Tiếp nhận cảnh báo xe Blacklist" as UC_BlacklistAlert
+        usecase "Từ chối mở cổng & Giữ xe nghi vấn" as UC_BlockVehicle
+        usecase "Tra cứu lịch sử xe & danh mục bãi" as UC_SearchPlate
+    }
+
+    package "Thu Phí & Điều Khiển Barrier" {
+        usecase "FR-10: Tra cứu cước phí tự động" as UC_ViewFee
+        usecase "FR-12: Xác nhận thu tiền & Xuất hóa đơn" as UC_CollectFee
+        usecase "Điều khiển mở / đóng Barrier thủ công" as UC_ManualBarrier
+    }
+}
+
+Guard --> UC_Login
+Guard --> UC_LiveStream
+Guard --> UC_CheckIn
+Guard --> UC_CheckOut
+Guard --> UC_VerifyImages
+Guard --> UC_ManualEntry
+Guard --> UC_BlacklistAlert
+Guard --> UC_BlockVehicle
+Guard --> UC_SearchPlate
+Guard --> UC_ViewFee
+Guard --> UC_CollectFee
+Guard --> UC_ManualBarrier
+
+UC_CheckOut ..> UC_VerifyImages : <<include>>
+UC_CheckOut ..> UC_ViewFee : <<include>>
+UC_CollectFee ..> UC_ManualBarrier : <<include>>
+
+UC_CheckIn <.. UC_ManualEntry : <<extend>>
+UC_CheckOut <.. UC_ManualEntry : <<extend>>
+UC_CheckIn <.. UC_BlacklistAlert : <<extend>>
+UC_CheckOut <.. UC_BlacklistAlert : <<extend>>
+UC_BlacklistAlert ..> UC_BlockVehicle : <<include>>
+@enduml
+
+
+' ====================================================================
+' SƠ ĐỒ 3: USE CASE CHO TÁC NHÂN "CƯ DÂN" (RESIDENT)
+' ====================================================================
+@startuml Resident_UseCase_Diagram
+!theme plain
+title SƠ ĐỒ USE CASE - CƯ DÂN (RESIDENT)
+left to right direction
+
+skinparam roundcorner 10
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+
+skinparam actor {
+    BackgroundColor #DCFCE7
+    BorderColor #16A34A
+    FontColor #14532D
+    FontStyle bold
+}
+
+skinparam usecase {
+    BackgroundColor #FFFFFF
+    BorderColor #16A34A
+    FontColor #1E293B
+}
+
+actor "Cư Dân Tòa Nhà\n(Resident)" as Resident
+
+rectangle "Cổng Dịch Vụ Cư Dân (Resident Portal)" {
+    package "Tài Khoản & Hồ Sơ" {
+        usecase "FR-02: Đăng ký tài khoản cư dân mới" as UC_Register
+        usecase "FR-01: Đăng nhập Cổng Cư Dân" as UC_Login
+        usecase "Quên & Đặt lại mật khẩu" as UC_ForgotPass
+        usecase "Cập nhật số điện thoại, email" as UC_UpdateProfile
+        usecase "Đổi mật khẩu tài khoản" as UC_ChangePassword
+    }
+
+    package "Phương Tiện & Bãi Đỗ" {
+        usecase "FR-03: Đăng ký phương tiện cho căn hộ" as UC_AddVehicle
+        usecase "Xem danh sách thẻ xe 3D cá nhân" as UC_ViewVehicles
+        usecase "FR-04: Xem sơ đồ bãi đỗ xe Cinema" as UC_ViewCinemaMap
+        usecase "Chọn / Đổi vị trí ô đỗ xe" as UC_ChangeSlot
+    }
+
+    package "Vé Tháng & Chuyển Nhượng" {
+        usecase "FR-14: Đăng ký & Gia hạn vé tháng" as UC_RenewTicket
+        usecase "Lập đơn chuyển nhượng quyền sử dụng xe" as UC_TransferVehicle
+        usecase "Theo dõi tiến độ duyệt đơn chuyển nhượng" as UC_TrackTransferStatus
+        usecase "Tra cứu lịch sử xe vào/ra cá nhân" as UC_ViewHistory
+    }
+}
+
+Resident --> UC_Register
+Resident --> UC_Login
+Resident --> UC_ForgotPass
+Resident --> UC_UpdateProfile
+Resident --> UC_ChangePassword
+
+Resident --> UC_AddVehicle
+Resident --> UC_ViewVehicles
+Resident --> UC_ViewCinemaMap
+Resident --> UC_ChangeSlot
+
+Resident --> UC_RenewTicket
+Resident --> UC_TransferVehicle
+Resident --> UC_TrackTransferStatus
+Resident --> UC_ViewHistory
+
+UC_AddVehicle ..> UC_ChangeSlot : <<include>>
+UC_ChangeSlot ..> UC_ViewCinemaMap : <<include>>
+UC_TransferVehicle ..> UC_TrackTransferStatus : <<include>>
+@enduml
+
+
+' ====================================================================
+' SƠ ĐỒ 4: USE CASE CHO "HỆ THỐNG CAMERA AI & THIẾT BỊ BARRIER"
+' ====================================================================
+@startuml AI_Device_UseCase_Diagram
+!theme plain
+title SƠ ĐỒ USE CASE - HỆ THỐNG CAMERA AI & NGOẠI VI
+left to right direction
+
+skinparam roundcorner 10
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+
+skinparam actor {
+    BackgroundColor #E0E7FF
+    BorderColor #4F46E5
+    FontColor #312E81
+    FontStyle bold
+}
+
+skinparam usecase {
+    BackgroundColor #FFFFFF
+    BorderColor #4F46E5
+    FontColor #1E293B
+}
+
+actor "Hệ Thống Camera AI\n<<System Actor>>" as AICamera
+actor "Thiết Bị Barrier\n<<External Device>>" as Barrier
+
+rectangle "Cơ Chế Xử Lý Tự Động & Ngoại Vi" {
+    usecase "Thu nhận luồng video thời gian thực" as UC_CaptureFrame
+    usecase "Phát hiện Bounding Box biển số (YOLOv8)" as UC_YOLO
+    usecase "Nhận dạng ký tự (CRNN & EasyOCR)" as UC_OCR
+    usecase "Lọc nhiễu IOU & Bỏ phiếu 3 khung hình" as UC_Tracking
+    usecase "Chụp & Lưu ảnh Snapshot xe" as UC_Snapshot
+    usecase "Tự động kích hoạt Check-In" as UC_AutoCheckIn
+    usecase "Tự động kích hoạt Check-Out & Tính tiền" as UC_AutoCheckOut
+    usecase "Bắn cảnh báo đỏ Blacklist khẩn cấp" as UC_EmitBlacklist
+    usecase "Gửi sự kiện thời gian thực lên Bàn trực" as UC_EmitGuard
+    usecase "Nhận xung tín hiệu mở Barrier Cổng Vào/Ra" as UC_OpenBarrier
+    usecase "Tự động hạ thanh chắn Barrier sau khi xe qua" as UC_CloseBarrier
+}
+
+AICamera --> UC_CaptureFrame
+AICamera --> UC_YOLO
+AICamera --> UC_OCR
+AICamera --> UC_Tracking
+AICamera --> UC_Snapshot
+AICamera --> UC_AutoCheckIn
+AICamera --> UC_AutoCheckOut
+AICamera --> UC_EmitBlacklist
+AICamera --> UC_EmitGuard
+
+Barrier <-- UC_OpenBarrier
+Barrier <-- UC_CloseBarrier
+
+UC_AutoCheckIn ..> UC_OpenBarrier : <<include>> (Xe hợp lệ)
+UC_AutoCheckIn ..> UC_EmitBlacklist : <<include>> (Nếu Blacklist)
+UC_AutoCheckOut ..> UC_EmitGuard : <<include>>
+@enduml

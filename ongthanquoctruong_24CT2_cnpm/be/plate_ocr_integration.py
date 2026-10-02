@@ -24,9 +24,24 @@ def get_ocr_model():
             print("⌛ Loading trained CRNN-CTC OCR model...", flush=True)
             device = 'cuda' if torch.cuda.is_available() else 'cpu'
             try:
+                base_dir = os.path.dirname(os.path.abspath(__file__))
+                candidate_models = [
+                    os.path.join(base_dir, "artifacts", "plate_ocr", "model.pt"),
+                    os.path.join(base_dir, "..", "artifacts", "plate_ocr", "model.pt"),
+                    "artifacts/plate_ocr/model.pt"
+                ]
+                m_path = next((p for p in candidate_models if os.path.exists(p)), candidate_models[0])
+                
+                candidate_vocabs = [
+                    os.path.join(base_dir, "artifacts", "plate_ocr", "vocab.json"),
+                    os.path.join(base_dir, "..", "artifacts", "plate_ocr", "vocab.json"),
+                    "artifacts/plate_ocr/vocab.json"
+                ]
+                v_path = next((p for p in candidate_vocabs if os.path.exists(p)), candidate_vocabs[0])
+
                 OCR_MODEL_CACHE = PlateOCRInference(
-                    model_path="artifacts/plate_ocr/model.pt",
-                    vocab_path="artifacts/plate_ocr/vocab.json",
+                    model_path=m_path,
+                    vocab_path=v_path,
                     device=device
                 )
                 print("✅ CRNN-CTC OCR model loaded", flush=True)
