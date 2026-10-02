@@ -48,7 +48,7 @@ Successfully implemented a specialized OCR model for Vietnamese license plates t
 ## Project Structure
 
 ```
-BienSoXe/
+ongthanquoctruong_24CT2_cnpm/
 ├── 📊 Model & Inference
 │   ├── plate_ocr_inference.py        ← Main inference module
 │   ├── plate_ocr_integration.py      ← Integration helpers

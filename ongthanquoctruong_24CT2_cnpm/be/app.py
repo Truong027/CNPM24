@@ -38,10 +38,19 @@ if not hasattr(Image, "ANTIALIAS"):
 # ================== KHỞI TẠO FLASK ==================
 print("🚀 [APP START] app.py is loading...", flush=True)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FE_TEMPLATE_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "fe", "templates"))
-FE_STATIC_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "fe", "static"))
-TEMPLATE_DIR = FE_TEMPLATE_DIR if os.path.exists(FE_TEMPLATE_DIR) else os.path.join(BASE_DIR, "templates")
-STATIC_DIR = FE_STATIC_DIR if os.path.exists(FE_STATIC_DIR) else os.path.join(BASE_DIR, "static")
+candidate_template_dirs = [
+    os.path.abspath(os.path.join(BASE_DIR, "fe", "templates")),
+    os.path.abspath(os.path.join(BASE_DIR, "..", "fe", "templates")),
+    os.path.abspath(os.path.join(BASE_DIR, "templates")),
+]
+TEMPLATE_DIR = next((d for d in candidate_template_dirs if os.path.exists(d)), os.path.join(BASE_DIR, "templates"))
+
+candidate_static_dirs = [
+    os.path.abspath(os.path.join(BASE_DIR, "fe", "static")),
+    os.path.abspath(os.path.join(BASE_DIR, "..", "fe", "static")),
+    os.path.abspath(os.path.join(BASE_DIR, "static")),
+]
+STATIC_DIR = next((d for d in candidate_static_dirs if os.path.exists(d)), os.path.join(BASE_DIR, "static"))
 
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 app.config["SECRET_KEY"] = os.getenv("APP_SECRET_KEY", "dev-secret-change-me")
@@ -125,6 +134,20 @@ for p in candidate_model_paths:
 # --- CÁC NGUỒN CAMERA ---
 WEBCAM_SOURCE = 0
 PHONE_CAMERA_URL = "https://192.168.1.18:8080/video"  # Cổng Ra (Check-Out) - Thay đổi IP theo IP Webcam của bạn
+CAMERA_GATE_MODE = "auto"  # 'auto' (tự động theo trạng thái xe), 'in' (cổng vào), 'out' (cổng ra)
+GUARD_EVENT_LOCK = Lock()
+LATEST_GUARD_EVENT = {
+    "event_id": 0,
+    "plate_text": "",
+    "gate_type": "in",
+    "status": "idle",
+    "is_blacklist": False,
+    "fee": 0,
+    "fee_formatted": "0 VNĐ",
+    "timestamp": "",
+    "source": "",
+    "message": ""
+}
 # ------------------------------
 
 if not MODEL_PATH or not os.path.exists(MODEL_PATH):
@@ -901,22 +924,66 @@ def gen_frames(camera_source):
                                 raw_text=raw or best[0],
                             )
 
-                            # Xử lý Giao dịch Đỗ xe (Check-In / Check-Out)
-                            gate_type = (
-                                "in"
-                                if (
-                                    source_name == "0"
-                                    or "webcam" in source_name.lower()
-                                )
-                                else "out"
-                            )
+                            # Xử lý Giao dịch Đỗ xe (Check-In / Check-Out) linh hoạt theo CAMERA_GATE_MODE
+                            actual_gate_type = "in"
+                            if CAMERA_GATE_MODE == "in":
+                                actual_gate_type = "in"
+                            elif CAMERA_GATE_MODE == "out":
+                                actual_gate_type = "out"
+                            else:
+                                # CAMERA_GATE_MODE == "auto"
+                                if source_name != "0" and "webcam" not in source_name.lower():
+                                    actual_gate_type = "out"
+                                else:
+                                    active_sess = database.get_active_session_by_plate(best[0])
+                                    # Nếu xe đang trong bãi và đã đỗ > 10s -> Auto Check-Out
+                                    if active_sess and (active_sess.get("diff_seconds") or 0) >= 10:
+                                        actual_gate_type = "out"
+                                    else:
+                                        actual_gate_type = "in"
+
                             tx_res = database.process_parking_transaction(
-                                best[0], gate_type, camera_source=source_name
+                                best[0], actual_gate_type, camera_source=source_name
                             )
                             print(
-                                f"[{source_name}] Giao dịch ({gate_type}): {best[0]} -> {tx_res}",
+                                f"[{source_name}] Giao dịch ({actual_gate_type}): {best[0]} -> {tx_res}",
                                 flush=True,
                             )
+
+                            fee_val = 0
+                            if isinstance(tx_res, dict):
+                                fee_val = tx_res.get("fee", 0)
+
+                            with GUARD_EVENT_LOCK:
+                                is_blacklist = False
+                                if isinstance(tx_res, dict):
+                                    if tx_res.get("group_type") == "Blacklist" or tx_res.get("status") == "blacklist_alert" or tx_res.get("is_blacklist"):
+                                        is_blacklist = True
+                                if not is_blacklist:
+                                    v_check = database.get_vehicle_by_plate(best[0])
+                                    if v_check and v_check.get("group_type") == "Blacklist":
+                                        is_blacklist = True
+
+                                status_str = "blacklist_alert" if is_blacklist else (tx_res.get("status") if isinstance(tx_res, dict) else "ok")
+                                LATEST_GUARD_EVENT["event_id"] += 1
+                                LATEST_GUARD_EVENT["plate_text"] = best[0]
+                                LATEST_GUARD_EVENT["gate_type"] = actual_gate_type
+                                LATEST_GUARD_EVENT["status"] = status_str
+                                LATEST_GUARD_EVENT["is_blacklist"] = is_blacklist
+                                LATEST_GUARD_EVENT["fee"] = fee_val
+                                LATEST_GUARD_EVENT["fee_formatted"] = f"{fee_val:,.0f} VNĐ" if fee_val else "0 VNĐ"
+                                LATEST_GUARD_EVENT["timestamp"] = datetime.now().strftime("%H:%M:%S %d/%m/%Y")
+                                LATEST_GUARD_EVENT["source"] = source_name
+                                if is_blacklist:
+                                    LATEST_GUARD_EVENT["message"] = f"🚨 CẢNH BÁO AN NINH: Xe {best[0]} nằm trong DANH SÁCH ĐEN (Blacklist)! TỪ CHỐI CHO XE QUA."
+                                elif status_str == "already_in":
+                                    LATEST_GUARD_EVENT["message"] = f"⚠️ Xe {best[0]} đã ở trong bãi (Chưa Check-Out)!"
+                                elif status_str == "error":
+                                    LATEST_GUARD_EVENT["message"] = tx_res.get("message", f"Lỗi xử lý xe {best[0]}")
+                                elif actual_gate_type == "out":
+                                    LATEST_GUARD_EVENT["message"] = f"Xe {best[0]} CHECK-OUT thành công ({LATEST_GUARD_EVENT['fee_formatted']})"
+                                else:
+                                    LATEST_GUARD_EVENT["message"] = f"Xe {best[0]} CHECK-IN thành công"
 
                             database.update_statistics(date.today())
                             print(f"[{source_name}] Luu: {best[0]}", flush=True)
@@ -1100,6 +1167,55 @@ def api_register():
     )
     if error:
         return jsonify({"error": error}), 400
+
+    if role == "Resident" and payload.get("plate_text"):
+        plate = payload.get("plate_text", "").strip().upper()
+        vi_tri_do = payload.get("vi_tri_do", "").strip().upper()
+        color = payload.get("color", "").strip() or "Chưa xác định"
+        vehicle_type = "Ô tô con"
+        if plate:
+            try:
+                conn = database.get_db_connection()
+                if conn:
+                    cur = conn.cursor(dictionary=True)
+                    cur.execute("SELECT MaCuDan FROM cu_dan WHERE TaiKhoan = %s", (username,))
+                    cd = cur.fetchone()
+                    if cd:
+                        from datetime import timedelta
+                        expiry_date = date.today() + timedelta(days=30)
+                        prov_code = extract_province_code(plate)
+                        save_plate_to_db(plate, province_code=prov_code, vehicle_type=vehicle_type)
+                        database.upsert_vehicle(
+                            plate_text=plate,
+                            owner_name=full_name,
+                            vehicle_type=vehicle_type,
+                            color=color,
+                            registration_date=date.today(),
+                            status="Hoạt động",
+                            province_code=prov_code,
+                            group_type="Whitelist",
+                            monthly_ticket_expiry=expiry_date,
+                            ma_cu_dan=cd["MaCuDan"],
+                            parking_slot=vi_tri_do or None
+                        )
+                        ma_rfid = "RFID_" + plate.replace("-", "").replace(".", "")
+                        cur.execute("""
+                            INSERT INTO phuong_tien (BienSoXe, LoaiXe, MaCuDan, MauXe, MaTheRFID, NgayHetHan, TrangThaiHopLe, ViTriDo)
+                            VALUES (%s, %s, %s, %s, %s, %s, 1, %s)
+                            ON DUPLICATE KEY UPDATE 
+                                MaCuDan = %s,
+                                LoaiXe = VALUES(LoaiXe),
+                                MauXe = VALUES(MauXe),
+                                NgayHetHan = VALUES(NgayHetHan),
+                                ViTriDo = VALUES(ViTriDo),
+                                TrangThaiHopLe = 1
+                        """, (plate, 'Ô tô con', cd["MaCuDan"], color, ma_rfid, expiry_date, vi_tri_do or None, cd["MaCuDan"]))
+                        conn.commit()
+                        if vi_tri_do:
+                            database.assign_parking_slot(vi_tri_do, plate, cd["MaCuDan"])
+                    conn.close()
+            except Exception as e_reg_veh:
+                print(f"Lỗi đăng ký xe kèm theo khi tạo tài khoản: {e_reg_veh}")
 
     return jsonify(
         {"success": True, "message": "Đăng ký thành công! Vui lòng đăng nhập."}
@@ -1503,6 +1619,92 @@ def api_resident_profile():
     finally:
         conn.close()
 
+@app.route("/api/parking/map", methods=["GET"])
+def api_parking_map():
+    """API cung cấp toàn bộ dữ liệu sơ đồ bãi đỗ xe ô tô chung cư theo phong cách rạp chiếu phim (Cinema Seat Picker)."""
+    user = session.get("user")
+    username = user.get("username") if user else None
+    
+    khu_vuc = request.args.get("khu_vuc")
+    slots = database.get_all_parking_slots(khu_vuc=khu_vuc)
+    
+    # Lấy danh sách biển số của user hiện tại để đánh dấu is_my_slot
+    user_plates = set()
+    if user:
+        conn = database.get_db_connection()
+        if conn:
+            try:
+                c = conn.cursor(dictionary=True)
+                c.execute("SELECT MaCuDan FROM cu_dan WHERE TaiKhoan = %s", (username,))
+                cd = c.fetchone()
+                if cd:
+                    c.execute("SELECT BienSoXe FROM phuong_tien WHERE MaCuDan = %s", (cd["MaCuDan"],))
+                    for r in c.fetchall():
+                        user_plates.add(r["BienSoXe"])
+            finally:
+                conn.close()
+
+    total_count = len(slots)
+    available_count = 0
+    occupied_count = 0
+    maintenance_count = 0
+
+    floor_stats = {
+        "Ham_B1": {"total": 0, "available": 0, "occupied": 0, "name": "Tầng Hầm B1"},
+        "Ham_B2": {"total": 0, "available": 0, "occupied": 0, "name": "Tầng Hầm B2"}
+    }
+
+    formatted_slots = []
+    for s in slots:
+        status = s["TrangThai"]
+        if status == "Trong":
+            available_count += 1
+        elif status == "DaDat":
+            occupied_count += 1
+        elif status == "BaoTri":
+            maintenance_count += 1
+
+        kv = s["KhuVuc"]
+        if kv in floor_stats:
+            floor_stats[kv]["total"] += 1
+            if status == "Trong":
+                floor_stats[kv]["available"] += 1
+            elif status == "DaDat":
+                floor_stats[kv]["occupied"] += 1
+
+        is_my_slot = False
+        if s.get("BienSoXe") and s["BienSoXe"] in user_plates:
+            is_my_slot = True
+
+        formatted_slots.append({
+            "ma_cho_do": s["MaChoDo"],
+            "ten_cho_do": s["TenChoDo"],
+            "khu_vuc": s["KhuVuc"],
+            "day": s["Day"],
+            "so_thu_tu": s["SoThuTu"],
+            "loai_cho_do": s["LoaiChoDo"],
+            "trang_thai": s["TrangThai"],
+            "bien_so_xe": s["BienSoXe"] if (is_my_slot or (user and user.get("role") in ["Admin", "Operator"])) else (s["BienSoXe"][:4] + "***" if s.get("BienSoXe") else None),
+            "full_plate": s.get("BienSoXe"),
+            "is_my_slot": is_my_slot,
+            "ten_chu_xe": s.get("TenChuXe") if is_my_slot or (user and user.get("role") in ["Admin", "Operator"]) else None,
+            "ma_can_ho": s.get("MaCanHo") if is_my_slot or (user and user.get("role") in ["Admin", "Operator"]) else None,
+            "mau_xe": s.get("MauXe"),
+            "loai_xe": s.get("LoaiXe")
+        })
+
+    return jsonify({
+        "success": True,
+        "stats": {
+            "total": total_count,
+            "available": available_count,
+            "occupied": occupied_count,
+            "maintenance": maintenance_count,
+            "by_floor": floor_stats
+        },
+        "slots": formatted_slots
+    })
+
 @app.route("/api/resident/vehicles", methods=["GET"])
 def api_resident_vehicles():
     user = session.get("user")
@@ -1526,9 +1728,12 @@ def api_resident_vehicles():
             
         cursor.execute("""
             SELECT p.BienSoXe, p.LoaiXe, p.MauXe, p.NgayHetHan, p.TrangThaiHopLe, p.MaCuDan,
+                   COALESCE(p.ViTriDo, v.parking_slot) AS ViTriDo,
+                   b.TenChoDo, b.KhuVuc, b.Day, b.SoThuTu,
                    v.monthly_ticket_expiry, v.status AS vehicle_status, v.color AS v_color, v.vehicle_type AS v_type
             FROM phuong_tien p
             LEFT JOIN vehicles v ON p.BienSoXe = v.plate_text
+            LEFT JOIN bai_do b ON COALESCE(p.ViTriDo, v.parking_slot) = b.MaChoDo
             WHERE p.MaCuDan = %s OR v.owner_name = %s OR v.owner_name = %s
         """, (cudan["MaCuDan"], cudan.get("HoTen"), username))
         vehicles = cursor.fetchall()
@@ -1604,11 +1809,12 @@ def api_resident_add_vehicle():
         
     payload = request.get_json(silent=True) or {}
     plate = payload.get("plate_text", "").strip().upper()
-    vehicle_type = payload.get("vehicle_type", "Ô tô con").strip()
+    vehicle_type = "Ô tô con"  # Chuẩn hóa chỉ ô tô con theo yêu cầu
     color = payload.get("color", "").strip() or "Chưa xác định"
+    vi_tri_do = payload.get("vi_tri_do", "").strip().upper()
     
     if not plate:
-        return jsonify({"error": "Vui lòng nhập biển số"}), 400
+        return jsonify({"error": "Vui lòng nhập biển số xe"}), 400
         
     username = user["username"]
     conn = database.get_db_connection()
@@ -1624,6 +1830,17 @@ def api_resident_add_vehicle():
             """, (ma_cd, user.get("full_name") or username, ma_cd, user.get("email") or f"{username}@resident.com", username))
             conn.commit()
             cudan = {"MaCuDan": ma_cd, "HoTen": user.get("full_name") or username}
+
+        # Nếu có chọn vị trí đỗ, kiểm tra xem vị trí đó còn trống không
+        if vi_tri_do:
+            cursor.execute("SELECT * FROM bai_do WHERE MaChoDo = %s", (vi_tri_do,))
+            slot = cursor.fetchone()
+            if not slot:
+                return jsonify({"error": f"Vị trí đỗ '{vi_tri_do}' không tồn tại trong bãi xe chung cư"}), 400
+            if slot["TrangThai"] == "DaDat" and slot.get("BienSoXe") != plate:
+                return jsonify({"error": f"Vị trí '{vi_tri_do}' đã có xe khác đăng ký, vui lòng chọn vị trí khác!"}), 400
+            if slot["TrangThai"] == "BaoTri":
+                return jsonify({"error": f"Vị trí '{vi_tri_do}' đang bảo trì, không thể chọn"}), 400
 
         from datetime import timedelta
         expiry_date = date.today() + timedelta(days=30)
@@ -1642,27 +1859,73 @@ def api_resident_add_vehicle():
             province_code=prov_code,
             group_type="Whitelist",
             monthly_ticket_expiry=expiry_date,
-            ma_cu_dan=cudan["MaCuDan"]
+            ma_cu_dan=cudan["MaCuDan"],
+            parking_slot=vi_tri_do or None
         )
 
         cursor.execute("""
-            INSERT INTO phuong_tien (BienSoXe, LoaiXe, MaCuDan, MauXe, MaTheRFID, NgayHetHan, TrangThaiHopLe)
-            VALUES (%s, %s, %s, %s, %s, %s, 1)
+            INSERT INTO phuong_tien (BienSoXe, LoaiXe, MaCuDan, MauXe, MaTheRFID, NgayHetHan, TrangThaiHopLe, ViTriDo)
+            VALUES (%s, %s, %s, %s, %s, %s, 1, %s)
             ON DUPLICATE KEY UPDATE 
                 MaCuDan = %s,
                 LoaiXe = VALUES(LoaiXe),
                 MauXe = VALUES(MauXe),
                 NgayHetHan = VALUES(NgayHetHan),
+                ViTriDo = VALUES(ViTriDo),
                 TrangThaiHopLe = 1
-        """, (plate, 'Oto' if 'tô' in vehicle_type.lower() else 'XeMay', cudan["MaCuDan"], color, ma_rfid, expiry_date, cudan["MaCuDan"]))
+        """, (plate, 'Ô tô con', cudan["MaCuDan"], color, ma_rfid, expiry_date, vi_tri_do or None, cudan["MaCuDan"]))
 
         conn.commit()
-        return jsonify({"success": True, "message": "Đăng ký phương tiện thành công!"})
+
+        # Cập nhật bảng bai_do nếu có chọn vị trí
+        if vi_tri_do:
+            database.assign_parking_slot(vi_tri_do, plate, cudan["MaCuDan"])
+
+        return jsonify({"success": True, "message": "Đăng ký phương tiện và vị trí đỗ thành công!", "vi_tri_do": vi_tri_do})
     except Exception as e:
         print(f"Error adding resident vehicle: {e}")
         if "Duplicate" in str(e):
             return jsonify({"error": "Biển số này đã được đăng ký trên hệ thống"}), 400
         return jsonify({"error": "Lỗi hệ thống: " + str(e)}), 500
+    finally:
+        conn.close()
+
+@app.route("/api/resident/change_slot", methods=["POST"])
+def api_resident_change_slot():
+    """API cho phép cư dân chọn hoặc đổi vị trí đỗ xe trong chung cư."""
+    user = session.get("user")
+    if not user or user.get("role") != "Resident":
+        return jsonify({"error": "Unauthorized"}), 403
+
+    payload = request.get_json(silent=True) or {}
+    plate = payload.get("plate_text", "").strip().upper()
+    new_slot_id = payload.get("new_slot_id", "").strip().upper()
+
+    if not plate or not new_slot_id:
+        return jsonify({"error": "Thiếu thông tin biển số hoặc vị trí đỗ mới"}), 400
+
+    username = user["username"]
+    conn = database.get_db_connection()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT MaCuDan FROM cu_dan WHERE TaiKhoan = %s", (username,))
+        cudan = cursor.fetchone()
+        if not cudan:
+            return jsonify({"error": "Không tìm thấy hồ sơ cư dân"}), 404
+
+        # Kiểm tra xe có thuộc quyền sở hữu
+        cursor.execute("SELECT * FROM phuong_tien WHERE BienSoXe = %s AND MaCuDan = %s", (plate, cudan["MaCuDan"]))
+        pt = cursor.fetchone()
+        if not pt:
+            return jsonify({"error": "Phương tiện không thuộc quyền sở hữu của bạn"}), 403
+
+        success, msg = database.assign_parking_slot(new_slot_id, plate, cudan["MaCuDan"])
+        if not success:
+            return jsonify({"error": msg}), 400
+
+        return jsonify({"success": True, "message": f"Đã chuyển vị trí xe {plate} sang ô {new_slot_id}!", "new_slot": new_slot_id})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     finally:
         conn.close()
 
@@ -1687,7 +1950,11 @@ def api_resident_delete_vehicle(plate):
             
         cursor.execute("DELETE FROM phuong_tien WHERE BienSoXe = %s", (plate,))
         conn.commit()
-        return jsonify({"success": True, "message": "Xóa phương tiện thành công"})
+
+        # Giải phóng vị trí bãi đỗ
+        database.release_parking_slot(bien_so_xe=plate)
+
+        return jsonify({"success": True, "message": "Xóa phương tiện và giải phóng vị trí đỗ thành công"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     finally:
@@ -2074,6 +2341,46 @@ def api_admin_toggle_user_status():
     return jsonify({"error": msg}), 400
 
 
+@app.route("/api/admin/users/update", methods=["POST"])
+@login_required
+def api_admin_update_user():
+    user = session.get("user")
+    if not user or user.get("role") != "Admin":
+        return jsonify({"error": "Chỉ Quản trị viên mới có quyền cập nhật thông tin tài khoản"}), 403
+
+    payload = request.get_json(silent=True) or {}
+    username = (payload.get("username") or "").strip()
+    full_name = (payload.get("full_name") or "").strip()
+    phone = (payload.get("phone") or "").strip()
+    email = (payload.get("email") or "").strip()
+    role = (payload.get("role") or "Resident").strip()
+    is_active = payload.get("is_active", True)
+    apartment = (payload.get("apartment") or "").strip()
+    shift = (payload.get("shift") or "").strip()
+    new_password = (payload.get("new_password") or "").strip()
+
+    if not username or not full_name:
+        return jsonify({"error": "Vui lòng nhập tên đăng nhập và họ tên"}), 400
+
+    if new_password and len(new_password) < 6:
+        return jsonify({"error": "Mật khẩu mới phải có tối thiểu 6 ký tự"}), 400
+
+    success, msg = database.admin_update_user_info(
+        username=username,
+        full_name=full_name,
+        phone=phone,
+        email=email,
+        role=role,
+        is_active=is_active,
+        apartment=apartment,
+        shift=shift,
+        new_password=new_password
+    )
+    if success:
+        return jsonify({"success": True, "message": msg})
+    return jsonify({"error": msg}), 400
+
+
 @app.route("/api/admin/guards/create", methods=["POST"])
 @login_required
 def api_admin_create_guard():
@@ -2208,6 +2515,37 @@ def api_admin_process_transfer_request(request_id):
 
 # ================== BẢO VỆ: BÀN TRỰC, ĐỐI CHIẾU, NGOẠI LỆ, THU PHÍ & BARRIER ==================
 
+@app.route("/api/guard/latest_event", methods=["GET"])
+def api_guard_latest_event():
+    """Lấy sự kiện nhận diện mới nhất để đồng bộ bàn trực và các trang."""
+    with GUARD_EVENT_LOCK:
+        return jsonify(LATEST_GUARD_EVENT)
+
+
+@app.route("/api/guard/camera_mode", methods=["GET", "POST"])
+def api_guard_camera_mode():
+    """Kiểm tra hoặc thay đổi chế độ cổng camera (auto / in / out)."""
+    global CAMERA_GATE_MODE
+    if request.method == "POST":
+        data = request.get_json(silent=True) or {}
+        mode = (data.get("mode") or "auto").lower()
+        if mode in ["auto", "in", "out"]:
+            CAMERA_GATE_MODE = mode
+            return jsonify({"success": True, "mode": CAMERA_GATE_MODE})
+        return jsonify({"error": "Chế độ không hợp lệ (hỗ trợ: auto, in, out)"}), 400
+    return jsonify({"mode": CAMERA_GATE_MODE})
+
+
+@app.route("/api/guard/initial_plate", methods=["GET"])
+def api_guard_initial_plate():
+    """Lấy biển số mới nhất từ sự kiện hoặc CSDL để khởi tạo bàn trực."""
+    with GUARD_EVENT_LOCK:
+        if LATEST_GUARD_EVENT.get("plate_text"):
+            return jsonify({"plate_text": LATEST_GUARD_EVENT["plate_text"]})
+    plate = database.get_latest_session_or_detection()
+    return jsonify({"plate_text": plate})
+
+
 @app.route("/api/guard/verification/<plate>", methods=["GET"])
 @login_required
 def api_guard_get_verification(plate):
@@ -2284,6 +2622,10 @@ def api_guard_collect_fee():
 
     # Thực hiện Check-Out
     tx_res = database.process_parking_transaction(plate_text, "out", camera_source="Guard-Payment-Gate")
+    if isinstance(tx_res, dict) and (tx_res.get("status") == "blacklist_alert" or tx_res.get("is_blacklist")):
+        return jsonify({
+            "error": f"🚨 CẢNH BÁO AN NINH: Biển số {plate_text} thuộc DANH SÁCH ĐEN (Blacklist)! TỪ CHỐI CHECK-OUT & MỞ CỔNG."
+        }), 400
     user = session.get("user")
     cashier = user.get("full_name") if user else "Thu ngân bãi xe"
 
@@ -2381,6 +2723,9 @@ def api_vehicles():
             d = dict(v)
             if d.get("registration_date"):
                 d["registration_date"] = str(d["registration_date"])
+            if d.get("monthly_ticket_expiry"):
+                d["monthly_ticket_expiry"] = str(d["monthly_ticket_expiry"])
+            d["detection_count"] = int(d.get("detection_count") or 0)
             result.append(d)
         return jsonify(result)
     except Exception as e:
@@ -2414,6 +2759,8 @@ def api_save_vehicle():
         if monthly_ticket_expiry == "":
             monthly_ticket_expiry = None
 
+        parking_slot = (payload.get("parking_slot") or payload.get("vi_tri_do") or "").strip().upper() or None
+
         # Đảm bảo vehicle_type tồn tại trong DB
         if not database.check_vehicle_type_exists(vehicle_type):
             database.add_or_update_vehicle_type(vehicle_type, "Loại xe")
@@ -2435,12 +2782,13 @@ def api_save_vehicle():
             province_code=province_code,
             group_type=group_type,
             monthly_ticket_expiry=monthly_ticket_expiry,
+            parking_slot=parking_slot
         )
 
         if not success:
             return jsonify({"error": "Không thể lưu vào database"}), 500
 
-        return jsonify({"success": True, "plate_text": plate_text})
+        return jsonify({"success": True, "plate_text": plate_text, "parking_slot": parking_slot})
     except Exception as e:
         print(f"[api_save_vehicle] Lỗi: {e}", flush=True)
         return jsonify({"error": str(e)}), 500
@@ -2454,6 +2802,7 @@ def api_delete_vehicle(plate_text):
         return jsonify({"error": "Chỉ Quản trị viên (Admin) mới có quyền xóa xe"}), 403
 
     try:
+        database.release_parking_slot(bien_so_xe=plate_text)
         database.delete_vehicle(plate_text)
         return jsonify({"success": True})
     except Exception as e:
@@ -2558,8 +2907,13 @@ def api_parking_checkout_manual(session_id):
     try:
         success = database.checkout_session_manual(session_id)
         if success:
-            return jsonify({"success": True})
-        return jsonify({"error": "Không thể check-out phiên đỗ này."}), 400
+            with GUARD_EVENT_LOCK:
+                LATEST_GUARD_EVENT["event_id"] += 1
+                LATEST_GUARD_EVENT["status"] = "check_out_success"
+                LATEST_GUARD_EVENT["timestamp"] = datetime.now().strftime("%H:%M:%S %d/%m/%Y")
+                LATEST_GUARD_EVENT["message"] = f"Check-Out thủ công phiên #{session_id} thành công"
+            return jsonify({"success": True, "message": f"Check-Out phiên #{session_id} thành công!"})
+        return jsonify({"error": "Không thể check-out phiên đỗ này (phiên đã kết thúc hoặc không tồn tại)."}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

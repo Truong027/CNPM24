@@ -18,15 +18,29 @@ from flask import (
     Flask, render_template, request, jsonify, session, redirect, url_for, Response
 )
 
-# Khởi tạo ứng dụng Flask trỏ tới thư mục templates và static của BienSoXe/fe
+# Khởi tạo ứng dụng Flask trỏ tới thư mục templates và static của ongthanquoctruong_24CT2_cnpm/fe hoặc BienSoXe/fe
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FE_TEMPLATES = os.path.join(BASE_DIR, "BienSoXe", "fe", "templates")
+FE_TEMPLATES_NEW = os.path.join(BASE_DIR, "ongthanquoctruong_24CT2_cnpm", "fe", "templates")
+FE_TEMPLATES_OLD = os.path.join(BASE_DIR, "BienSoXe", "fe", "templates")
 LOCAL_TEMPLATES = os.path.join(BASE_DIR, "templates")
-TEMPLATE_DIR = FE_TEMPLATES if os.path.exists(FE_TEMPLATES) else LOCAL_TEMPLATES
 
-FE_STATIC = os.path.join(BASE_DIR, "BienSoXe", "fe", "static")
+if os.path.exists(FE_TEMPLATES_NEW):
+    TEMPLATE_DIR = FE_TEMPLATES_NEW
+elif os.path.exists(FE_TEMPLATES_OLD):
+    TEMPLATE_DIR = FE_TEMPLATES_OLD
+else:
+    TEMPLATE_DIR = LOCAL_TEMPLATES
+
+FE_STATIC_NEW = os.path.join(BASE_DIR, "ongthanquoctruong_24CT2_cnpm", "fe", "static")
+FE_STATIC_OLD = os.path.join(BASE_DIR, "BienSoXe", "fe", "static")
 LOCAL_STATIC = os.path.join(BASE_DIR, "static")
-STATIC_DIR = FE_STATIC if os.path.exists(FE_STATIC) else LOCAL_STATIC
+
+if os.path.exists(FE_STATIC_NEW):
+    STATIC_DIR = FE_STATIC_NEW
+elif os.path.exists(FE_STATIC_OLD):
+    STATIC_DIR = FE_STATIC_OLD
+else:
+    STATIC_DIR = LOCAL_STATIC
 
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 app.config["SECRET_KEY"] = os.getenv("APP_SECRET_KEY", "cnpm24-dau-truong-secret-2026")

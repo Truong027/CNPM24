@@ -621,11 +621,482 @@
             .grid-2, .verify-card-grid { grid-template-columns: 1fr; }
         }
 
-        @media (max-width: 768px) {
-            .app-shell { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; }
-            .main-content { padding: 1.25rem; }
-            .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+        .cinema-modal-content {
+            max-width: 1260px !important;
+            width: 95% !important;
+            max-height: 92vh;
+            display: flex;
+            flex-direction: column;
+            padding: 0 !important;
+            overflow: hidden;
+            background: #0b0f19 !important;
+            color: #f1f5f9 !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .cinema-modal-header {
+            padding: 1.25rem 1.5rem;
+            background: #111827;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .cinema-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.15);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 0.35rem;
+        }
+
+        .cinema-modal-body {
+            padding: 1.25rem 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .cinema-control-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .cinema-floor-tabs {
+            display: inline-flex;
+            background: #1e293b;
+            padding: 4px;
+            border-radius: 8px;
+            gap: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .cinema-floor-btn {
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .cinema-floor-btn:hover {
+            color: #f8fafc;
+        }
+
+        .cinema-floor-btn.active {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+        }
+
+        .floor-pill-count {
+            background: rgba(0, 0, 0, 0.25);
+            font-size: 0.72rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .cinema-screen-container {
+            text-align: center;
+            margin: 0.5rem auto 1.5rem auto;
+            max-width: 650px;
+        }
+
+        .cinema-screen-curve {
+            position: relative;
+            background: linear-gradient(180deg, rgba(59, 130, 246, 0.25) 0%, rgba(30, 41, 59, 0.4) 100%);
+            border-top: 3px solid #3b82f6;
+            border-radius: 120px 120px 0 0;
+            padding: 0.85rem 1rem 0.65rem 1rem;
+            box-shadow: 0 -8px 25px rgba(59, 130, 246, 0.2);
+            overflow: hidden;
+        }
+
+        .screen-text {
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #93c5fd;
+            text-transform: uppercase;
+        }
+
+        .cinema-screen-direction {
+            font-size: 0.72rem;
+            color: #64748b;
+            letter-spacing: 1.5px;
+            margin-top: 0.35rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .cinema-legend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            padding: 0.75rem 1rem;
+            background: #111827;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 1.5rem;
+            font-size: 0.78rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: #cbd5e1;
+        }
+
+        .legend-seat {
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+        }
+
+        .legend-seat.seat-available {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1.5px solid #10b981;
+        }
+
+        .legend-seat.seat-occupied {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1.5px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .legend-seat.seat-selected {
+            background: #2563eb;
+            border: 1.5px solid #93c5fd;
+            color: #fff;
+        }
+
+        .legend-seat.seat-vip {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1.5px solid #f59e0b;
+            color: #f59e0b;
+        }
+
+        .legend-seat.seat-mine {
+            background: rgba(6, 182, 212, 0.2);
+            border: 1.5px solid #06b6d4;
+            color: #06b6d4;
+        }
+
+        .cinema-driving-lane {
+            background: #030712;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            padding: 0.45rem;
+            margin: 1rem 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        /* Unified Cinema Slots Board Wrapper */
+        .cinema-slots-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: visible;
+            padding: 1.25rem 1rem 1.75rem 1rem;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: #3b82f6 #1e293b;
+        }
+
+        .cinema-slots-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .cinema-slots-wrapper::-webkit-scrollbar-track {
+            background: #0f172a;
+            border-radius: 4px;
+        }
+
+        .cinema-slots-wrapper::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+            border: 2px solid #0f172a;
+        }
+
+        .cinema-slots-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+
+        /* Inner canvas ensuring min-width and no clipping at start */
+        .cinema-board-canvas {
+            min-width: max-content;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 auto;
+            padding: 0 0.75rem;
+            box-sizing: border-box;
+        }
+
+        /* Row Container - Khoảng cách thoáng đãng, không cấn các nút */
+        .cinema-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            margin-bottom: 0.9rem;
+            width: max-content;
+        }
+
+        .cinema-row-label {
+            width: 50px;
+            height: 50px;
+            background: #1e293b;
+            border-radius: 10px;
+            border: 1.5px solid rgba(255, 255, 255, 0.14);
+            color: #94a3b8;
+            font-weight: 800;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            text-align: center;
+            line-height: 1.15;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            user-select: none;
+        }
+
+        .cinema-row-stalls {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            justify-content: flex-start; /* Luôn bắt đầu từ ô 01, không bị căn giữa gây tọa độ âm che mất ô 01 */
+            flex-wrap: nowrap;
+            overflow: visible; /* Không cuộn từng hàng riêng lẻ làm che lấp ô đỗ */
+            padding: 4px 0;
+        }
+
+        .cinema-aisle-divider {
+            width: 26px;
+            height: 54px;
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cinema-aisle-divider::after {
+            content: '';
+            width: 2px;
+            height: 85%;
+            background: repeating-linear-gradient(to bottom, #475569 0, #475569 4px, transparent 4px, transparent 8px);
+            opacity: 0.6;
+        }
+
+        /* Individual Parking Seat Stall - Kích thước chuẩn đẹp, thoáng đãng không cấn nút */
+        .parking-seat-slot {
+            width: 58px;
+            height: 74px;
+            background: #131b2e;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 3.5px solid #475569;
+            border-right: 3.5px solid #475569;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 3px 5px 3px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            position: relative;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        .slot-car-icon {
+            font-size: 1.1rem;
+            color: #64748b;
+            transition: color 0.15s ease;
+            margin-top: 1px;
+        }
+
+        .slot-code {
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            color: #f1f5f9;
+            line-height: 1;
+        }
+
+        .slot-plate-tag {
+            font-size: 0.58rem;
+            font-weight: 700;
+            padding: 1.5px 3px;
+            border-radius: 4px;
+            max-width: 52px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .parking-seat-slot.seat-available {
+            border-left-color: #10b981;
+            border-right-color: #10b981;
+            background: rgba(16, 185, 129, 0.08);
+        }
+
+        .parking-seat-slot.seat-available:hover {
+            transform: translateY(-4px) scale(1.04);
+            border-color: #34d399;
+            background: rgba(16, 185, 129, 0.2);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .parking-seat-slot.seat-available:hover .slot-car-icon {
+            color: #10b981;
+        }
+
+        .parking-seat-slot.seat-occupied {
+            border-left-color: #ef4444;
+            border-right-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            cursor: not-allowed;
+            opacity: 0.85;
+        }
+
+        .parking-seat-slot.seat-occupied .slot-car-icon {
+            color: #ef4444;
+        }
+
+        .parking-seat-slot.seat-occupied .slot-plate-tag {
+            background: rgba(239, 68, 68, 0.25);
+            color: #fca5a5;
+        }
+
+        .parking-seat-slot.seat-vip.seat-available {
+            border-left-color: #f59e0b;
+            border-right-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.09);
+        }
+
+        .parking-seat-slot.seat-vip.seat-available:hover {
+            border-color: #fbbf24;
+            background: rgba(245, 158, 11, 0.25);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .parking-seat-slot.seat-vip.seat-available .slot-car-icon {
+            color: #f59e0b;
+        }
+
+        .parking-seat-slot.seat-mine {
+            border-left-color: #06b6d4;
+            border-right-color: #06b6d4;
+            background: rgba(6, 182, 212, 0.15);
+        }
+
+        .parking-seat-slot.seat-mine .slot-car-icon {
+            color: #06b6d4;
+        }
+
+        .parking-seat-slot.seat-mine .slot-plate-tag {
+            background: #0891b2;
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        .parking-seat-slot.seat-selected {
+            border-color: #60a5fa !important;
+            border-left-color: #3b82f6 !important;
+            border-right-color: #3b82f6 !important;
+            background: #1e40af !important;
+            transform: translateY(-5px) scale(1.06);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.45);
+        }
+
+        .parking-seat-slot.seat-selected .slot-car-icon {
+            color: #ffffff !important;
+        }
+
+        .parking-seat-slot.seat-selected .slot-code {
+            color: #ffffff !important;
+        }
+
+        .cinema-bottom-dock {
+            padding: 1rem 1.5rem;
+            background: #111827;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dock-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dock-slot-badge {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #93c5fd;
+            font-size: 1rem;
+            font-weight: 800;
+            padding: 0.45rem 0.85rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .dock-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .dock-sub {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            margin-top: 2px;
         }
     </style>
 </head>
@@ -727,7 +1198,7 @@
                         <div class="stat-card-sub">Tổng số lần phát hiện từ camera</div>
                     </div>
 
-                    <div class="card">
+                    <div class="card" onclick="switchNav('vehicles-page')" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" title="Bấm để xem chi tiết trong Quản Lý Danh Mục Xe">
                         <div class="stat-card-header">
                             <span>Biển Số Độc Lập</span>
                             <i class="fa-solid fa-circle-check" style="color: var(--success);"></i>
@@ -783,12 +1254,21 @@
                         <h1 class="page-title">Bàn Trực Bảo Vệ & Điều Khiển Cổng</h1>
                         <p class="page-desc">Giám sát AI Live, Đối chiếu lượt vào/ra, Xử lý ngoại lệ, Thu phí vé lượt & Điều khiển Barrier.</p>
                     </div>
-                    <div style="display: flex; gap: 0.5rem;">
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 0.35rem; background: var(--card); padding: 0.25rem 0.5rem; border: 1px solid var(--border); border-radius: var(--radius);">
+                            <span style="font-size: 0.8rem; font-weight: 600; color: var(--muted-foreground);"><i class="fa-solid fa-video"></i> Cổng Webcam:</span>
+                            <button class="btn btn-sm btn-primary gate-mode-btn" data-mode="auto" onclick="setGuardCameraMode('auto')">⚡ Tự Động</button>
+                            <button class="btn btn-sm btn-outline gate-mode-btn" data-mode="in" onclick="setGuardCameraMode('in')">📥 Cổng Vào</button>
+                            <button class="btn btn-sm btn-outline gate-mode-btn" data-mode="out" onclick="setGuardCameraMode('out')">📤 Cổng Ra</button>
+                        </div>
                         <button class="btn btn-outline" onclick="openExceptionModal()">
-                            <i class="fa-solid fa-pen-to-square"></i> Nhập Biển Thủ Công (Ngoại Lệ)
+                            <i class="fa-solid fa-pen-to-square"></i> Nhập Biển Thủ Công
                         </button>
                     </div>
                 </div>
+
+                <!-- LIVE ALERT BANNER KHI AI QUÉT BIỂN SỐ -->
+                <div id="guardLiveAlertBanner" style="display:none; margin-bottom: 1.25rem; padding: 0.75rem 1rem; border-radius: var(--radius); border: 1px solid transparent; align-items: center; justify-content: space-between;"></div>
 
                 <!-- 2.1 LIVE STREAM AI DUAL GATES -->
                 <div class="grid-2">
@@ -861,6 +1341,21 @@
                     </div>
 
                     <div id="verifyResultContainer" style="margin-top: 1rem;">
+                        <!-- CẢNH BÁO AN NINH BLACKLIST KHI ĐỐI CHIẾU XE -->
+                        <div id="guardBlacklistAlert" style="display: none; margin-bottom: 1rem; padding: 0.9rem 1.25rem; background: #fef2f2; border: 2px solid #ef4444; border-radius: 8px; color: #991b1b; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);">
+                            <div style="display: flex; align-items: center; gap: 0.85rem;">
+                                <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: #dc2626;"></i>
+                                <div>
+                                    <div style="font-size: 1.05rem; font-weight: 800; color: #b91c1c; text-transform: uppercase;">
+                                        🚨 CẢNH BÁO AN NINH: XE NẰM TRONG DANH SÁCH ĐEN (BLACKLIST)!
+                                    </div>
+                                    <div style="font-size: 0.875rem; color: #7f1d1d; margin-top: 3px;">
+                                        Phương tiện này thuộc diện vi phạm / cảnh báo đặc biệt. <strong>TỪ CHỐI CHO XE QUA CỔNG</strong>. Vui lòng giữ xe và báo cáo ngay Ban Quản Lý!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="verify-card-grid">
                             <!-- Bên Trái: Thông tin lúc vào -->
                             <div class="verify-side">
@@ -870,19 +1365,19 @@
                                 <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.875rem;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <span style="color: var(--muted-foreground);">Biển số nhận diện:</span>
-                                        <span class="plate-badge" id="vInPlate">30A-123.45</span>
+                                        <span class="plate-badge" id="vInPlate">---</span>
                                     </div>
                                     <div style="display: flex; justify-content: space-between;">
                                         <span style="color: var(--muted-foreground);">Thời gian vào:</span>
-                                        <strong id="vInTime">08:15:30 28/08/2026</strong>
+                                        <strong id="vInTime">---</strong>
                                     </div>
                                     <div style="display: flex; justify-content: space-between;">
                                         <span style="color: var(--muted-foreground);">Camera cổng vào:</span>
-                                        <span id="vInCam">Cổng Vào #1</span>
+                                        <span id="vInCam">---</span>
                                     </div>
                                     <div style="display: flex; justify-content: space-between;">
                                         <span style="color: var(--muted-foreground);">Loại vé đăng ký:</span>
-                                        <span class="badge badge-success" id="vTicketBadge">Vé Tháng Cư Dân</span>
+                                        <span class="badge badge-neutral" id="vTicketBadge">---</span>
                                     </div>
                                 </div>
                             </div>
@@ -895,19 +1390,19 @@
                                 <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.875rem;">
                                     <div style="display: flex; justify-content: space-between;">
                                         <span style="color: var(--muted-foreground);">Chủ xe / Căn hộ:</span>
-                                        <strong id="vOwnerApartment">Lê Văn Cư Dân (A-1205)</strong>
+                                        <strong id="vOwnerApartment">---</strong>
                                     </div>
                                     <div style="display: flex; justify-content: space-between;">
                                         <span style="color: var(--muted-foreground);">Loại & Màu xe:</span>
-                                        <span id="vTypeColor">Ô tô con - Màu Đen</span>
+                                        <span id="vTypeColor">---</span>
                                     </div>
                                     <div style="display: flex; justify-content: space-between;">
                                         <span style="color: var(--muted-foreground);">Thời lượng gửi:</span>
-                                        <strong id="vDuration">1 giờ 45 phút</strong>
+                                        <strong id="vDuration">---</strong>
                                     </div>
                                     <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.4rem;">
                                         <span style="font-weight: 700; font-size: 1rem;">Phí phải thu:</span>
-                                        <span style="font-size: 1.25rem; font-weight: 800; color: #10b981;" id="vFeeDisplay">0 VNĐ (Miễn phí)</span>
+                                        <span style="font-size: 1.25rem; font-weight: 800; color: #10b981;" id="vFeeDisplay">0 VNĐ</span>
                                     </div>
                                 </div>
                             </div>
@@ -983,19 +1478,71 @@
                 <div class="page-header">
                     <div>
                         <h1 class="page-title">Quản Lý Danh Mục Phương Tiện</h1>
-                        <p class="page-desc">Danh sách tất cả phương tiện, chủ sở hữu, phân nhóm Whitelist / Blacklist và hạn vé tháng.</p>
+                        <p class="page-desc">Danh sách tất cả phương tiện, chủ sở hữu, phân nhóm Whitelist / Blacklist, hạn vé tháng và số lượng quét.</p>
                     </div>
-                    <button class="btn btn-primary" id="addVehicleBtn">
-                        <i class="fa-solid fa-plus"></i> Thêm xe mới
-                    </button>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-outline" id="btnAdminViewCinemaMap" onclick="openAdminCinemaMap()">
+                            <i class="fa-solid fa-map-location-dot" style="color: #2563eb;"></i> Sơ Đồ Bãi Xe (Cinema Map)
+                        </button>
+                        <button class="btn btn-primary" id="addVehicleBtn">
+                            <i class="fa-solid fa-plus"></i> Thêm xe mới
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Thống Kê Nhanh Danh Mục Xe & Lượt Quét AI -->
+                <div class="grid-4" style="margin-bottom: 1.25rem;">
+                    <div class="card" style="border-left: 4px solid var(--success);">
+                        <div class="stat-card-header">
+                            <span style="font-weight: 600;">Biển Số Độc Lập</span>
+                            <i class="fa-solid fa-circle-check" style="color: var(--success); font-size: 1.25rem;"></i>
+                        </div>
+                        <div class="stat-card-value" id="vehScannedPlatesCount">0</div>
+                        <div class="stat-card-sub">Phương tiện khác nhau đã quét</div>
+                    </div>
+
+                    <div class="card" style="border-left: 4px solid #2563eb;">
+                        <div class="stat-card-header">
+                            <span style="font-weight: 600;">Tổng Lượt Quét AI</span>
+                            <i class="fa-solid fa-expand" style="color: #2563eb; font-size: 1.25rem;"></i>
+                        </div>
+                        <div class="stat-card-value" id="vehTotalScansCount">0</div>
+                        <div class="stat-card-sub">Tổng số lần phát hiện từ camera</div>
+                    </div>
+
+                    <div class="card" style="border-left: 4px solid var(--warning);">
+                        <div class="stat-card-header">
+                            <span style="font-weight: 600;">Phương Tiện Quản Lý</span>
+                            <i class="fa-solid fa-car" style="color: var(--warning); font-size: 1.25rem;"></i>
+                        </div>
+                        <div class="stat-card-value" id="vehTotalVehiclesCount">0</div>
+                        <div class="stat-card-sub">Xe đã đăng ký trong cơ sở dữ liệu</div>
+                    </div>
+
+                    <div class="card" style="border-left: 4px solid #8b5cf6;">
+                        <div class="stat-card-header">
+                            <span style="font-weight: 600;">Xe Đã Gán Cư Dân</span>
+                            <i class="fa-solid fa-user-check" style="color: #8b5cf6; font-size: 1.25rem;"></i>
+                        </div>
+                        <div class="stat-card-value" id="vehRegisteredCount">0</div>
+                        <div class="stat-card-sub">Phương tiện có chủ sở hữu chính thức</div>
+                    </div>
                 </div>
 
                 <div class="card">
-                    <div class="search-bar-row">
-                        <input id="vehicleSearch" class="form-input" type="text" placeholder="Tìm kiếm theo biển số, tên chủ xe hoặc loại xe...">
-                        <button class="btn btn-outline" id="reloadVehiclesBtn">
-                            <i class="fa-solid fa-rotate"></i> Tải lại
-                        </button>
+                    <div class="search-bar-row" style="flex-wrap: wrap; gap: 0.75rem; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 0.5rem; flex: 1; min-width: 260px;">
+                            <input id="vehicleSearch" class="form-input" type="text" placeholder="Tìm kiếm theo biển số, tên chủ xe hoặc loại xe...">
+                            <button class="btn btn-outline" id="reloadVehiclesBtn">
+                                <i class="fa-solid fa-rotate"></i> Tải lại
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;" id="vehicleFilterTabs">
+                            <button class="btn btn-sm btn-primary veh-tab-btn active" data-tab="all">Tất cả (<span id="vehTabAll">0</span>)</button>
+                            <button class="btn btn-sm btn-outline veh-tab-btn" data-tab="scanned" style="color: var(--success);"><i class="fa-solid fa-circle-check"></i> Đã quét AI (<span id="vehTabScanned">0</span>)</button>
+                            <button class="btn btn-sm btn-outline veh-tab-btn" data-tab="registered"><i class="fa-solid fa-user-check"></i> Có chủ (<span id="vehTabRegistered">0</span>)</button>
+                            <button class="btn btn-sm btn-outline veh-tab-btn" data-tab="unassigned"><i class="fa-solid fa-car-side"></i> Chưa gán (<span id="vehTabUnassigned">0</span>)</button>
+                        </div>
                     </div>
 
                     <div class="table-wrap">
@@ -1003,9 +1550,13 @@
                             <thead>
                                 <tr>
                                     <th>Biển Số</th>
+                                    <th style="cursor: pointer; user-select: none;" onclick="toggleVehicleScanSort()" title="Bấm để sắp xếp theo số lượng quét">
+                                        Số Lượng Quét <i id="vehScanSortIcon" class="fa-solid fa-sort-down" style="color: #2563eb; margin-left: 4px;"></i>
+                                    </th>
                                     <th>Chủ Xe</th>
                                     <th>Loại Xe</th>
                                     <th>Màu Sắc</th>
+                                    <th>Vị Trí Đỗ</th>
                                     <th>Phân Nhóm</th>
                                     <th>Hạn Vé Tháng</th>
                                     <th>Trạng Thái</th>
@@ -1013,7 +1564,7 @@
                                 </tr>
                             </thead>
                             <tbody id="vehicleTableBody">
-                                <tr><td colspan="8" style="text-align:center; color: var(--muted-foreground); padding: 2rem;">Đang tải dữ liệu...</td></tr>
+                                <tr><td colspan="10" style="text-align:center; color: var(--muted-foreground); padding: 2rem;">Đang tải dữ liệu...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -1324,6 +1875,12 @@
                         <label class="form-label">Hạn vé tháng</label>
                         <input class="form-input" name="monthly_ticket_expiry" type="date">
                     </div>
+                    <div class="form-item" style="grid-column: span 2;">
+                        <label class="form-label">Vị trí đỗ ô tô (Bãi xe chung cư - Sơ đồ Cinema)</label>
+                        <select class="form-select" name="parking_slot" id="vehParkingSlotSelect">
+                            <option value="">-- Chưa gán vị trí đỗ --</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" id="cancelVehicleModal">Hủy</button>
@@ -1469,6 +2026,91 @@
                     <button type="button" class="btn btn-secondary" onclick="closeCreateResidentModal()">Hủy</button>
                     <button type="submit" class="btn btn-primary" id="btnSaveResident" style="background: #2563eb; border-color: #2563eb;">
                         <i class="fa-solid fa-check"></i> Cấp tài khoản
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: EDIT USER ACCOUNT (BY ADMIN) -->
+    <div class="modal" id="editUserModal">
+        <div class="modal-card" style="max-width: 520px;">
+            <div class="page-header" style="margin-bottom: 0;">
+                <div>
+                    <h2 style="font-size: 1.25rem; font-weight: 700; color: #2563eb;">
+                        <i class="fa-solid fa-user-pen"></i> Chỉnh Sửa Thông Tin Tài Khoản
+                    </h2>
+                    <p class="page-desc">Cập nhật thông tin cá nhân, vai trò, căn hộ / ca trực hoặc trạng thái tài khoản</p>
+                </div>
+                <button class="btn btn-outline btn-sm" type="button" onclick="closeEditUserModal()" style="border:none;">✕</button>
+            </div>
+            <form id="editUserForm" style="margin-top: 1rem;">
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label class="form-label">Tên đăng nhập</label>
+                        <input class="form-input" id="editUsername" readonly style="background: var(--bg-muted, #f1f5f9); cursor: not-allowed; font-weight: 600;">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">Vai trò hệ thống</label>
+                        <select class="form-select" id="editRole" onchange="onEditRoleChange()">
+                            <option value="Resident">Cư dân (Resident)</option>
+                            <option value="Operator">Bảo vệ / Trực cổng (Operator)</option>
+                            <option value="Admin">Quản trị viên (Admin)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-item" style="margin-top: 0.75rem;">
+                    <label class="form-label">Họ và tên <span style="color:red">*</span></label>
+                    <input class="form-input" id="editFullName" required placeholder="Nguyễn Văn A">
+                </div>
+
+                <div class="form-grid" style="margin-top: 0.75rem;">
+                    <div class="form-item">
+                        <label class="form-label">Số điện thoại</label>
+                        <input class="form-input" id="editPhone" placeholder="0901234567">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">Email</label>
+                        <input class="form-input" type="email" id="editEmail" placeholder="user@example.com">
+                    </div>
+                </div>
+
+                <!-- Căn hộ (cho Cư dân) -->
+                <div class="form-item" id="editApartmentGroup" style="margin-top: 0.75rem;">
+                    <label class="form-label">Căn hộ / Số phòng</label>
+                    <input class="form-input" id="editApartment" placeholder="Ví dụ: A-1205 hoặc P.1204 - Tòa A">
+                </div>
+
+                <!-- Ca trực (cho Bảo vệ) -->
+                <div class="form-item" id="editShiftGroup" style="margin-top: 0.75rem; display: none;">
+                    <label class="form-label">Ca trực</label>
+                    <select class="form-select" id="editShift">
+                        <option value="Ca Sáng (06:00 - 14:00)">Ca Sáng (06:00 - 14:00)</option>
+                        <option value="Ca Chiều (14:00 - 22:00)">Ca Chiều (14:00 - 22:00)</option>
+                        <option value="Ca Đêm (22:00 - 06:00)">Ca Đêm (22:00 - 06:00)</option>
+                        <option value="Toàn thời gian (24/7)">Toàn thời gian (24/7)</option>
+                    </select>
+                </div>
+
+                <div class="form-grid" style="margin-top: 0.75rem;">
+                    <div class="form-item">
+                        <label class="form-label">Trạng thái tài khoản</label>
+                        <select class="form-select" id="editIsActive">
+                            <option value="1">Hoạt động (Bình thường)</option>
+                            <option value="0">Tạm khóa (Không cho đăng nhập)</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">Đặt mật khẩu mới (tùy chọn)</label>
+                        <input class="form-input" type="password" id="editNewPassword" placeholder="Để trống nếu không đổi">
+                    </div>
+                </div>
+
+                <div class="modal-actions" style="margin-top: 1.25rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditUserModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="btnSaveEditUser" style="background: #2563eb; border-color: #2563eb;">
+                        <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
                     </button>
                 </div>
             </form>
@@ -1636,6 +2278,109 @@
         </div>
     </div>
 
+    <!-- MODAL 8: CINEMA SEAT STYLE PARKING MAP (ADMIN / GUARD) -->
+    <div class="modal" id="adminCinemaModal" style="z-index: 9999;">
+        <div class="modal-card cinema-modal-content">
+            <div class="modal-header cinema-modal-header">
+                <div>
+                    <div class="cinema-header-badge"><i class="fa-solid fa-film"></i> CINEMA SEAT STYLE PARKING</div>
+                    <h3 class="modal-title" style="font-size: 1.35rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; color: #f8fafc;">
+                        <i class="fa-solid fa-square-parking" style="color: #3b82f6;"></i> Sơ Đồ Bãi Đỗ Xe Ô Tô Chung Cư
+                    </h3>
+                    <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 2px;">
+                        Mô phỏng 2 tầng hầm chung cư với 100 vị trí đỗ ô tô con theo phong cách đặt ghế xem phim trực quan.
+                    </p>
+                </div>
+                <button class="btn btn-outline btn-sm" type="button" onclick="closeAdminCinemaModal()" style="border: none; font-size: 1.35rem; color: #94a3b8; cursor: pointer;">&times;</button>
+            </div>
+
+            <div class="cinema-modal-body">
+                <!-- Floor tabs & refresh -->
+                <div class="cinema-control-bar">
+                    <div class="cinema-floor-tabs">
+                        <button type="button" class="cinema-floor-btn active" id="btnAdminFloorB1" onclick="switchAdminCinemaFloor('Ham_B1')">
+                            <i class="fa-solid fa-building"></i> Tầng Hầm B1
+                            <span class="floor-pill-count" id="countAdminB1">Đang tải...</span>
+                        </button>
+                        <button type="button" class="cinema-floor-btn" id="btnAdminFloorB2" onclick="switchAdminCinemaFloor('Ham_B2')">
+                            <i class="fa-solid fa-building"></i> Tầng Hầm B2
+                            <span class="floor-pill-count" id="countAdminB2">Đang tải...</span>
+                        </button>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="loadAdminParkingMap(true)">
+                            <i class="fa-solid fa-rotate"></i> Làm mới sơ đồ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- THÔNG BÁO TRỰC QUAN TRÊN GIAO DIỆN ADMIN (Không dùng notice / browser alert) -->
+                <div class="cinema-alert-banner banner-info" id="adminCinemaAlertBanner" style="margin: 0.85rem 1.5rem 0.25rem 1.5rem; padding: 0.85rem 1.25rem; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-size: 0.92rem; background: rgba(30, 58, 138, 0.35); border: 1.5px solid rgba(59, 130, 246, 0.6); color: #93c5fd;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fa-solid fa-circle-info" id="adminCinemaAlertIcon" style="font-size: 1.35rem; color: #60a5fa;"></i>
+                        <div id="adminCinemaAlertText">
+                            <strong>Trạng thái:</strong> Bấm vào một ô bất kỳ để kiểm tra thông tin xe đỗ, căn hộ và chủ xe.
+                        </div>
+                    </div>
+                    <button type="button" onclick="document.getElementById('adminCinemaAlertBanner').style.display='none'" style="background: transparent; border: none; color: currentColor; opacity: 0.7; cursor: pointer; font-size: 1.3rem;">&times;</button>
+                </div>
+
+                <!-- Entrance Ramp Indicator -->
+                <div class="cinema-screen-container">
+                    <div class="cinema-screen-curve">
+                        <div class="screen-text">
+                            <i class="fa-solid fa-car"></i> CỔNG VÀO BÃI ĐỖ XE • RAMP DỐC TẦNG HẦM <i class="fa-solid fa-car"></i>
+                        </div>
+                    </div>
+                    <div class="cinema-screen-direction">
+                        <i class="fa-solid fa-chevron-down"></i> HƯỚNG XE LƯU THÔNG VÀO CÁC DÃY Ô ĐỖ <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <!-- Legend -->
+                <div class="cinema-legend">
+                    <div class="legend-item">
+                        <div class="legend-seat seat-available"></div>
+                        <span>Chỗ trống (Sẵn sàng)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-seat seat-occupied"><i class="fa-solid fa-car"></i></div>
+                        <span>Đã có xe đăng ký</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-seat seat-vip"><i class="fa-solid fa-crown"></i></div>
+                        <span>VIP (Gần thang máy)</span>
+                    </div>
+                </div>
+
+                <!-- Slots grid -->
+                <div class="cinema-slots-wrapper" id="adminCinemaSlotsContainer">
+                    <div style="text-align: center; padding: 2.5rem; color: #94a3b8;">
+                        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                        <p style="margin-top: 0.75rem;">Đang tải dữ liệu bãi đỗ xe...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Dock / Details -->
+            <div class="cinema-bottom-dock" id="adminCinemaBottomDock">
+                <div class="dock-info">
+                    <div class="dock-slot-badge" id="adminDockSlotBadge">
+                        <i class="fa-solid fa-square-parking"></i> <span id="adminDockSlotCode">CHỌN Ô ĐỖ</span>
+                    </div>
+                    <div class="dock-desc">
+                        <div class="dock-title" id="adminDockSlotTitle">Bấm vào một ô đỗ trên sơ đồ để xem thông tin chi tiết</div>
+                        <div class="dock-sub" id="adminDockSlotSub">Bao gồm biển số xe đăng ký, tên chủ xe và căn hộ</div>
+                    </div>
+                </div>
+                <div class="dock-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAdminCinemaModal()">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== FRONTEND JAVASCRIPT ==================== -->
     <script>
         const state = {
@@ -1680,7 +2425,7 @@
             if (targetId === 'reports-page') loadReports();
             if (targetId === 'users-page') loadUsersList();
             if (targetId === 'transfer-requests-page') loadTransferRequests();
-            if (targetId === 'guard-station-page') lookupVehicleForGuard('30A-123.45');
+            if (targetId === 'guard-station-page') initGuardStationPage();
         }
 
         // ================== DATA LOADERS ==================
@@ -1712,21 +2457,99 @@
             }
         }
 
+        let currentVehFilter = 'all';
+        let vehScanSortOrder = 'desc'; // 'desc', 'asc'
+
         async function loadVehicles() {
             try {
                 const res = await fetch('/api/vehicles');
                 const data = await res.json();
                 state.vehicles = data;
-                renderVehiclesTable(data);
+                updateVehicleStats(data);
+                applyVehicleFilters();
             } catch (err) {
                 console.error("Lỗi xe:", err);
             }
         }
 
+        function updateVehicleStats(vehicles) {
+            const list = vehicles || [];
+            const scannedPlates = list.filter(v => (Number(v.detection_count) || 0) > 0);
+            const totalScannedPlates = scannedPlates.length;
+            const totalScans = list.reduce((acc, v) => acc + (Number(v.detection_count) || 0), 0);
+            const registered = list.filter(v => v.owner_name && v.owner_name !== 'Chưa gán' && v.owner_name !== 'Chua gan');
+            const unassigned = list.filter(v => !v.owner_name || v.owner_name === 'Chưa gán' || v.owner_name === 'Chua gan');
+
+            const scannedEl = document.getElementById('vehScannedPlatesCount');
+            if (scannedEl) scannedEl.textContent = totalScannedPlates.toLocaleString();
+
+            const totalScansEl = document.getElementById('vehTotalScansCount');
+            if (totalScansEl) totalScansEl.textContent = totalScans.toLocaleString();
+
+            const totalVehEl = document.getElementById('vehTotalVehiclesCount');
+            if (totalVehEl) totalVehEl.textContent = list.length.toLocaleString();
+
+            const registeredEl = document.getElementById('vehRegisteredCount');
+            if (registeredEl) registeredEl.textContent = registered.length.toLocaleString();
+
+            const tabAllEl = document.getElementById('vehTabAll');
+            if (tabAllEl) tabAllEl.textContent = list.length;
+            const tabScannedEl = document.getElementById('vehTabScanned');
+            if (tabScannedEl) tabScannedEl.textContent = totalScannedPlates;
+            const tabRegEl = document.getElementById('vehTabRegistered');
+            if (tabRegEl) tabRegEl.textContent = registered.length;
+            const tabUnassignedEl = document.getElementById('vehTabUnassigned');
+            if (tabUnassignedEl) tabUnassignedEl.textContent = unassigned.length;
+        }
+
+        function applyVehicleFilters() {
+            let list = [...(state.vehicles || [])];
+            
+            // Lọc theo Tab
+            if (currentVehFilter === 'scanned') {
+                list = list.filter(v => (Number(v.detection_count) || 0) > 0);
+            } else if (currentVehFilter === 'registered') {
+                list = list.filter(v => v.owner_name && v.owner_name !== 'Chưa gán' && v.owner_name !== 'Chua gan');
+            } else if (currentVehFilter === 'unassigned') {
+                list = list.filter(v => !v.owner_name || v.owner_name === 'Chưa gán' || v.owner_name === 'Chua gan');
+            }
+
+            // Lọc theo Từ khóa tìm kiếm
+            const term = (document.getElementById('vehicleSearch')?.value || '').toLowerCase().trim();
+            if (term) {
+                list = list.filter(v => 
+                    (v.plate_text && v.plate_text.toLowerCase().includes(term)) ||
+                    (v.owner_name && v.owner_name.toLowerCase().includes(term)) ||
+                    (v.vehicle_type && v.vehicle_type.toLowerCase().includes(term)) ||
+                    (v.color && v.color.toLowerCase().includes(term)) ||
+                    (v.province_name && v.province_name.toLowerCase().includes(term))
+                );
+            }
+
+            // Sắp xếp theo Số lượng quét
+            if (vehScanSortOrder === 'desc') {
+                list.sort((a, b) => (Number(b.detection_count) || 0) - (Number(a.detection_count) || 0));
+            } else if (vehScanSortOrder === 'asc') {
+                list.sort((a, b) => (Number(a.detection_count) || 0) - (Number(b.detection_count) || 0));
+            }
+
+            renderVehiclesTable(list);
+        }
+
+        function toggleVehicleScanSort() {
+            vehScanSortOrder = vehScanSortOrder === 'desc' ? 'asc' : 'desc';
+            const icon = document.getElementById('vehScanSortIcon');
+            if (icon) {
+                icon.className = vehScanSortOrder === 'desc' ? 'fa-solid fa-sort-down' : 'fa-solid fa-sort-up';
+                icon.style.color = '#2563eb';
+            }
+            applyVehicleFilters();
+        }
+
         function renderVehiclesTable(list) {
             const tbody = document.getElementById('vehicleTableBody');
             if (!list || list.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: var(--muted-foreground);">Không tìm thấy phương tiện nào</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding: 2rem; color: var(--muted-foreground);">Không tìm thấy phương tiện nào</td></tr>';
                 document.getElementById('vehicleFooter').textContent = 'Hiển thị 0 xe';
                 return;
             }
@@ -1738,12 +2561,27 @@
 
                 let statusBadge = v.status === 'Hoạt động' ? '<span class="badge badge-success">Hoạt động</span>' : '<span class="badge badge-danger">Tạm khóa</span>';
 
+                const scanCount = Number(v.detection_count || 0);
+                let scanBadge = `<span class="badge badge-neutral" style="font-size:0.8rem; padding: 3px 8px; opacity: 0.7;"><i class="fa-solid fa-camera" style="margin-right: 4px;"></i>0 lượt</span>`;
+                if (scanCount >= 20) {
+                    scanBadge = `<span class="badge badge-danger" style="font-size:0.8rem; font-weight:700; padding: 3px 8px;"><i class="fa-solid fa-fire" style="margin-right: 4px;"></i>${scanCount.toLocaleString()} lượt</span>`;
+                } else if (scanCount > 0) {
+                    scanBadge = `<span class="badge badge-primary" style="font-size:0.8rem; font-weight:600; padding: 3px 8px; background: rgba(37,99,235,0.12); color: #2563eb; border: 1px solid rgba(37,99,235,0.25);"><i class="fa-solid fa-camera" style="margin-right: 4px;"></i>${scanCount.toLocaleString()} lượt</span>`;
+                }
+
+                const slotName = v.parking_slot || v.vi_tri_do || '';
+                let slotBadge = slotName 
+                    ? `<span class="badge badge-primary" style="background: rgba(37,99,235,0.1); color: #2563eb; border: 1px solid rgba(37,99,235,0.25); font-weight: 700;"><i class="fa-solid fa-square-parking" style="margin-right: 4px;"></i>${slotName}</span>` 
+                    : `<span style="color: var(--muted-foreground); font-size: 0.8rem;">Chưa gán</span>`;
+
                 return `
                 <tr>
                     <td><span class="plate-badge">${v.plate_text}</span></td>
+                    <td>${scanBadge}</td>
                     <td><strong>${v.owner_name || 'Chưa gán'}</strong></td>
                     <td>${v.vehicle_type || 'Ô tô con'}</td>
                     <td>${v.color || '---'}</td>
+                    <td>${slotBadge}</td>
                     <td>${grpBadge}</td>
                     <td>${v.monthly_ticket_expiry ? '<strong>' + v.monthly_ticket_expiry + '</strong>' : '<span style="color: var(--muted-foreground);">Chưa đăng ký</span>'}</td>
                     <td>${statusBadge}</td>
@@ -1761,10 +2599,56 @@
                 `;
             }).join('');
 
-            document.getElementById('vehicleFooter').textContent = `Hiển thị ${list.length} phương tiện`;
+            const scannedCount = (state.vehicles || []).filter(v => (Number(v.detection_count) || 0) > 0).length;
+            document.getElementById('vehicleFooter').textContent = `Hiển thị ${list.length}/${(state.vehicles || []).length} phương tiện (${scannedCount} phương tiện khác nhau đã quét từ camera AI)`;
         }
 
         // ================== CRUD PHƯƠNG TIỆN (ADMIN) ==================
+
+        async function loadParkingSlotsForAdminModal(selectedSlotId = '', currentVehiclePlate = '') {
+            const select = document.getElementById('vehParkingSlotSelect');
+            if (!select) return;
+            select.innerHTML = '<option value="">-- Đang tải danh sách ô đỗ... --</option>';
+
+            try {
+                const res = await fetch('/api/parking/map');
+                const data = await res.json();
+                if (!data.success || !data.slots) {
+                    select.innerHTML = '<option value="">-- Không tải được dữ liệu bãi xe --</option>';
+                    return;
+                }
+
+                let html = '<option value="">-- Không gán vị trí đỗ (Trống) --</option>';
+                const floors = { 'Ham_B1': 'Hầm B1 (Tầng 1)', 'Ham_B2': 'Hầm B2 (Tầng 2)' };
+                for (const [floorKey, floorName] of Object.entries(floors)) {
+                    const floorSlots = data.slots.filter(s => s.khu_vuc === floorKey);
+                    if (floorSlots.length > 0) {
+                        html += `<optgroup label="📍 ${floorName}">`;
+                        for (const s of floorSlots) {
+                            const isMine = (currentVehiclePlate && s.bien_so_xe === currentVehiclePlate) || (selectedSlotId === s.ma_cho_do);
+                            const isAvailable = s.trang_thai === 'Trong' || isMine;
+                            
+                            let statusText = '🟢 Trống';
+                            if (isMine) {
+                                statusText = '🔵 Đang gán cho xe này';
+                            } else if (s.trang_thai === 'Da_Do') {
+                                statusText = `🔴 Đã có xe: ${s.bien_so_xe || 'Đang đỗ'}`;
+                            }
+
+                            const optSelected = (selectedSlotId && selectedSlotId === s.ma_cho_do) ? 'selected' : '';
+                            const optDisabled = (!isAvailable && !isMine) ? 'disabled' : '';
+
+                            html += `<option value="${s.ma_cho_do}" ${optSelected} ${optDisabled}>${s.ten_cho_do} (${s.ma_cho_do} - ${s.loai_cho_do}) [${statusText}]</option>`;
+                        }
+                        html += `</optgroup>`;
+                    }
+                }
+                select.innerHTML = html;
+            } catch (err) {
+                console.error("Lỗi tải sơ đồ bãi đỗ:", err);
+                select.innerHTML = '<option value="">-- Lỗi kết nối bãi đỗ --</option>';
+            }
+        }
 
         function openVehicleModal() {
             const form = document.getElementById('vehicleForm');
@@ -1774,6 +2658,8 @@
             form.vehicle_type.value = 'Ô tô con';
             form.status.value = 'Hoạt động';
             form.group_type.value = 'Normal';
+            loadParkingSlotsForAdminModal('');
+
             const m = document.getElementById('vehicleModal');
             if (m) {
                 m.classList.add('open', 'active');
@@ -1820,6 +2706,9 @@
             form.group_type.value = v.group_type || 'Normal';
             form.monthly_ticket_expiry.value = v.monthly_ticket_expiry ? String(v.monthly_ticket_expiry).split('T')[0].split(' ')[0] : '';
 
+            const currentSlot = v.parking_slot || v.vi_tri_do || '';
+            loadParkingSlotsForAdminModal(currentSlot, v.plate_text);
+
             const m = document.getElementById('vehicleModal');
             if (m) {
                 m.classList.add('open', 'active');
@@ -1860,6 +2749,7 @@
                 owner_name: form.owner_name.value.trim(),
                 vehicle_type: form.vehicle_type.value.trim() || 'Ô tô con',
                 color: form.color.value.trim(),
+                parking_slot: form.parking_slot ? form.parking_slot.value.trim().toUpperCase() || null : null,
                 registration_date: form.registration_date.value || null,
                 status: form.status.value,
                 province_code: form.province_code.value.trim(),
@@ -1886,24 +2776,27 @@
             }
         });
 
-        // Tìm kiếm xe
+        // Tìm kiếm & lọc xe
         const vehSearchInput = document.getElementById('vehicleSearch');
         if (vehSearchInput) {
-            vehSearchInput.addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase().trim();
-                if (!term) {
-                    renderVehiclesTable(state.vehicles);
-                    return;
-                }
-                const filtered = state.vehicles.filter(v => 
-                    (v.plate_text && v.plate_text.toLowerCase().includes(term)) ||
-                    (v.owner_name && v.owner_name.toLowerCase().includes(term)) ||
-                    (v.vehicle_type && v.vehicle_type.toLowerCase().includes(term)) ||
-                    (v.color && v.color.toLowerCase().includes(term))
-                );
-                renderVehiclesTable(filtered);
+            vehSearchInput.addEventListener('input', () => {
+                applyVehicleFilters();
             });
         }
+
+        // Tab lọc danh mục xe (Tất cả, Đã quét AI, Có chủ, Chưa gán)
+        document.querySelectorAll('.veh-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.veh-tab-btn').forEach(b => {
+                    b.classList.remove('active', 'btn-primary');
+                    b.classList.add('btn-outline');
+                });
+                btn.classList.add('active', 'btn-primary');
+                btn.classList.remove('btn-outline');
+                currentVehFilter = btn.dataset.tab;
+                applyVehicleFilters();
+            });
+        });
 
         const reloadVehBtn = document.getElementById('reloadVehiclesBtn');
         if (reloadVehBtn) reloadVehBtn.addEventListener('click', loadVehicles);
@@ -1915,10 +2808,24 @@
                 const res = await fetch(url);
                 const data = await res.json();
                 state.sessions = data;
-                renderSessionsTable(data);
+                filterSessionsList();
             } catch (err) {
                 console.error("Lỗi phiên đỗ:", err);
             }
+        }
+
+        function filterSessionsList() {
+            const query = (document.getElementById('sessionSearch')?.value || '').trim().toLowerCase();
+            if (!state.sessions) return;
+            if (!query) {
+                renderSessionsTable(state.sessions);
+                return;
+            }
+            const filtered = state.sessions.filter(s => 
+                (s.plate_text && s.plate_text.toLowerCase().includes(query)) ||
+                (s.owner_name && s.owner_name.toLowerCase().includes(query))
+            );
+            renderSessionsTable(filtered);
         }
 
         function renderSessionsTable(list) {
@@ -1958,6 +2865,90 @@
             }).join('');
 
             document.getElementById('sessionFooter').textContent = `Hiển thị ${list.length} phiên giao dịch`;
+        }
+
+        async function manualCheckout(sessionId) {
+            if (!sessionId) return;
+            if (!confirm(`Xác nhận Check-Out cho phiên đỗ #${sessionId}?`)) return;
+            try {
+                const res = await fetch(`/api/parking/checkout/${sessionId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(data.message || `✅ Đã hoàn tất Check-Out thành công cho phiên #${sessionId}!`);
+                    await loadSessions();
+                    if (typeof loadSummary === 'function') loadSummary();
+                    if (typeof loadVehicles === 'function') loadVehicles();
+                } else {
+                    alert(`⚠️ ${data.error || "Không thể Check-Out phiên đỗ này."}`);
+                }
+            } catch (err) {
+                console.error("Lỗi khi Check-Out:", err);
+                alert("Lỗi kết nối máy chủ khi thực hiện Check-Out.");
+            }
+        }
+
+        // Lắng nghe sự kiện trang Phiên Đỗ & Check-In Thủ Công
+        const sessionSearchInput = document.getElementById('sessionSearch');
+        if (sessionSearchInput) sessionSearchInput.addEventListener('input', filterSessionsList);
+
+        const sessionStatusSelect = document.getElementById('sessionStatusFilter');
+        if (sessionStatusSelect) sessionStatusSelect.addEventListener('change', loadSessions);
+
+        const reloadSessionsBtn = document.getElementById('reloadSessionsBtn');
+        if (reloadSessionsBtn) reloadSessionsBtn.addEventListener('click', loadSessions);
+
+        const addSessionBtn = document.getElementById('addSessionBtn');
+        const checkinModal = document.getElementById('checkinModal');
+        const closeCheckinBtn = document.getElementById('closeCheckinModal');
+        const cancelCheckinBtn = document.getElementById('cancelCheckinModal');
+        const checkinForm = document.getElementById('checkinForm');
+
+        if (addSessionBtn) {
+            addSessionBtn.addEventListener('click', () => {
+                const inp = document.getElementById('checkinPlateInput');
+                if (inp) inp.value = '';
+                if (checkinModal) checkinModal.classList.add('open');
+            });
+        }
+        if (closeCheckinBtn) {
+            closeCheckinBtn.addEventListener('click', () => {
+                if (checkinModal) checkinModal.classList.remove('open');
+            });
+        }
+        if (cancelCheckinBtn) {
+            cancelCheckinBtn.addEventListener('click', () => {
+                if (checkinModal) checkinModal.classList.remove('open');
+            });
+        }
+        if (checkinForm) {
+            checkinForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const inp = document.getElementById('checkinPlateInput');
+                const plate = inp ? inp.value.trim().toUpperCase() : '';
+                if (!plate) return;
+                try {
+                    const res = await fetch('/api/parking/checkin', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ plate_text: plate })
+                    });
+                    const data = await res.json();
+                    if (data.success || data.session_id || data.status === 'check_in_success') {
+                        alert(`✅ Tạo phiên đỗ xe (Check-In) thành công cho biển số ${plate}!`);
+                        if (checkinModal) checkinModal.classList.remove('open');
+                        await loadSessions();
+                        if (typeof loadSummary === 'function') loadSummary();
+                    } else {
+                        alert(`⚠️ ${data.error || data.message || "Không thể Check-In xe này"}`);
+                    }
+                } catch (err) {
+                    console.error("Lỗi Check-In thủ công:", err);
+                    alert("Lỗi kết nối máy chủ");
+                }
+            });
         }
 
         // ================== ADMIN: QUẢN LÝ TÀI KHOẢN & BẢO VỆ ==================
@@ -2018,6 +3009,9 @@
                     <td>${u.created_str || '---'}</td>
                     <td>
                         <div style="display: flex; gap: 0.35rem;">
+                            <button class="btn btn-outline btn-sm" title="Chỉnh sửa thông tin" onclick="openEditUserModal('${u.username}')" style="color: #2563eb; border-color: #93c5fd;">
+                                <i class="fa-solid fa-pen"></i> Sửa
+                            </button>
                             <button class="btn btn-outline btn-sm" title="Cấp lại mật khẩu" onclick="openResetPasswordModal('${u.username}')">
                                 <i class="fa-solid fa-key"></i> Đổi MK
                             </button>
@@ -2151,6 +3145,102 @@
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Cấp tài khoản';
+            }
+        });
+
+        // ================== CHỈNH SỬA TÀI KHOẢN (EDIT USER) ==================
+
+        function openEditUserModal(username) {
+            const list = state.users || [];
+            const u = list.find(item => item.username === username);
+            if (!u) {
+                alert("Không tìm thấy thông tin tài khoản: " + username);
+                return;
+            }
+
+            document.getElementById('editUsername').value = u.username || '';
+            document.getElementById('editFullName').value = u.full_name || '';
+            document.getElementById('editPhone').value = (u.phone && u.phone !== 'Chưa có' && u.phone !== '000') ? u.phone : (u.resident_phone || u.guard_phone || '');
+            document.getElementById('editEmail').value = u.email || '';
+            document.getElementById('editRole').value = u.role || 'Resident';
+            document.getElementById('editApartment').value = (u.apartment && u.apartment !== 'Chưa có' && u.apartment !== '---') ? u.apartment : '';
+            document.getElementById('editShift').value = u.shift || 'Ca Sáng (06:00 - 14:00)';
+            document.getElementById('editIsActive').value = u.is_active ? '1' : '0';
+            document.getElementById('editNewPassword').value = '';
+
+            onEditRoleChange();
+            document.getElementById('editUserModal').classList.add('open');
+        }
+
+        function onEditRoleChange() {
+            const role = document.getElementById('editRole').value;
+            const aptGroup = document.getElementById('editApartmentGroup');
+            const shiftGroup = document.getElementById('editShiftGroup');
+
+            if (role === 'Resident') {
+                if (aptGroup) aptGroup.style.display = 'block';
+                if (shiftGroup) shiftGroup.style.display = 'none';
+            } else if (role === 'Operator') {
+                if (aptGroup) aptGroup.style.display = 'none';
+                if (shiftGroup) shiftGroup.style.display = 'block';
+            } else {
+                if (aptGroup) aptGroup.style.display = 'none';
+                if (shiftGroup) shiftGroup.style.display = 'none';
+            }
+        }
+
+        function closeEditUserModal() {
+            const modal = document.getElementById('editUserModal');
+            if (modal) modal.classList.remove('open');
+        }
+
+        document.getElementById('editUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSaveEditUser');
+            const username = document.getElementById('editUsername').value.trim();
+            const full_name = document.getElementById('editFullName').value.trim();
+            const phone = document.getElementById('editPhone').value.trim();
+            const email = document.getElementById('editEmail').value.trim();
+            const role = document.getElementById('editRole').value;
+            const apartment = document.getElementById('editApartment').value.trim();
+            const shift = document.getElementById('editShift').value;
+            const is_active = document.getElementById('editIsActive').value === '1';
+            const new_password = document.getElementById('editNewPassword').value;
+
+            if (!username || !full_name) {
+                alert("Vui lòng điền họ và tên");
+                return;
+            }
+
+            if (new_password && new_password.length < 6) {
+                alert("Mật khẩu mới phải có tối thiểu 6 ký tự");
+                return;
+            }
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+
+                const res = await fetch('/api/admin/users/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username, full_name, phone, email, role, apartment, shift, is_active, new_password
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                    closeEditUserModal();
+                    loadUsersList();
+                } else {
+                    alert('❌ ' + (data.error || 'Lỗi cập nhật tài khoản'));
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối máy chủ: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi';
             }
         });
 
@@ -2313,10 +3403,148 @@
         // ================== BẢO VỆ: BÀN TRỰC, ĐỐI CHIẾU, THU PHÍ & BARRIER ==================
 
         let currentGuardVehicle = null;
+        let lastGuardEventId = 0;
+        let guardPollInterval = null;
+
+        async function setGuardCameraMode(mode) {
+            try {
+                const res = await fetch('/api/guard/camera_mode', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mode })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    updateGuardCameraModeUI(data.mode);
+                }
+            } catch (err) {
+                console.error("Lỗi đổi chế độ camera:", err);
+            }
+        }
+
+        function updateGuardCameraModeUI(currentMode) {
+            document.querySelectorAll('.gate-mode-btn').forEach(btn => {
+                if (btn.getAttribute('data-mode') === currentMode) {
+                    btn.classList.add('btn-primary');
+                    btn.classList.remove('btn-outline');
+                } else {
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-outline');
+                }
+            });
+        }
+
+        async function initGuardStationPage() {
+            try {
+                const modeRes = await fetch('/api/guard/camera_mode');
+                const modeData = await modeRes.json();
+                updateGuardCameraModeUI(modeData.mode || 'auto');
+
+                const initRes = await fetch('/api/guard/initial_plate');
+                const initData = await initRes.json();
+                const initialPlate = initData.plate_text || '30A-123.45';
+                
+                const plateInput = document.getElementById('guardVerifyPlateInput');
+                if (plateInput) plateInput.value = initialPlate;
+                await lookupVehicleForGuard(initialPlate);
+            } catch (e) {
+                lookupVehicleForGuard('30A-123.45');
+            }
+        }
+
+        function showGuardLiveBanner(ev) {
+            const banner = document.getElementById('guardLiveAlertBanner');
+            if (!banner) return;
+
+            // Xử lý cảnh báo xe Blacklist
+            if (ev.is_blacklist || ev.status === 'blacklist_alert') {
+                banner.style.display = 'flex';
+                banner.style.background = '#fef2f2';
+                banner.style.borderColor = '#ef4444';
+                banner.style.color = '#991b1b';
+                banner.style.boxShadow = '0 0 15px rgba(239, 68, 68, 0.35)';
+                banner.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                        <span class="badge badge-danger" style="font-size: 0.85rem; padding: 0.35rem 0.75rem; background: #dc2626; color: white; font-weight: 700;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> 🚨 CẢNH BÁO AN NINH
+                        </span>
+                        <span><strong>Biển số AI:</strong> <span class="plate-badge" style="font-size: 1rem; border: 2px solid #ef4444; color: #b91c1c;">${ev.plate_text}</span></span>
+                        <span>- <strong style="color: #b91c1c;">${ev.message || 'XE NẰM TRONG DANH SÁCH ĐEN (BLACKLIST) - TỪ CHỐI CHO XE QUA!'}</strong></span>
+                        <span style="font-size: 0.8rem; opacity: 0.8;">(${ev.timestamp})</span>
+                    </div>
+                    <button class="btn btn-outline btn-sm" onclick="this.parentElement.style.display='none'" style="padding: 0.2rem 0.5rem; border:none; cursor: pointer; color: #b91c1c;">✕</button>
+                `;
+                return;
+            }
+
+            const isOut = ev.gate_type === 'out';
+            const gateLabel = isOut ? 'CỔNG RA (CHECK-OUT)' : 'CỔNG VÀO (CHECK-IN)';
+            const statusText = ev.status === 'check_out_success' || ev.status === 'auto_check_out_success'
+                ? `Đã Check-Out thành công (${ev.fee_formatted})`
+                : (ev.status === 'check_in_success' ? 'Đã Check-In vào bãi thành công' : (ev.message || ev.status));
+
+            banner.style.display = 'flex';
+            banner.style.background = isOut ? 'rgba(37,99,235,0.1)' : 'rgba(16,185,129,0.1)';
+            banner.style.borderColor = isOut ? 'rgba(37,99,235,0.3)' : 'rgba(16,185,129,0.3)';
+            banner.style.color = isOut ? '#1d4ed8' : '#047857';
+            banner.style.boxShadow = 'none';
+
+            banner.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                    <span class="badge ${isOut ? 'badge-primary' : 'badge-success'}" style="font-size: 0.85rem; padding: 0.35rem 0.65rem;">
+                        <i class="fa-solid fa-car"></i> ${gateLabel}
+                    </span>
+                    <span><strong>Biển số AI:</strong> <span class="plate-badge" style="font-size: 0.95rem;">${ev.plate_text}</span></span>
+                    <span>- <strong>${statusText}</strong></span>
+                    <span style="font-size: 0.8rem; opacity: 0.75;">(${ev.timestamp})</span>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="this.parentElement.style.display='none'" style="padding: 0.2rem 0.5rem; border:none; cursor: pointer;">✕</button>
+            `;
+        }
+
+        async function checkGuardLiveEvent() {
+            try {
+                const res = await fetch('/api/guard/latest_event');
+                if (!res.ok) return;
+                const ev = await res.json();
+                if (!ev || !ev.event_id) return;
+                
+                if (ev.event_id > lastGuardEventId) {
+                    lastGuardEventId = ev.event_id;
+                    
+                    if (ev.plate_text) {
+                        const plateInput = document.getElementById('guardVerifyPlateInput');
+                        if (plateInput) plateInput.value = ev.plate_text;
+                        
+                        await lookupVehicleForGuard(ev.plate_text);
+                        showGuardLiveBanner(ev);
+
+                        const activePage = document.querySelector('.page.active');
+                        if (activePage && activePage.id === 'sessions-page') {
+                            loadSessions();
+                        }
+                        if (activePage && activePage.id === 'dashboard-page') {
+                            loadSummary();
+                        }
+                    }
+                }
+            } catch (e) {
+                // silent
+            }
+        }
+
+        function startGuardLivePolling() {
+            if (guardPollInterval) clearInterval(guardPollInterval);
+            checkGuardLiveEvent();
+            guardPollInterval = setInterval(checkGuardLiveEvent, 1200);
+        }
 
         async function lookupVehicleForGuard(plateArg) {
             const plate = plateArg || document.getElementById('guardVerifyPlateInput').value.trim();
             if (!plate) return;
+
+            const plateInput = document.getElementById('guardVerifyPlateInput');
+            if (plateInput) plateInput.value = plate;
 
             try {
                 const res = await fetch(`/api/guard/verification/${encodeURIComponent(plate)}`);
@@ -2327,8 +3555,18 @@
                 document.getElementById('vInTime').textContent = data.check_in_time || 'Chưa có dữ liệu vào';
                 document.getElementById('vInCam').textContent = data.in_camera || 'Cổng Vào #1';
                 
+                const blacklistAlert = document.getElementById('guardBlacklistAlert');
                 const tBadge = document.getElementById('vTicketBadge');
-                if (data.is_monthly) {
+                const isBlacklist = data.is_blacklist || data.group_type === 'Blacklist';
+
+                if (blacklistAlert) {
+                    blacklistAlert.style.display = isBlacklist ? 'block' : 'none';
+                }
+
+                if (isBlacklist) {
+                    tBadge.className = 'badge badge-danger';
+                    tBadge.innerHTML = '<i class="fa-solid fa-ban"></i> 🚨 Blacklist (Cảnh báo an ninh)';
+                } else if (data.is_monthly) {
                     tBadge.className = 'badge badge-success';
                     tBadge.textContent = 'Vé Tháng Cư Dân (Hợp lệ)';
                 } else {
@@ -2397,7 +3635,13 @@
 
         async function processFeeAndOpenBarrier() {
             const plate = document.getElementById('vInPlate').textContent;
-            if (!plate) return;
+            if (!plate || plate === '---') return;
+
+            if (currentGuardVehicle && (currentGuardVehicle.is_blacklist || currentGuardVehicle.group_type === 'Blacklist')) {
+                if (!confirm(`🚨 CẢNH BÁO AN NINH NGUY HIỂM:\n\nXe biển số ${plate} thuộc DANH SÁCH ĐEN (Blacklist)!\nBạn có chắc chắn muốn can thiệp thu phí và mở Barrier cho xe này?`)) {
+                    return;
+                }
+            }
 
             try {
                 const res = await fetch('/api/guard/collect_fee', {
@@ -2655,6 +3899,203 @@
             }
         }
 
+        // ================== CINEMA MAP MODAL FOR ADMIN & OPERATOR ==================
+        let adminCinemaData = null;
+        let adminCurrentFloor = 'Ham_B1';
+
+        async function openAdminCinemaMap() {
+            const modal = document.getElementById('adminCinemaModal');
+            if (modal) {
+                modal.classList.add('open', 'active');
+                modal.style.display = 'flex';
+            }
+            await loadAdminParkingMap();
+        }
+
+        function closeAdminCinemaModal() {
+            const modal = document.getElementById('adminCinemaModal');
+            if (modal) {
+                modal.classList.remove('open', 'active');
+                modal.style.display = 'none';
+            }
+        }
+
+        async function loadAdminParkingMap(force = false) {
+            const container = document.getElementById('adminCinemaSlotsContainer');
+            if (!adminCinemaData || force) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2.5rem; color: #94a3b8;">
+                        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                        <p style="margin-top: 0.75rem;">Đang tải sơ đồ bãi đỗ xe ô tô...</p>
+                    </div>
+                `;
+            }
+
+            try {
+                const res = await fetch('/api/parking/map');
+                const data = await res.json();
+                if (!data.success) throw new Error('Không thể tải dữ liệu bãi xe');
+                adminCinemaData = data;
+
+                if (data.stats && data.stats.by_floor) {
+                    const b1 = data.stats.by_floor.Ham_B1;
+                    const b2 = data.stats.by_floor.Ham_B2;
+                    if (b1) document.getElementById('countAdminB1').textContent = `Còn ${b1.available}/${b1.total} chỗ`;
+                    if (b2) document.getElementById('countAdminB2').textContent = `Còn ${b2.available}/${b2.total} chỗ`;
+                }
+
+                renderAdminCinemaMap();
+            } catch (err) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #ef4444;">
+                        <i class="fa-solid fa-circle-exclamation fa-2x"></i>
+                        <p style="margin-top: 0.5rem;">${err.message}</p>
+                        <button class="btn btn-sm btn-outline" style="margin-top: 0.5rem;" onclick="loadAdminParkingMap(true)">Thử lại</button>
+                    </div>
+                `;
+            }
+        }
+
+        function switchAdminCinemaFloor(floorKey) {
+            adminCurrentFloor = floorKey;
+            document.getElementById('btnAdminFloorB1').classList.toggle('active', floorKey === 'Ham_B1');
+            document.getElementById('btnAdminFloorB2').classList.toggle('active', floorKey === 'Ham_B2');
+            renderAdminCinemaMap();
+
+            const container = document.getElementById('adminCinemaSlotsContainer');
+            if (container) container.scrollLeft = 0;
+        }
+
+        function renderAdminCinemaMap() {
+            if (!adminCinemaData || !adminCinemaData.slots) return;
+            const container = document.getElementById('adminCinemaSlotsContainer');
+            const floorSlots = adminCinemaData.slots.filter(s => s.khu_vuc === adminCurrentFloor);
+
+            const rowsMap = {};
+            floorSlots.forEach(s => {
+                if (!rowsMap[s.day]) rowsMap[s.day] = [];
+                rowsMap[s.day].push(s);
+            });
+
+            Object.keys(rowsMap).forEach(day => {
+                rowsMap[day].sort((a, b) => a.so_thu_tu - b.so_thu_tu);
+            });
+
+            let html = '<div class="cinema-board-canvas">';
+            const dayKeys = Object.keys(rowsMap);
+            dayKeys.forEach((day, index) => {
+                const stalls = rowsMap[day];
+                const isVip = day === 'VIP';
+
+                html += `
+                    <div class="cinema-row">
+                        <div class="cinema-row-label">
+                            <div>${isVip ? '<i class="fa-solid fa-crown" style="color: #f59e0b; font-size: 0.75rem;"></i><br>' : ''}DÃY ${day}</div>
+                        </div>
+                        <div class="cinema-row-stalls">
+                `;
+
+                const midpoint = Math.ceil(stalls.length / 2);
+                stalls.forEach((slot, sIdx) => {
+                    if (sIdx === midpoint && stalls.length > 5) {
+                        html += `<div class="cinema-aisle-divider"></div>`;
+                    }
+
+                    let stateClass = 'seat-available';
+                    let stateIcon = 'fa-car';
+                    let plateBadge = '';
+
+                    if (slot.trang_thai === 'DaDat') {
+                        stateClass = 'seat-occupied';
+                        plateBadge = `<span class="slot-plate-tag" title="Biển số: ${slot.full_plate || slot.bien_so_xe}">${slot.bien_so_xe || 'ĐÃ ĐỖ'}</span>`;
+                    } else if (slot.trang_thai === 'BaoTri') {
+                        stateClass = 'seat-occupied';
+                        stateIcon = 'fa-wrench';
+                        plateBadge = `<span class="slot-plate-tag">BẢO TRÌ</span>`;
+                    } else {
+                        if (isVip) stateClass += ' seat-vip';
+                    }
+
+                    html += `
+                        <div class="parking-seat-slot ${stateClass}" id="admin_slot_${slot.ma_cho_do}" onclick="inspectAdminSlot('${slot.ma_cho_do}')" title="${slot.ten_cho_do}">
+                            <i class="fa-solid ${stateIcon} slot-car-icon"></i>
+                            <div class="slot-code">${slot.ma_cho_do}</div>
+                            ${plateBadge || `<span class="slot-plate-tag" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">TRỐNG</span>`}
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                        <div class="cinema-row-label">
+                            <div>${isVip ? '<i class="fa-solid fa-crown" style="color: #f59e0b; font-size: 0.75rem;"></i><br>' : ''}DÃY ${day}</div>
+                        </div>
+                    </div>
+                `;
+
+                if (index < dayKeys.length - 1) {
+                    html += `
+                        <div class="cinema-driving-lane">
+                            <i class="fa-solid fa-arrows-left-right"></i>
+                            <span>════ LÀN ĐƯỜNG XE CHẠY NỘI BỘ TẦNG HẦM ════</span>
+                            <i class="fa-solid fa-arrows-left-right"></i>
+                        </div>
+                    `;
+                }
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function inspectAdminSlot(slotCode) {
+            if (!adminCinemaData || !adminCinemaData.slots) return;
+            const slot = adminCinemaData.slots.find(s => s.ma_cho_do === slotCode);
+            if (!slot) return;
+
+            document.getElementById('adminDockSlotCode').textContent = slot.ma_cho_do;
+            const banner = document.getElementById('adminCinemaAlertBanner');
+            const alertText = document.getElementById('adminCinemaAlertText');
+            const alertIcon = document.getElementById('adminCinemaAlertIcon');
+            if (banner) banner.style.display = 'flex';
+
+            if (slot.trang_thai === 'DaDat') {
+                document.getElementById('adminDockSlotTitle').innerHTML = `
+                    <span style="color:#ef4444;"><i class="fa-solid fa-car"></i> Ô ${slot.ten_cho_do} đã có xe đăng ký</span>
+                `;
+                document.getElementById('adminDockSlotSub').textContent = `Biển số: ${slot.full_plate || slot.bien_so_xe} • Chủ xe: ${slot.ten_chu_xe || 'Cư dân'} • Căn hộ: ${slot.ma_can_ho || '---'}`;
+                if (banner) {
+                    banner.style.background = 'rgba(127, 29, 29, 0.45)';
+                    banner.style.borderColor = '#ef4444';
+                    banner.style.color = '#fca5a5';
+                    if (alertIcon) { alertIcon.className = 'fa-solid fa-car'; alertIcon.style.color = '#ef4444'; }
+                    if (alertText) alertText.innerHTML = `<strong>ĐÃ CÓ XE ĐỖ:</strong> Vị trí <strong>${slot.ma_cho_do}</strong> (${slot.ten_cho_do}) đang giữ cho xe <strong>${slot.full_plate || slot.bien_so_xe}</strong> - Căn hộ <strong>${slot.ma_can_ho || '---'}</strong> (Chủ xe: ${slot.ten_chu_xe || 'Cư dân'}).`;
+                }
+            } else if (slot.trang_thai === 'BaoTri') {
+                document.getElementById('adminDockSlotTitle').textContent = `Ô ${slot.ten_cho_do} đang bảo trì kỹ thuật`;
+                document.getElementById('adminDockSlotSub').textContent = `Không tiếp nhận đăng ký đỗ xe vào thời điểm này`;
+                if (banner) {
+                    banner.style.background = 'rgba(120, 53, 15, 0.45)';
+                    banner.style.borderColor = '#f59e0b';
+                    banner.style.color = '#fcd34d';
+                    if (alertIcon) { alertIcon.className = 'fa-solid fa-wrench'; alertIcon.style.color = '#f59e0b'; }
+                    if (alertText) alertText.innerHTML = `<strong>BẢO TRÌ:</strong> Vị trí <strong>${slot.ma_cho_do}</strong> đang bảo trì kỹ thuật.`;
+                }
+            } else {
+                document.getElementById('adminDockSlotTitle').innerHTML = `
+                    <span style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> Ô ${slot.ten_cho_do} còn trống</span>
+                `;
+                document.getElementById('adminDockSlotSub').textContent = `Loại ô: ${slot.loai_cho_do} • Tầng Hầm ${slot.khu_vuc === 'Ham_B1' ? 'B1' : 'B2'} • Sẵn sàng tiếp nhận đăng ký xe`;
+                if (banner) {
+                    banner.style.background = 'rgba(6, 78, 59, 0.45)';
+                    banner.style.borderColor = '#10b981';
+                    banner.style.color = '#6ee7b7';
+                    if (alertIcon) { alertIcon.className = 'fa-solid fa-circle-check'; alertIcon.style.color = '#10b981'; }
+                    if (alertText) alertText.innerHTML = `<strong>CHỖ TRỐNG:</strong> Vị trí <strong>${slot.ma_cho_do}</strong> (${slot.ten_cho_do} • ${slot.khu_vuc === 'Ham_B1' ? 'Hầm B1' : 'Hầm B2'}) sẵn sàng tiếp nhận đăng ký phương tiện mới.`;
+                }
+            }
+        }
+
         // Logout
         document.getElementById('logoutBtn').addEventListener('click', async (e) => {
             e.preventDefault();
@@ -2665,6 +4106,7 @@
         // Init
         document.addEventListener('DOMContentLoaded', () => {
             initAuthAndRole();
+            startGuardLivePolling();
         });
     </script>
 </body>

@@ -13,6 +13,8 @@
 BienSoXe.rar
 BienSoXe*.rar
 BienSoXe*.zip
+ongthanquoctruong_24CT2_cnpm*.rar
+ongthanquoctruong_24CT2_cnpm*.zip
 *.rar
 *.zip
 *.7z
@@ -27,15 +29,23 @@ BienSoXe/archive/
 BienSoXe/runs/
 BienSoXe/be/runs/
 BienSoXe/instance/
+ongthanquoctruong_24CT2_cnpm/data/
+ongthanquoctruong_24CT2_cnpm/archive/
+ongthanquoctruong_24CT2_cnpm/runs/
+ongthanquoctruong_24CT2_cnpm/be/runs/
+ongthanquoctruong_24CT2_cnpm/instance/
 **/runs/
 **/data/
 **/archive/
+**/instance/
 
 # =======================================================
 # MÔI TRƯỜNG ẢO & PYTHON CACHE
 # =======================================================
 .venv/
 BienSoXe/.venv/
+ongthanquoctruong_24CT2_cnpm/.venv/
+**/.venv/
 env/
 venv/
 ENV/
@@ -68,11 +78,12 @@ desktop.ini
 # =======================================================
 .vscode/
 BienSoXe/.vscode/
+ongthanquoctruong_24CT2_cnpm/.vscode/
+**/.vscode/
 .idea/
 
 # =======================================================
-# BỎ QUA CÁC FILE BÁO CÁO NGOÀI THƯ MỤC BIENSOXE
-# (Theo yêu cầu: Chỉ đẩy thư mục BienSoXe)
+# BỎ QUA CÁC FILE BÁO CÁO NGOÀI THƯ MỤC
 # =======================================================
 /baitap.docx
 /baitap.md

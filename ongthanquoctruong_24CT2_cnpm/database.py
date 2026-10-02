@@ -5,6 +5,19 @@ import time
 from datetime import date, datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 
+def is_date_active(dt_val):
+    """Kiểm tra ngày còn hiệu lực an toàn, tránh lỗi so sánh datetime và date."""
+    if not dt_val:
+        return False
+    if hasattr(dt_val, "date"):
+        return dt_val.date() >= date.today()
+    if isinstance(dt_val, date):
+        return dt_val >= date.today()
+    try:
+        return datetime.strptime(str(dt_val)[:10], "%Y-%m-%d").date() >= date.today()
+    except Exception:
+        return False
+
 PROVINCE_METADATA = {
     '29': {'name': 'Thành phố Hải Phòng', 'name_en': 'Hai Phong', 'region': 'Bắc'},
     '30': {'name': 'Thành phố Hà Nội', 'name_en': 'Hanoi', 'region': 'Bắc'},
@@ -416,6 +429,7 @@ def init_db():
             print(f"⚠️ Chuẩn hóa loại xe: {e}")
 
         seed_default_users(c)
+        init_bai_do(c)
         
         conn.commit()
         print(f"\n✅ Tất cả bảng đã được khởi tạo thành công với ràng buộc khóa ngoại!")
@@ -561,6 +575,196 @@ def seed_default_users(cursor):
             except Error as e:
                 print(f"⚠️ cu_dan seed warning: {e}")
 
+# ==================== PHÂN HỆ QUẢN LÝ BÃI ĐỖ XE Ô TÔ (BAI_DO) ====================
+
+def init_bai_do(cursor):
+    """Khởi tạo bảng bai_do và seed danh mục ô đỗ ô tô chung cư phong cách rạp phim."""
+    try:
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS bai_do (
+            MaChoDo VARCHAR(20) PRIMARY KEY COMMENT 'Mã ô đỗ xe, ví dụ: B1-A01, B1-B05',
+            TenChoDo VARCHAR(100) NOT NULL COMMENT 'Tên ô đỗ: Vị trí A-01 (Tầng B1)',
+            KhuVuc VARCHAR(30) NOT NULL COMMENT 'Khu vực / Tầng hầm: Ham_B1, Ham_B2',
+            Day VARCHAR(10) NOT NULL COMMENT 'Dãy ô đỗ: A, B, VIP, C, D, E',
+            SoThuTu INT NOT NULL COMMENT 'Số thứ tự trong dãy: 1..10',
+            LoaiChoDo VARCHAR(30) DEFAULT 'Ô tô con' COMMENT 'Loại chỗ: Ô tô con, VIP Ô tô',
+            TrangThai VARCHAR(20) DEFAULT 'Trong' COMMENT 'Trong, DaDat, BaoTri',
+            BienSoXe VARCHAR(20) DEFAULT NULL,
+            MaCuDan VARCHAR(50) DEFAULT NULL,
+            GhiChu VARCHAR(255) DEFAULT NULL,
+            CapNhatLuc DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_khuvuc (KhuVuc),
+            INDEX idx_trangthai (TrangThai),
+            INDEX idx_bienso (BienSoXe),
+            INDEX idx_cudan (MaCuDan)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """)
+
+        # Tự động nâng cấp cột ViTriDo trong phuong_tien
+        try:
+            cursor.execute("SHOW COLUMNS FROM phuong_tien LIKE 'ViTriDo'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE phuong_tien ADD COLUMN ViTriDo VARCHAR(50) DEFAULT NULL COMMENT 'Vị trí bãi đỗ'")
+        except Exception:
+            pass
+
+        # Tự động nâng cấp cột parking_slot trong vehicles
+        try:
+            cursor.execute("SHOW COLUMNS FROM vehicles LIKE 'parking_slot'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE vehicles ADD COLUMN parking_slot VARCHAR(50) DEFAULT NULL COMMENT 'Vị trí bãi đỗ'")
+        except Exception:
+            pass
+
+        # Seed các ô đỗ chuẩn chỉ dành riêng cho xe ô tô (100 ô: 50 ô Hầm B1, 50 ô Hầm B2)
+        slots = []
+        # Tầng Hầm B1: 50 chỗ ô tô
+        for i in range(1, 15):
+            slots.append((f"B1-A{i:02d}", f"Vị trí A-{i:02d} (Hầm B1)", "Ham_B1", "A", i, "Ô tô con", "Trong"))
+        for i in range(1, 15):
+            slots.append((f"B1-B{i:02d}", f"Vị trí B-{i:02d} (Hầm B1)", "Ham_B1", "B", i, "Ô tô con", "Trong"))
+        for i in range(1, 15):
+            slots.append((f"B1-C{i:02d}", f"Vị trí C-{i:02d} (Hầm B1)", "Ham_B1", "C", i, "Ô tô con", "Trong"))
+        for i in range(1, 9):
+            slots.append((f"B1-VIP{i:02d}", f"Vị trí VIP-{i:02d} (Hầm B1)", "Ham_B1", "VIP", i, "VIP Ô tô", "Trong"))
+
+        # Tầng Hầm B2: 50 chỗ ô tô
+        for i in range(1, 15):
+            slots.append((f"B2-D{i:02d}", f"Vị trí D-{i:02d} (Hầm B2)", "Ham_B2", "D", i, "Ô tô con", "Trong"))
+        for i in range(1, 15):
+            slots.append((f"B2-E{i:02d}", f"Vị trí E-{i:02d} (Hầm B2)", "Ham_B2", "E", i, "Ô tô con", "Trong"))
+        for i in range(1, 15):
+            slots.append((f"B2-F{i:02d}", f"Vị trí F-{i:02d} (Hầm B2)", "Ham_B2", "F", i, "Ô tô con", "Trong"))
+        for i in range(1, 9):
+            slots.append((f"B2-VIP{i:02d}", f"Vị trí VIP-{i:02d} (Hầm B2)", "Ham_B2", "VIP", i, "VIP Ô tô", "Trong"))
+
+        for s in slots:
+            cursor.execute("""
+                INSERT IGNORE INTO bai_do (MaChoDo, TenChoDo, KhuVuc, Day, SoThuTu, LoaiChoDo, TrangThai)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, s)
+
+        print("✅ Bảng 'bai_do' đã được kiểm tra và cấu hình sẵn sàng (100 ô đỗ ô tô).")
+    except Exception as e:
+        print(f"⚠️ init_bai_do warning: {e}")
+
+
+def get_all_parking_slots(khu_vuc=None):
+    """Lấy danh sách các ô đỗ xe ô tô trong bảng bai_do kèm thông tin xe và chủ xe."""
+    conn = None
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return []
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            SELECT 
+                b.MaChoDo, b.TenChoDo, b.KhuVuc, b.Day, b.SoThuTu, b.LoaiChoDo,
+                b.TrangThai, b.BienSoXe, b.MaCuDan, b.GhiChu, b.CapNhatLuc,
+                c.HoTen AS TenChuXe, c.MaCanHo, c.SoDienThoai,
+                p.MauXe, p.LoaiXe
+            FROM bai_do b
+            LEFT JOIN cu_dan c ON b.MaCuDan = c.MaCuDan
+            LEFT JOIN phuong_tien p ON b.BienSoXe = p.BienSoXe
+        """
+        params = []
+        if khu_vuc:
+            query += " WHERE b.KhuVuc = %s"
+            params.append(khu_vuc)
+        query += " ORDER BY b.KhuVuc ASC, b.Day ASC, b.SoThuTu ASC"
+        cursor.execute(query, tuple(params))
+        return cursor.fetchall()
+    except Exception as e:
+        print(f"Lỗi get_all_parking_slots: {e}")
+        return []
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+
+
+def assign_parking_slot(ma_cho_do, bien_so_xe, ma_cu_dan=None):
+    """Gán ô đỗ cho xe ô tô và giải phóng ô đỗ cũ nếu xe từng đỗ ô khác."""
+    conn = None
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return False, "Không thể kết nối CSDL"
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM bai_do WHERE MaChoDo = %s", (ma_cho_do,))
+        slot = cursor.fetchone()
+        if not slot:
+            return False, f"Vị trí ô đỗ '{ma_cho_do}' không tồn tại trong bãi xe"
+
+        if slot["TrangThai"] == "DaDat" and slot["BienSoXe"] != bien_so_xe:
+            return False, f"Vị trí '{ma_cho_do}' đã được đăng ký cho xe {slot['BienSoXe']}"
+
+        if slot["TrangThai"] == "BaoTri":
+            return False, f"Vị trí '{ma_cho_do}' hiện đang bảo trì kỹ thuật"
+
+        # 1. Giải phóng ô đỗ cũ của xe này nếu có
+        cursor.execute("""
+            UPDATE bai_do 
+            SET TrangThai = 'Trong', BienSoXe = NULL, MaCuDan = NULL 
+            WHERE BienSoXe = %s AND MaChoDo != %s
+        """, (bien_so_xe, ma_cho_do))
+
+        # 2. Chiếm giữ ô đỗ mới
+        cursor.execute("""
+            UPDATE bai_do 
+            SET TrangThai = 'DaDat', BienSoXe = %s, MaCuDan = COALESCE(%s, MaCuDan)
+            WHERE MaChoDo = %s
+        """, (bien_so_xe, ma_cu_dan, ma_cho_do))
+
+        # 3. Đồng bộ vào bảng phuong_tien và vehicles
+        cursor.execute("UPDATE phuong_tien SET ViTriDo = %s WHERE BienSoXe = %s", (ma_cho_do, bien_so_xe))
+        cursor.execute("UPDATE vehicles SET parking_slot = %s WHERE plate_text = %s", (ma_cho_do, bien_so_xe))
+
+        conn.commit()
+        return True, "Gán vị trí bãi đỗ thành công"
+    except Exception as e:
+        print(f"Lỗi assign_parking_slot: {e}")
+        return False, str(e)
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+
+
+def release_parking_slot(bien_so_xe=None, ma_cho_do=None):
+    """Giải phóng ô đỗ về trạng thái 'Trong'."""
+    conn = None
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return False
+        cursor = conn.cursor()
+        if ma_cho_do:
+            cursor.execute("""
+                UPDATE bai_do 
+                SET TrangThai = 'Trong', BienSoXe = NULL, MaCuDan = NULL 
+                WHERE MaChoDo = %s
+            """, (ma_cho_do,))
+        elif bien_so_xe:
+            cursor.execute("""
+                UPDATE bai_do 
+                SET TrangThai = 'Trong', BienSoXe = NULL, MaCuDan = NULL 
+                WHERE BienSoXe = %s
+            """, (bien_so_xe,))
+            cursor.execute("UPDATE phuong_tien SET ViTriDo = NULL WHERE BienSoXe = %s", (bien_so_xe,))
+            cursor.execute("UPDATE vehicles SET parking_slot = NULL WHERE plate_text = %s", (bien_so_xe,))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Lỗi release_parking_slot: {e}")
+        return False
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+
+
 def check_province_exists(province_code):
     """Kiểm tra tỉnh có tồn tại không."""
     conn = None
@@ -648,8 +852,8 @@ def add_or_update_vehicle_type(type_name, description=None, seats=None, max_weig
 def upsert_vehicle(plate_text, owner_name=None, vehicle_type='Ô tô con', color=None,
                    registration_date=None, status='Hoạt động', province_code=None,
                    group_type='Normal', monthly_ticket_expiry=None, update_if_exists=True,
-                   ma_cu_dan=None):
-    """Thêm hoặc cập nhật xe trong bảng vehicles và đồng bộ bảng phuong_tien."""
+                   ma_cu_dan=None, parking_slot=None):
+    """Thêm hoặc cập nhật xe trong bảng vehicles và đồng bộ bảng phuong_tien kèm vị trí bãi đỗ bai_do."""
     conn = None
     try:
         conn = get_db_connection()
@@ -733,11 +937,36 @@ def upsert_vehicle(plate_text, owner_name=None, vehicle_type='Ô tô con', color
         except Exception as e:
             print(f"Lỗi đồng bộ phuong_tien: {e}")
 
+        if parking_slot:
+            try:
+                cursor.execute("UPDATE vehicles SET parking_slot = %s WHERE plate_text = %s", (parking_slot, plate_text))
+                cursor.execute("UPDATE phuong_tien SET ViTriDo = %s WHERE BienSoXe = %s", (parking_slot, plate_text))
+                assign_parking_slot(parking_slot, plate_text, target_ma_cd)
+            except Exception as e_slot:
+                print(f"Lỗi gán vị trí đỗ trong upsert_vehicle: {e_slot}")
+
         conn.commit()
         return True
     except Error as e:
         print(f"Lỗi upsert_vehicle: {e}")
         return False
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+
+def get_vehicle_by_plate(plate_text):
+    """Lấy thông tin chi tiết của xe theo biển số."""
+    conn = None
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return None
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM vehicles WHERE plate_text = %s LIMIT 1", (plate_text,))
+        return cursor.fetchone()
+    except Error:
+        return None
     finally:
         if conn and conn.is_connected():
             cursor.close()
@@ -836,22 +1065,38 @@ def get_all_plates_with_details():
             conn.close()
 
 def get_all_vehicles():
-    """Lấy danh sách xe để hiển thị trên màn Quản Lý Xe."""
+    """Lấy danh sách xe để hiển thị trên màn Quản Lý Xe (kèm số lượng đã quét từ camera AI)."""
     conn = None
     try:
         conn = get_db_connection()
         if not conn:
             return []
         cursor = conn.cursor(dictionary=True)
+        # Đảm bảo các biển số đã quét từ AI (plates) đều được đồng bộ vào danh mục vehicles
+        cursor.execute("""
+            INSERT IGNORE INTO vehicles (plate_text, owner_name, vehicle_type, color, status, province_code)
+            SELECT p.plate_text, 'Chưa gán', COALESCE(p.vehicle_type, 'Ô tô con'), 'Chưa xác định', 'Hoạt động', p.province_code
+            FROM plates p
+            LEFT JOIN vehicles v ON p.plate_text = v.plate_text
+            WHERE v.plate_text IS NULL
+        """)
+        conn.commit()
+
         cursor.execute("""
             SELECT
                 v.plate_text, v.owner_name, v.vehicle_type, v.color,
                 v.registration_date, v.status, v.province_code,
                 v.group_type, v.monthly_ticket_expiry,
-                pr.name as province_name
+                COALESCE(v.parking_slot, pt.ViTriDo) AS parking_slot,
+                b.TenChoDo AS ten_cho_do,
+                pr.name as province_name,
+                COALESCE(p.detection_count, 0) AS detection_count
             FROM vehicles v
+            LEFT JOIN plates p ON v.plate_text = p.plate_text
+            LEFT JOIN phuong_tien pt ON v.plate_text = pt.BienSoXe
+            LEFT JOIN bai_do b ON COALESCE(v.parking_slot, pt.ViTriDo) = b.MaChoDo
             LEFT JOIN provinces pr ON v.province_code = pr.code
-            ORDER BY v.updated_at DESC, v.registration_date DESC
+            ORDER BY COALESCE(p.detection_count, 0) DESC, v.updated_at DESC, v.registration_date DESC
         """)
         return cursor.fetchall()
     except Error:
@@ -1195,7 +1440,7 @@ def process_parking_transaction(plate_text, gate_type, camera_source):
             vehicle_type = vehicle_row['vehicle_type'] or 'Ô tô con'
             expiry = vehicle_row['monthly_ticket_expiry']
             if expiry:
-                if expiry >= date.today():
+                if is_date_active(expiry):
                     is_ticket_active = True
             if vehicle_row.get('status') == 'Không hoạt động':
                 return {
@@ -1205,16 +1450,18 @@ def process_parking_transaction(plate_text, gate_type, camera_source):
                     "is_ticket_active": is_ticket_active
                 }
 
+        # Kiểm tra danh sách đen (Blacklist) cho tất cả các cổng (Vào và Ra)
+        if group_type == 'Blacklist':
+            return {
+                "status": "blacklist_alert",
+                "is_blacklist": True,
+                "message": f"🚨 CẢNH BÁO AN NINH: Xe {plate_text} nằm trong DANH SÁCH ĐEN (Blacklist)! TỪ CHỐI CHO XE QUA CỔNG.",
+                "group_type": "Blacklist",
+                "is_ticket_active": is_ticket_active
+            }
+
         # 2. Xử lý Check-In
         if gate_type == 'in':
-            if group_type == 'Blacklist':
-                return {
-                    "status": "error",
-                    "message": "Xe nằm trong danh sách đen (Blacklist). TỪ CHỐI CHECK-IN.",
-                    "group_type": group_type,
-                    "is_ticket_active": is_ticket_active
-                }
-
             # Kiểm tra xem có phiên nào đang đỗ (Parked) không
             cursor.execute("""
                 SELECT id, check_in_time FROM parking_sessions 
@@ -1723,6 +1970,127 @@ def admin_update_guard(username, full_name, phone, email, shift):
             cursor.close()
             conn.close()
 
+def admin_update_user_info(username, full_name, phone='', email='', role='Resident', is_active=True, apartment='', shift='', new_password=''):
+    """Quản trị viên cập nhật đầy đủ thông tin tài khoản người dùng, cư dân hoặc bảo vệ."""
+    conn = None
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return False, "Không thể kết nối CSDL"
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("SELECT id, username, role FROM app_users WHERE username = %s", (username,))
+        app_user = cursor.fetchone()
+        if not app_user:
+            return False, f"Không tìm thấy tài khoản '{username}'"
+
+        # 1. Cập nhật bảng app_users
+        pw_hash = generate_password_hash(new_password) if new_password and len(new_password) >= 6 else None
+        
+        if pw_hash:
+            cursor.execute("""
+                UPDATE app_users 
+                SET full_name = %s, email = %s, role = %s, is_active = %s, password_hash = %s, updated_at = NOW()
+                WHERE username = %s
+            """, (full_name, email or f"{username}@system.com", role, bool(is_active), pw_hash, username))
+        else:
+            cursor.execute("""
+                UPDATE app_users 
+                SET full_name = %s, email = %s, role = %s, is_active = %s, updated_at = NOW()
+                WHERE username = %s
+            """, (full_name, email or f"{username}@system.com", role, bool(is_active), username))
+
+        status_vn = "HoatDong" if is_active else "TamKhoa"
+
+        # 2. Cập nhật hoặc đồng bộ bảng cu_dan
+        cursor.execute("SHOW COLUMNS FROM cu_dan")
+        cd_cols = [r["Field"] if isinstance(r, dict) else r[0] for r in cursor.fetchall()]
+        cd_phone_col = "SoDienThoai" if "SoDienThoai" in cd_cols else ("SDT" if "SDT" in cd_cols else None)
+
+        cursor.execute("SELECT MaCuDan FROM cu_dan WHERE TaiKhoan = %s", (username,))
+        cd_row = cursor.fetchone()
+
+        if cd_row:
+            ma_cd = cd_row["MaCuDan"]
+            if cd_phone_col:
+                cursor.execute(f"""
+                    UPDATE cu_dan 
+                    SET HoTen = %s, MaCanHo = %s, {cd_phone_col} = %s, Email = %s, TrangThai = %s
+                    WHERE TaiKhoan = %s
+                """, (full_name, apartment or 'Chưa có', phone or 'Chưa có', email or f"{username}@resident.com", status_vn, username))
+            else:
+                cursor.execute("""
+                    UPDATE cu_dan 
+                    SET HoTen = %s, MaCanHo = %s, Email = %s, TrangThai = %s
+                    WHERE TaiKhoan = %s
+                """, (full_name, apartment or 'Chưa có', email or f"{username}@resident.com", status_vn, username))
+
+            if pw_hash:
+                cursor.execute("UPDATE cu_dan SET MatKhau = %s WHERE TaiKhoan = %s", (pw_hash, username))
+
+            # Đồng bộ tên chủ xe trong vehicles nếu đổi họ tên
+            cursor.execute("""
+                UPDATE vehicles v
+                INNER JOIN phuong_tien p ON v.plate_text = p.BienSoXe
+                SET v.owner_name = %s
+                WHERE p.MaCuDan = %s
+            """, (full_name, ma_cd))
+        elif role == 'Resident':
+            import time
+            ma_cd = "CD_" + str(int(time.time() * 100))
+            ins_cols = ["MaCuDan", "HoTen", "TaiKhoan", "MatKhau", "TrangThai", "MaCanHo", "Email"]
+            ins_vals = [ma_cd, full_name, username, pw_hash or generate_password_hash("123456"), status_vn, apartment or 'Chưa có', email or f"{username}@resident.com"]
+            if cd_phone_col:
+                ins_cols.append(cd_phone_col)
+                ins_vals.append(phone or 'Chưa có')
+            placeholders = ", ".join(["%s"] * len(ins_cols))
+            cursor.execute(f"INSERT INTO cu_dan ({', '.join(ins_cols)}) VALUES ({placeholders})", tuple(ins_vals))
+
+        # 3. Cập nhật hoặc đồng bộ bảng nhan_vien
+        cursor.execute("SHOW COLUMNS FROM nhan_vien")
+        nv_cols = [r["Field"] if isinstance(r, dict) else r[0] for r in cursor.fetchall()]
+        nv_phone_col = "SoDienThoai" if "SoDienThoai" in nv_cols else ("SDT" if "SDT" in nv_cols else None)
+
+        cursor.execute("SELECT MaNV FROM nhan_vien WHERE TaiKhoan = %s", (username,))
+        nv_row = cursor.fetchone()
+
+        if nv_row:
+            if nv_phone_col:
+                cursor.execute(f"""
+                    UPDATE nhan_vien 
+                    SET HoTen = %s, CaTruc = %s, {nv_phone_col} = %s, Email = %s, TrangThai = %s
+                    WHERE TaiKhoan = %s
+                """, (full_name, shift or 'Ca Sáng (06:00 - 14:00)', phone or 'Chưa có', email or f"{username}@security.com", status_vn, username))
+            else:
+                cursor.execute("""
+                    UPDATE nhan_vien 
+                    SET HoTen = %s, CaTruc = %s, Email = %s, TrangThai = %s
+                    WHERE TaiKhoan = %s
+                """, (full_name, shift or 'Ca Sáng (06:00 - 14:00)', email or f"{username}@security.com", status_vn, username))
+
+            if pw_hash:
+                cursor.execute("UPDATE nhan_vien SET MatKhau = %s WHERE TaiKhoan = %s", (pw_hash, username))
+        elif role == 'Operator':
+            import time
+            ma_nv = "NV_" + username.upper()
+            nv_cols_ins = ["MaNV", "HoTen", "TaiKhoan", "MatKhau", "TrangThai", "CaTruc", "Email", "VaiTro"]
+            nv_vals_ins = [ma_nv, full_name, username, pw_hash or generate_password_hash("123456"), status_vn, shift or 'Ca Sáng (06:00 - 14:00)', email or f"{username}@security.com", 'Bảo vệ']
+            if nv_phone_col:
+                nv_cols_ins.append(nv_phone_col)
+                nv_vals_ins.append(phone or 'Chưa có')
+            placeholders = ", ".join(["%s"] * len(nv_cols_ins))
+            cursor.execute(f"INSERT INTO nhan_vien ({', '.join(nv_cols_ins)}) VALUES ({placeholders})", tuple(nv_vals_ins))
+
+        conn.commit()
+        return True, f"Cập nhật thành công thông tin tài khoản '{username}'!"
+    except Error as e:
+        print(f"Lỗi admin_update_user_info: {e}")
+        return False, f"Lỗi CSDL: {e}"
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+
 def admin_delete_guard(username):
     """Xóa tài khoản bảo vệ."""
     conn = None
@@ -2078,11 +2446,9 @@ def get_guard_verification_info(plate_text):
         
         if veh:
             expiry = veh.get("monthly_ticket_expiry") or veh.get("NgayHetHan")
-            if expiry:
-                exp_date = expiry if isinstance(expiry, date) else datetime.strptime(str(expiry)[:10], "%Y-%m-%d").date()
-                if exp_date >= date.today():
-                    is_monthly = True
-                    ticket_type = "Vé Tháng Cư Dân"
+            if expiry and is_date_active(expiry):
+                is_monthly = True
+                ticket_type = "Vé Tháng Cư Dân"
                     
         if session_curr and session_curr.get("check_in_time"):
             in_time = session_curr["check_in_time"]
@@ -2097,6 +2463,11 @@ def get_guard_verification_info(plate_text):
             else:
                 fee = 0
 
+        group_type = veh.get("group_type") or "Normal" if veh else "Normal"
+        is_blacklist = (group_type == "Blacklist")
+        if is_blacklist:
+            ticket_type = "🚨 Blacklist (Cảnh báo)"
+
         return {
             "plate_text": plate_text,
             "vehicle_type": veh.get("vehicle_type") if veh else "Ô tô con",
@@ -2104,6 +2475,8 @@ def get_guard_verification_info(plate_text):
             "owner_name": (veh.get("resident_name") or veh.get("owner_name")) if veh else "Khách vãng lai",
             "apartment": veh.get("MaCanHo") if veh else "---",
             "phone": veh.get("SoDienThoai") if veh else "---",
+            "group_type": group_type,
+            "is_blacklist": is_blacklist,
             "is_monthly": is_monthly,
             "ticket_type": ticket_type,
             "has_active_session": session_curr is not None,
@@ -2115,9 +2488,55 @@ def get_guard_verification_info(plate_text):
             "fee_formatted": f"{fee:,.0f} VNĐ",
             "in_camera": session_curr["camera_in"] if session_curr else "Cổng Vào #1"
         }
-    except Error as e:
+    except Exception as e:
         print(f"Lỗi lấy thông tin đối chiếu: {e}")
         return None
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+
+def get_active_session_by_plate(plate_text):
+    """Kiểm tra xe có phiên đỗ đang hoạt động không kèm thời lượng đã đỗ."""
+    conn = None
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return None
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT id, check_in_time, TIMESTAMPDIFF(SECOND, check_in_time, NOW()) as diff_seconds
+            FROM parking_sessions
+            WHERE plate_text = %s AND status = 'Parked'
+            ORDER BY check_in_time DESC LIMIT 1
+        """, (plate_text,))
+        return cursor.fetchone()
+    except Exception:
+        return None
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+
+def get_latest_session_or_detection():
+    """Lấy biển số của phiên đỗ hoặc lần quét gần nhất để hiển thị ban đầu trên bàn trực."""
+    conn = None
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return "30A-123.45"
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT plate_text FROM parking_sessions ORDER BY id DESC LIMIT 1")
+        row = cursor.fetchone()
+        if row and row.get("plate_text"):
+            return row["plate_text"]
+        cursor.execute("SELECT plate_text FROM detections ORDER BY id DESC LIMIT 1")
+        row2 = cursor.fetchone()
+        if row2 and row2.get("plate_text"):
+            return row2["plate_text"]
+        return "30A-123.45"
+    except Exception:
+        return "30A-123.45"
     finally:
         if conn and conn.is_connected():
             cursor.close()

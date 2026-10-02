@@ -19,3 +19,7 @@ fe/
 - **Admin / Staff (Bảo vệ)**: Truy cập trang chủ `/` (`index.html`) để giám sát camera biển số, đối soát lượt vào/ra, điều khiển barrier, xem biểu đồ lưu lượng và thống kê doanh thu.
 - **Resident (Cư dân)**: Truy cập `/resident-dashboard` (`resident_dashboard.html`) để quản lý các phương tiện cá nhân đã đăng ký, tra cứu lịch sử ra vào và quản lý phí gửi xe.
 - **Khách vãng lai**: Màn hình đăng nhập/đăng ký với giao diện hiện đại, hỗ trợ khôi phục mật khẩu qua OTP.
+
+## Tài liệu Khảo sát yêu cầu chuẩn CNPM
+- Chi tiết bảng khảo sát 6 cột (Mã, Tên yêu cầu, Mô tả yêu cầu, Ưu tiên, Tiêu chí nghiệm thu, Link mẫu): [KHAO_SAT_YEU_CAU.md](file:///d:/CNPM24CT2_OngThanQuocTruong/BienSoXe/KHAO_SAT_YEU_CAU.md)
+

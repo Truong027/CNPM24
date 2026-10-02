@@ -656,10 +656,786 @@
             color: var(--muted-foreground);
             margin-top: 2px;
         }
+
+        /* ================= CINEMA SEAT STYLE PARKING SELECTOR ================= */
+        .slot-picker-trigger-card {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.85rem 1rem;
+            background: var(--muted);
+            border: 1.5px dashed var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slot-picker-trigger-card:hover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .slot-picker-trigger-card.selected {
+            border-style: solid;
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.08);
+        }
+
+        .slot-trigger-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .slot-trigger-text {
+            flex: 1;
+        }
+
+        .slot-trigger-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--foreground);
+        }
+
+        .slot-trigger-subtitle {
+            font-size: 0.78rem;
+            color: var(--muted-foreground);
+            margin-top: 2px;
+        }
+
+        /* Modal Cinema Styling */
+        .cinema-modal-content {
+            max-width: 1240px !important;
+            width: 96% !important;
+            max-height: 92vh;
+            display: flex;
+            flex-direction: column;
+            padding: 0 !important;
+            overflow: hidden;
+            background: #0b0f19 !important;
+            color: #f1f5f9 !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .cinema-modal-header {
+            padding: 1.25rem 1.5rem;
+            background: #111827;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .cinema-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.15);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 0.35rem;
+        }
+
+        .cinema-modal-body {
+            padding: 1.25rem 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* Cinema Control Bar */
+        .cinema-control-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .cinema-floor-tabs {
+            display: inline-flex;
+            background: #1e293b;
+            padding: 4px;
+            border-radius: 8px;
+            gap: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .cinema-floor-btn {
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .cinema-floor-btn:hover {
+            color: #f8fafc;
+        }
+
+        .cinema-floor-btn.active {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+        }
+
+        .floor-pill-count {
+            background: rgba(0, 0, 0, 0.25);
+            font-size: 0.72rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Cinema Screen / Ramp Indicator */
+        .cinema-screen-container {
+            text-align: center;
+            margin: 0.5rem auto 1.5rem auto;
+            max-width: 650px;
+        }
+
+        .cinema-screen-curve {
+            position: relative;
+            background: linear-gradient(180deg, rgba(59, 130, 246, 0.25) 0%, rgba(30, 41, 59, 0.4) 100%);
+            border-top: 3px solid #3b82f6;
+            border-radius: 120px 120px 0 0;
+            padding: 0.85rem 1rem 0.65rem 1rem;
+            box-shadow: 0 -8px 25px rgba(59, 130, 246, 0.2);
+            overflow: hidden;
+        }
+
+        .screen-text {
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #93c5fd;
+            text-transform: uppercase;
+        }
+
+        .cinema-screen-direction {
+            font-size: 0.72rem;
+            color: #64748b;
+            letter-spacing: 1.5px;
+            margin-top: 0.35rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Cinema Legend */
+        .cinema-legend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            padding: 0.75rem 1rem;
+            background: #111827;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 1.5rem;
+            font-size: 0.78rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: #cbd5e1;
+        }
+
+        .legend-seat {
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+        }
+
+        .legend-seat.seat-available {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1.5px solid #10b981;
+        }
+
+        .legend-seat.seat-occupied {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1.5px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .legend-seat.seat-selected {
+            background: #2563eb;
+            border: 1.5px solid #93c5fd;
+            color: #fff;
+        }
+
+        .legend-seat.seat-vip {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1.5px solid #f59e0b;
+            color: #f59e0b;
+        }
+
+        .legend-seat.seat-mine {
+            background: rgba(6, 182, 212, 0.2);
+            border: 1.5px solid #06b6d4;
+            color: #06b6d4;
+        }
+
+        /* Driving lane */
+        .cinema-driving-lane {
+            background: #030712;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            padding: 0.45rem;
+            margin: 1rem 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        /* Unified Cinema Slots Board Wrapper */
+        .cinema-slots-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: visible;
+            padding: 1.25rem 0.5rem 1.75rem 0.5rem;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: #3b82f6 #1e293b;
+        }
+
+        .cinema-slots-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .cinema-slots-wrapper::-webkit-scrollbar-track {
+            background: #0f172a;
+            border-radius: 4px;
+        }
+
+        .cinema-slots-wrapper::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+            border: 2px solid #0f172a;
+        }
+
+        .cinema-slots-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+
+        /* Inner canvas ensuring min-width and no clipping at start (fix lỗi không hiển thị ô 01) */
+        .cinema-board-canvas {
+            min-width: max-content;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 auto;
+            padding: 0 0.75rem;
+        }
+
+        /* Row Container - Khoảng cách thoáng đãng, không cấn các nút */
+        .cinema-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            margin-bottom: 0.9rem;
+            width: max-content;
+        }
+
+        .cinema-row-label {
+            width: 50px;
+            height: 50px;
+            background: #1e293b;
+            border-radius: 10px;
+            border: 1.5px solid rgba(255, 255, 255, 0.14);
+            color: #94a3b8;
+            font-weight: 800;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            text-align: center;
+            line-height: 1.15;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            user-select: none;
+        }
+
+        .cinema-row-stalls {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            justify-content: flex-start; /* Luôn bắt đầu từ ô 01, không bị căn giữa gây tọa độ âm che mất ô 01 */
+            flex-wrap: nowrap;
+            overflow: visible; /* Không cuộn từng hàng riêng lẻ làm che lấp ô đỗ */
+            padding: 4px 0;
+        }
+
+        .cinema-aisle-divider {
+            width: 26px;
+            height: 54px;
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cinema-aisle-divider::after {
+            content: '';
+            width: 2px;
+            height: 85%;
+            background: repeating-linear-gradient(to bottom, #475569 0, #475569 4px, transparent 4px, transparent 8px);
+            opacity: 0.6;
+        }
+
+        /* Individual Parking Seat Stall - Kích thước chuẩn đẹp, thoáng đãng không cấn nút */
+        .parking-seat-slot {
+            width: 58px;
+            height: 74px;
+            background: #131b2e;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 3.5px solid #475569;
+            border-right: 3.5px solid #475569;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 3px 5px 3px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            position: relative;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        .slot-car-icon {
+            font-size: 1.1rem;
+            color: #64748b;
+            transition: color 0.15s ease;
+        }
+
+        .slot-code {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            color: #cbd5e1;
+            line-height: 1;
+        }
+
+        .slot-plate-tag {
+            font-size: 0.56rem;
+            font-weight: 700;
+            padding: 1px 3px;
+            border-radius: 3px;
+            max-width: 52px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* Slot States */
+        .parking-seat-slot.seat-available {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.25);
+            border-left-color: #10b981;
+            border-right-color: #10b981;
+        }
+
+        .parking-seat-slot.seat-available .slot-car-icon {
+            color: #10b981;
+        }
+
+        .parking-seat-slot.seat-available:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: rgba(16, 185, 129, 0.18);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+            border-color: #34d399;
+        }
+
+        .parking-seat-slot.seat-occupied {
+            background: rgba(239, 68, 68, 0.06);
+            border-color: rgba(239, 68, 68, 0.2);
+            border-left-color: #ef4444;
+            border-right-color: #ef4444;
+            cursor: not-allowed;
+            opacity: 0.85;
+        }
+
+        .parking-seat-slot.seat-occupied .slot-car-icon {
+            color: #ef4444;
+        }
+
+        .parking-seat-slot.seat-occupied .slot-plate-tag {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .parking-seat-slot.seat-selected {
+            background: #2563eb !important;
+            border-color: #93c5fa !important;
+            border-left-color: #60a5fa !important;
+            border-right-color: #60a5fa !important;
+            color: #ffffff !important;
+            transform: translateY(-5px) scale(1.08);
+            box-shadow: 0 0 22px rgba(37, 99, 235, 0.7);
+            z-index: 10;
+        }
+
+        .parking-seat-slot.seat-selected .slot-car-icon,
+        .parking-seat-slot.seat-selected .slot-code {
+            color: #ffffff !important;
+        }
+
+        .parking-seat-slot.seat-vip {
+            border-left-color: #f59e0b;
+            border-right-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.08);
+        }
+
+        .parking-seat-slot.seat-vip .slot-car-icon {
+            color: #f59e0b;
+        }
+
+        .parking-seat-slot.seat-mine {
+            border-left-color: #06b6d4;
+            border-right-color: #06b6d4;
+            background: rgba(6, 182, 212, 0.15);
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.35);
+        }
+
+        .parking-seat-slot.seat-mine .slot-car-icon {
+            color: #06b6d4;
+        }
+
+        /* Bottom Selection Dock */
+        .cinema-bottom-dock {
+            padding: 1rem 1.5rem;
+            background: #111827;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .dock-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dock-slot-badge {
+            padding: 0.5rem 0.85rem;
+            border-radius: 8px;
+            background: #1e293b;
+            color: #60a5fa;
+            border: 1.5px solid rgba(59, 130, 246, 0.3);
+            font-weight: 800;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .dock-slot-badge.active {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #93c5fd;
+            box-shadow: 0 0 14px rgba(37, 99, 235, 0.5);
+        }
+
+        .dock-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .dock-sub {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .dock-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Parking slot badge on vehicle card */
+        .parking-slot-card-tag {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 0.85rem;
+            background: var(--muted);
+            border-radius: var(--radius);
+            margin: 0.75rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .slot-tag-left {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .slot-tag-left > i {
+            font-size: 1.4rem;
+            color: #2563eb;
+        }
+
+        /* Cinema Notification Banner (Thay thế hoàn toàn alert/notice bằng thông báo trực quan trên giao diện) */
+        .cinema-alert-banner {
+            margin: 0.85rem 1.5rem 0.25rem 1.5rem;
+            padding: 0.9rem 1.25rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            font-size: 0.92rem;
+            line-height: 1.45;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+            animation: bannerSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes bannerSlideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cinema-alert-banner.banner-info {
+            background: rgba(30, 58, 138, 0.35);
+            border: 1.5px solid rgba(59, 130, 246, 0.6);
+            color: #93c5fd;
+        }
+
+        .cinema-alert-banner.banner-success {
+            background: rgba(6, 78, 59, 0.45);
+            border: 1.5px solid #10b981;
+            color: #6ee7b7;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+        }
+
+        .cinema-alert-banner.banner-danger {
+            background: rgba(127, 29, 29, 0.45);
+            border: 1.5px solid #ef4444;
+            color: #fca5a5;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+            animation: bannerShake 0.4s ease-in-out;
+        }
+
+        .cinema-alert-banner.banner-warning {
+            background: rgba(120, 53, 15, 0.45);
+            border: 1.5px solid #f59e0b;
+            color: #fcd34d;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+            animation: bannerShake 0.4s ease-in-out;
+        }
+
+        @keyframes bannerShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .cinema-alert-banner .banner-left {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex: 1;
+        }
+
+        .cinema-alert-banner .banner-icon {
+            font-size: 1.45rem;
+            flex-shrink: 0;
+        }
+
+        .cinema-alert-banner.banner-success .banner-icon { color: #10b981; text-shadow: 0 0 10px rgba(16, 185, 129, 0.6); }
+        .cinema-alert-banner.banner-danger .banner-icon { color: #ef4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.6); }
+        .cinema-alert-banner.banner-warning .banner-icon { color: #f59e0b; text-shadow: 0 0 10px rgba(245, 158, 11, 0.6); }
+        .cinema-alert-banner.banner-info .banner-icon { color: #60a5fa; text-shadow: 0 0 10px rgba(96, 165, 250, 0.6); }
+
+        .cinema-alert-banner .banner-close {
+            background: transparent;
+            border: none;
+            color: currentColor;
+            opacity: 0.7;
+            cursor: pointer;
+            font-size: 1.35rem;
+            padding: 0.2rem 0.45rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+
+        .cinema-alert-banner .banner-close:hover {
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        /* Floating Global Toast Notifications */
+        .resident-toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 440px;
+            width: calc(100% - 48px);
+            pointer-events: none;
+        }
+
+        .resident-toast {
+            pointer-events: auto;
+            background: rgba(15, 23, 42, 0.96);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #f8fafc;
+            animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .resident-toast.toast-leaving {
+            animation: toastSlideOut 0.3s forwards ease-in;
+        }
+
+        @keyframes toastSlideIn {
+            from { opacity: 0; transform: translateX(60px) scale(0.92); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        @keyframes toastSlideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(60px); }
+        }
+
+        .resident-toast.toast-success {
+            border-left: 5px solid #10b981;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.25);
+        }
+
+        .resident-toast.toast-error {
+            border-left: 5px solid #ef4444;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.25);
+        }
+
+        .resident-toast.toast-warning {
+            border-left: 5px solid #f59e0b;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.25);
+        }
+
+        .resident-toast.toast-info {
+            border-left: 5px solid #3b82f6;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.25);
+        }
+
+        .resident-toast .toast-icon {
+            font-size: 1.35rem;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        .resident-toast.toast-success .toast-icon { color: #10b981; }
+        .resident-toast.toast-error .toast-icon { color: #ef4444; }
+        .resident-toast.toast-warning .toast-icon { color: #f59e0b; }
+        .resident-toast.toast-info .toast-icon { color: #3b82f6; }
+
+        .resident-toast .toast-body {
+            flex: 1;
+        }
+
+        .resident-toast .toast-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+            color: #ffffff;
+        }
+
+        .resident-toast .toast-msg {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            line-height: 1.45;
+        }
+
+        .resident-toast .toast-close {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0;
+            margin-left: 4px;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .resident-toast .toast-close:hover {
+            color: #ffffff;
+        }
+
+        /* Pulse / Shake animation for active slot */
+        .slot-shake {
+            animation: slotShakeAnim 0.4s ease-in-out !important;
+        }
+
+        @keyframes slotShakeAnim {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.15) rotate(-6deg); }
+            75% { transform: scale(1.15) rotate(6deg); }
+        }
     </style>
 </head>
 
 <body>
+    <!-- Global Floating UI Toast Container (Hiển thị thông báo trên giao diện) -->
+    <div id="residentToastContainer" class="resident-toast-container"></div>
 
     <!-- Top Navbar -->
     <header class="navbar">
@@ -746,9 +1522,14 @@
                     <p class="section-desc">Theo dõi tình trạng xe, hạn vé tháng, gia hạn và chuyển nhượng xe cho cư dân
                         khác.</p>
                 </div>
-                <button class="btn btn-default" onclick="openAddModal()">
-                    <i class="fa-solid fa-plus"></i> Đăng ký thêm xe
-                </button>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button class="btn btn-outline" onclick="openCinemaModal('view')">
+                        <i class="fa-solid fa-map-location-dot" style="color: #2563eb;"></i> Sơ đồ bãi xe chung cư
+                    </button>
+                    <button class="btn btn-default" onclick="openAddModal()">
+                        <i class="fa-solid fa-plus"></i> Đăng ký thêm xe
+                    </button>
+                </div>
             </div>
 
             <div id="loadingVehicles" style="text-align: center; padding: 3rem 0; color: var(--muted-foreground);">
@@ -1001,6 +1782,30 @@
                     <label class="form-label" for="addColor">Màu sắc</label>
                     <input class="form-input" id="addColor" placeholder="Trắng, Đen, Đỏ, Bạc...">
                 </div>
+
+                <!-- CHỌN VỊ TRÍ ĐỖ XE Ô TÔ THEO PHONG CÁCH RẠP CHIẾU PHIM -->
+                <div class="form-item">
+                    <label class="form-label">
+                        Vị trí đỗ xe trong chung cư
+                        <span style="color: #2563eb; font-size: 0.75rem; font-weight: 700; margin-left: 4px;">
+                            (Chọn theo sơ đồ rạp phim)
+                        </span>
+                    </label>
+                    <input type="hidden" id="addSlotHidden" name="vi_tri_do">
+                    <div id="addSlotSelectorCard" class="slot-picker-trigger-card" onclick="openCinemaModal('add')">
+                        <div class="slot-trigger-icon">
+                            <i class="fa-solid fa-square-parking"></i>
+                        </div>
+                        <div class="slot-trigger-text">
+                            <div class="slot-trigger-title" id="addSlotTitle">Chưa chọn vị trí đỗ</div>
+                            <div class="slot-trigger-subtitle" id="addSlotSubtitle">Bấm vào đây để mở sơ đồ rạp phim và chọn chỗ đỗ ưng ý</div>
+                        </div>
+                        <button type="button" class="btn btn-outline btn-sm" style="pointer-events: none;">
+                            <i class="fa-solid fa-map-location-dot"></i> Chọn chỗ
+                        </button>
+                    </div>
+                </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Hủy</button>
                     <button type="submit" class="btn btn-default" id="btnAddSubmit">Xác nhận đăng ký</button>
@@ -1033,6 +1838,24 @@
                     <label class="form-label" for="editColor">Màu sắc</label>
                     <input class="form-input" id="editColor">
                 </div>
+
+                <div class="form-item">
+                    <label class="form-label">Vị trí bãi đỗ xe</label>
+                    <input type="hidden" id="editSlotHidden">
+                    <div id="editSlotSelectorCard" class="slot-picker-trigger-card" onclick="openCinemaModal('change', document.getElementById('editPlateHidden').value, document.getElementById('editSlotHidden').value)">
+                        <div class="slot-trigger-icon">
+                            <i class="fa-solid fa-square-parking"></i>
+                        </div>
+                        <div class="slot-trigger-text">
+                            <div class="slot-trigger-title" id="editSlotTitle">Chưa gán vị trí đỗ</div>
+                            <div class="slot-trigger-subtitle" id="editSlotSubtitle">Bấm để đổi sang vị trí đỗ khác theo sơ đồ rạp phim</div>
+                        </div>
+                        <button type="button" class="btn btn-outline btn-sm" style="pointer-events: none;">
+                            <i class="fa-solid fa-repeat"></i> Đổi chỗ
+                        </button>
+                    </div>
+                </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Hủy</button>
                     <button type="submit" class="btn btn-default">Lưu thay đổi</button>
@@ -1127,6 +1950,124 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL CINEMA SEAT PICKER CHO BÃI ĐỖ XE Ô TÔ ================= -->
+    <div class="modal" id="cinemaModal" style="z-index: 1050;">
+        <div class="modal-content cinema-modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header cinema-modal-header">
+                <div>
+                    <div class="cinema-header-badge"><i class="fa-solid fa-film"></i> CINEMA SEAT STYLE PARKING</div>
+                    <h3 class="modal-title" style="font-size: 1.35rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; color: #f8fafc;">
+                        <i class="fa-solid fa-square-parking" style="color: #3b82f6;"></i> Sơ Đồ Chọn Bãi Đỗ Xe Ô Tô Chung Cư
+                    </h3>
+                    <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 2px;">
+                        Mô phỏng 2 tầng hầm chung cư. Vui lòng bấm chọn ô đỗ màu xanh còn trống tương tự như đặt ghế xem phim.
+                    </p>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="closeCinemaModal()" style="border: none; font-size: 1.35rem; color: #94a3b8;">&times;</button>
+            </div>
+
+            <!-- Cinema Modal Body -->
+            <div class="cinema-modal-body">
+                <!-- Control Bar: Floor Tabs + Quick Refresh -->
+                <div class="cinema-control-bar">
+                    <div class="cinema-floor-tabs">
+                        <button type="button" class="cinema-floor-btn active" id="btnFloorB1" onclick="switchFloor('Ham_B1')">
+                            <i class="fa-solid fa-building"></i> Tầng Hầm B1
+                            <span class="floor-pill-count" id="countB1">Đang tải...</span>
+                        </button>
+                        <button type="button" class="cinema-floor-btn" id="btnFloorB2" onclick="switchFloor('Ham_B2')">
+                            <i class="fa-solid fa-building"></i> Tầng Hầm B2
+                            <span class="floor-pill-count" id="countB2">Đang tải...</span>
+                        </button>
+                    </div>
+
+                    <div class="cinema-refresh-tool">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="loadParkingMap(true)" title="Tải lại sơ đồ">
+                            <i class="fa-solid fa-rotate"></i> Làm mới sơ đồ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- THÔNG BÁO TRỰC QUAN TRÊN GIAO DIỆN (Thay thế hoàn toàn alert/notice) -->
+                <div class="cinema-alert-banner banner-info" id="cinemaAlertBanner">
+                    <div class="banner-left">
+                        <i class="fa-solid fa-circle-info banner-icon" id="cinemaAlertIcon"></i>
+                        <div id="cinemaAlertText">
+                            <strong>Hướng dẫn:</strong> Hãy nhấp chuột vào một ô đỗ màu xanh lá trên sơ đồ để chọn vị trí đỗ cho xe của bạn.
+                        </div>
+                    </div>
+                    <button type="button" class="banner-close" onclick="dismissCinemaBanner()" title="Đóng thông báo">&times;</button>
+                </div>
+
+                <!-- Screen / Entrance Ramp Indicator -->
+                <div class="cinema-screen-container">
+                    <div class="cinema-screen-curve">
+                        <div class="screen-text">
+                            <i class="fa-solid fa-car"></i> CỔNG VÀO BÃI ĐỖ XE • RAMP DỐC TẦNG HẦM <i class="fa-solid fa-car"></i>
+                        </div>
+                    </div>
+                    <div class="cinema-screen-direction">
+                        <i class="fa-solid fa-chevron-down"></i> HƯỚNG XE LƯU THÔNG VÀO CÁC DÃY Ô ĐỖ <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <!-- Legend / Chú thích trạng thái -->
+                <div class="cinema-legend">
+                    <div class="legend-item">
+                        <div class="legend-seat seat-available"></div>
+                        <span>Chỗ trống (Có thể chọn)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-seat seat-occupied"><i class="fa-solid fa-car"></i></div>
+                        <span>Đã có xe đỗ</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-seat seat-selected"><i class="fa-solid fa-check"></i></div>
+                        <span>Vị trí đang chọn</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-seat seat-vip"><i class="fa-solid fa-crown"></i></div>
+                        <span>VIP (Gần thang máy)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-seat seat-mine"><i class="fa-solid fa-user-check"></i></div>
+                        <span>Xe của bạn</span>
+                    </div>
+                </div>
+
+                <!-- The Interactive Grid of Slots -->
+                <div class="cinema-slots-wrapper" id="cinemaSlotsContainer">
+                    <div style="text-align: center; padding: 2.5rem; color: #94a3b8;">
+                        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                        <p style="margin-top: 0.75rem;">Đang tải dữ liệu bãi đỗ xe...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Dock / Selection Summary Bar -->
+            <div class="cinema-bottom-dock" id="cinemaBottomDock">
+                <div class="dock-info">
+                    <div class="dock-slot-badge" id="dockSlotBadge">
+                        <i class="fa-solid fa-square-parking"></i> <span id="dockSlotCode">CHƯA CHỌN</span>
+                    </div>
+                    <div class="dock-desc">
+                        <div class="dock-title" id="dockSlotTitle">Vui lòng chọn một ô đỗ màu xanh trên sơ đồ</div>
+                        <div class="dock-sub" id="dockSlotSub">Vị trí đỗ xe ô tô cố định sẽ được cấp cùng vé tháng cư dân</div>
+                    </div>
+                </div>
+                <div class="dock-actions">
+                    <button type="button" class="btn btn-secondary" onclick="clearSelectedSlot()">
+                        <i class="fa-solid fa-xmark"></i> Bỏ chọn
+                    </button>
+                    <button type="button" class="btn btn-default" id="btnConfirmSlot" onclick="confirmSlotSelection()" disabled>
+                        <i class="fa-solid fa-circle-check"></i> Xác Nhận Vị Trí Này
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1263,6 +2204,21 @@
                         </div>
                     </div>
 
+                    <div class="parking-slot-card-tag">
+                        <div class="slot-tag-left">
+                            <i class="fa-solid fa-square-parking"></i>
+                            <div>
+                                <div style="font-size: 0.7rem; color: var(--muted-foreground); text-transform: uppercase; font-weight: 700;">Vị trí bãi đỗ chung cư</div>
+                                <div style="font-size: 0.95rem; font-weight: 800; color: #2563eb;">
+                                    ${v.ViTriDo ? (v.TenChoDo || ('Ô ' + v.ViTriDo)) : 'Chưa đăng ký vị trí'}
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-outline" onclick="openCinemaModal('change', '${v.BienSoXe}', '${v.ViTriDo || ''}')" title="Chọn hoặc đổi vị trí theo sơ đồ rạp chiếu phim">
+                            <i class="fa-solid fa-repeat"></i> ${v.ViTriDo ? 'Đổi chỗ' : 'Chọn chỗ'}
+                        </button>
+                    </div>
+
                     <div class="ticket-box ${alertBoxClass}">
                         <div>
                             <span style="display: block; font-size: 0.75rem; color: var(--muted-foreground);">Hạn vé tháng:</span>
@@ -1274,7 +2230,7 @@
                     </div>
 
                     <div class="card-actions">
-                        <button class="btn btn-sm btn-outline" style="flex: 1;" onclick="openEditModal('${v.BienSoXe}', '${v.LoaiXe || 'Ô tô con'}', '${v.MauXe || ''}')">
+                        <button class="btn btn-sm btn-outline" style="flex: 1;" onclick="openEditModal('${v.BienSoXe}', '${v.LoaiXe || 'Ô tô con'}', '${v.MauXe || ''}', '${v.ViTriDo || ''}', '${v.TenChoDo || ''}')">
                             <i class="fa-solid fa-pen"></i> Sửa
                         </button>
                         <button class="btn btn-sm btn-secondary" style="flex: 1.2;" onclick="openTransferModal('${v.BienSoXe}')">
@@ -1446,6 +2402,77 @@
             }
         });
 
+        // ================= HỆ THỐNG THÔNG BÁO GIAO DIỆN HIỆN ĐẠI (THAY THẾ HOÀN TOÀN NOTICE / BROWSER ALERT) =================
+        function showToastNotification(message, type = 'info', title = null, duration = 4500) {
+            let container = document.getElementById('residentToastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'residentToastContainer';
+                container.className = 'resident-toast-container';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            let typeClass = type;
+            let defaultTitle = 'Thông báo';
+            let iconClass = 'fa-circle-info';
+
+            if (type === 'success') {
+                defaultTitle = 'Thành công';
+                iconClass = 'fa-circle-check';
+            } else if (type === 'error' || type === 'danger') {
+                typeClass = 'error';
+                defaultTitle = 'Cảnh báo / Lỗi';
+                iconClass = 'fa-circle-exclamation';
+            } else if (type === 'warning') {
+                defaultTitle = 'Lưu ý';
+                iconClass = 'fa-triangle-exclamation';
+            }
+
+            toast.className = `resident-toast toast-${typeClass}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${iconClass} toast-icon"></i>
+                <div class="toast-body">
+                    <div class="toast-title">${title || defaultTitle}</div>
+                    <div class="toast-msg">${message}</div>
+                </div>
+                <button type="button" class="toast-close" onclick="this.parentElement.remove()" title="Đóng">&times;</button>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('toast-leaving');
+                setTimeout(() => {
+                    if (toast.parentElement) toast.remove();
+                }, 300);
+            }, duration);
+        }
+
+        function showCinemaBanner(message, type = 'info') {
+            const banner = document.getElementById('cinemaAlertBanner');
+            if (!banner) return;
+
+            banner.className = `cinema-alert-banner banner-${type}`;
+            const icon = document.getElementById('cinemaAlertIcon');
+            if (icon) {
+                if (type === 'success') icon.className = 'fa-solid fa-circle-check banner-icon';
+                else if (type === 'danger' || type === 'error') icon.className = 'fa-solid fa-circle-exclamation banner-icon';
+                else if (type === 'warning') icon.className = 'fa-solid fa-triangle-exclamation banner-icon';
+                else icon.className = 'fa-solid fa-circle-info banner-icon';
+            }
+
+            const textElem = document.getElementById('cinemaAlertText');
+            if (textElem) textElem.innerHTML = message;
+
+            banner.style.display = 'flex';
+        }
+
+        function dismissCinemaBanner() {
+            const banner = document.getElementById('cinemaAlertBanner');
+            if (banner) banner.style.display = 'none';
+        }
+
         // ================= MODAL CHUYỂN NHƯỢNG XE =================
         function openTransferModal(plate) {
             document.getElementById('transferPlateHidden').value = plate;
@@ -1484,13 +2511,14 @@
 
                 if (!res.ok) throw new Error(data.error || 'Lỗi chuyển nhượng');
 
-                alert(data.message);
+                showToastNotification(data.message, 'success', 'Chuyển Nhượng Xe');
                 closeTransferModal();
                 loadResidentTransferRequests();
             } catch (err) {
                 alertBox.className = 'alert-box error';
                 alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${err.message}`;
                 alertBox.style.display = 'flex';
+                showToastNotification(err.message, 'error', 'Lỗi Chuyển Nhượng');
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Gửi Đơn Xin Chuyển Nhượng';
@@ -1498,7 +2526,15 @@
         });
 
         // ================= MODAL ADD XE =================
-        function openAddModal() { document.getElementById('addModal').classList.add('active'); }
+        function openAddModal() {
+            document.getElementById('addVehicleForm').reset();
+            document.getElementById('addSlotHidden').value = '';
+            document.getElementById('addSlotTitle').textContent = 'Chưa chọn vị trí đỗ';
+            document.getElementById('addSlotSubtitle').textContent = 'Bấm vào đây để mở sơ đồ rạp phim và chọn chỗ đỗ ưng ý';
+            document.getElementById('addSlotSelectorCard').classList.remove('selected');
+            document.getElementById('addModal').classList.add('active');
+        }
+
         function closeAddModal() {
             document.getElementById('addModal').classList.remove('active');
             document.getElementById('addVehicleForm').reset();
@@ -1513,7 +2549,8 @@
             const payload = {
                 plate_text: document.getElementById('addPlate').value.trim().toUpperCase(),
                 vehicle_type: document.getElementById('addType').value,
-                color: document.getElementById('addColor').value.trim()
+                color: document.getElementById('addColor').value.trim(),
+                vi_tri_do: document.getElementById('addSlotHidden').value.trim()
             };
 
             try {
@@ -1525,11 +2562,15 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Lỗi hệ thống');
 
-                alert('Đăng ký phương tiện thành công! Vé tháng 30 ngày đã được cấp tự động.');
+                let successMsg = `Đăng ký phương tiện <strong>${payload.plate_text}</strong> thành công! Vé tháng 30 ngày đã cấp.`;
+                if (payload.vi_tri_do) {
+                    successMsg += `<br>Vị trí đỗ: <strong style="color: #60a5fa;">${payload.vi_tri_do}</strong> tại bãi xe chung cư!`;
+                }
+                showToastNotification(successMsg, 'success', 'Đăng Ký Xe Thành Công', 5000);
                 closeAddModal();
                 loadVehicles();
             } catch (err) {
-                alert(err.message);
+                showToastNotification(err.message, 'error', 'Lỗi Đăng Ký Xe');
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Xác nhận đăng ký';
@@ -1537,13 +2578,22 @@
         });
 
         // ================= MODAL EDIT XE =================
-        function openEditModal(plate, type, color) {
+        function openEditModal(plate, type, color, slot, slotName) {
             document.getElementById('editPlateHidden').value = plate;
             document.getElementById('editPlateDisplay').value = plate;
-            document.getElementById('editType').value = type;
-            document.getElementById('editColor').value = color;
+            document.getElementById('editType').value = type || 'Ô tô con';
+            document.getElementById('editColor').value = color || '';
+            document.getElementById('editSlotHidden').value = slot || '';
+            document.getElementById('editSlotTitle').textContent = slot ? (slotName || ('Ô ' + slot)) : 'Chưa gán vị trí đỗ';
+            document.getElementById('editSlotSubtitle').textContent = slot ? 'Bấm để đổi sang vị trí đỗ khác theo sơ đồ rạp phim' : 'Bấm để chọn vị trí đỗ theo sơ đồ rạp phim';
+            if (slot) {
+                document.getElementById('editSlotSelectorCard').classList.add('selected');
+            } else {
+                document.getElementById('editSlotSelectorCard').classList.remove('selected');
+            }
             document.getElementById('editModal').classList.add('active');
         }
+
         function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
 
         document.getElementById('editVehicleForm').addEventListener('submit', async (e) => {
@@ -1562,12 +2612,375 @@
                 });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Lỗi cập nhật');
+                showToastNotification(`Cập nhật thông tin xe ${plate} thành công!`, 'success', 'Cập Nhật');
                 closeEditModal();
                 loadVehicles();
             } catch (err) {
-                alert(err.message);
+                showToastNotification(err.message, 'error', 'Lỗi Cập Nhật Xe');
             }
         });
+
+        // ================= PHÂN HỆ SƠ ĐỒ CHỌN BÃI XE CINEMA STYLE =================
+        let cinemaMapData = null;
+        let currentCinemaFloor = 'Ham_B1';
+        let currentCinemaMode = 'add'; // 'add', 'change', 'view'
+        let changingPlate = '';
+        let selectedCinemaSlot = null;
+
+        async function openCinemaModal(mode = 'view', plate = '', currentSlotId = '') {
+            currentCinemaMode = mode;
+            changingPlate = plate;
+            selectedCinemaSlot = null;
+
+            const modal = document.getElementById('cinemaModal');
+            modal.classList.add('active');
+
+            // Reset scroll container về đầu để luôn thấy ô 01 ngay lập tức
+            const container = document.getElementById('cinemaSlotsContainer');
+            if (container) container.scrollLeft = 0;
+
+            // Reset dock UI
+            clearSelectedSlot();
+
+            if (mode === 'change') {
+                showCinemaBanner(`🚗 Đang đổi vị trí cho xe <strong>${plate}</strong>. Vui lòng bấm vào một ô màu xanh lá còn trống!`, 'info');
+            } else if (mode === 'add') {
+                showCinemaBanner(`🚗 Chọn vị trí đỗ ô tô cho xe mới. Hãy nhấp chọn một ô màu xanh lá trên sơ đồ.`, 'info');
+            } else {
+                showCinemaBanner(`🏢 Sơ đồ bãi xe chung cư. Nhấp vào các ô đỗ để xem chi tiết vị trí và tình trạng.`, 'info');
+            }
+
+            if (currentSlotId) {
+                window._preselectedSlotId = currentSlotId;
+            } else {
+                window._preselectedSlotId = null;
+            }
+
+            await loadParkingMap();
+            if (container) container.scrollLeft = 0;
+        }
+
+        function closeCinemaModal() {
+            document.getElementById('cinemaModal').classList.remove('active');
+        }
+
+        async function loadParkingMap(force = false) {
+            const container = document.getElementById('cinemaSlotsContainer');
+            if (!cinemaMapData || force) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2.5rem; color: #94a3b8;">
+                        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                        <p style="margin-top: 0.75rem;">Đang tải dữ liệu bãi đỗ xe...</p>
+                    </div>
+                `;
+            }
+
+            try {
+                const res = await fetch('/api/parking/map');
+                if (!res.ok) throw new Error('Không thể tải sơ đồ bãi đỗ xe');
+                const data = await res.json();
+                cinemaMapData = data;
+
+                // Cập nhật số lượng trên các tab tầng hầm
+                if (data.stats && data.stats.by_floor) {
+                    const b1 = data.stats.by_floor.Ham_B1;
+                    const b2 = data.stats.by_floor.Ham_B2;
+                    if (b1) document.getElementById('countB1').textContent = `Còn ${b1.available}/${b1.total} chỗ`;
+                    if (b2) document.getElementById('countB2').textContent = `Còn ${b2.available}/${b2.total} chỗ`;
+                }
+
+                // Nếu có preselectedSlot, chuyển sang tầng hầm của slot đó
+                if (window._preselectedSlotId) {
+                    const found = data.slots.find(s => s.ma_cho_do === window._preselectedSlotId);
+                    if (found && found.khu_vuc) {
+                        currentCinemaFloor = found.khu_vuc;
+                    }
+                }
+
+                renderCinemaMap();
+            } catch (err) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #ef4444;">
+                        <i class="fa-solid fa-circle-exclamation fa-2x"></i>
+                        <p style="margin-top: 0.5rem;">${err.message}</p>
+                        <button class="btn btn-sm btn-outline" style="margin-top: 0.5rem;" onclick="loadParkingMap(true)">Thử lại</button>
+                    </div>
+                `;
+                showCinemaBanner(`❌ ${err.message}`, 'danger');
+            }
+        }
+
+        function switchFloor(floorId) {
+            currentCinemaFloor = floorId;
+            document.getElementById('btnFloorB1').classList.toggle('active', floorId === 'Ham_B1');
+            document.getElementById('btnFloorB2').classList.toggle('active', floorId === 'Ham_B2');
+
+            const floorName = floorId === 'Ham_B1' ? 'Tầng Hầm B1' : 'Tầng Hầm B2';
+            if (!selectedCinemaSlot) {
+                showCinemaBanner(`🏢 Đang xem <strong>${floorName}</strong>. Hãy bấm vào một ô màu xanh lá để chọn chỗ đỗ.`, 'info');
+            }
+
+            renderCinemaMap();
+
+            // Đặt lại vị trí cuộn về đầu hàng khi đổi tầng
+            const container = document.getElementById('cinemaSlotsContainer');
+            if (container) container.scrollLeft = 0;
+        }
+
+        function renderCinemaMap() {
+            if (!cinemaMapData || !cinemaMapData.slots) return;
+            const container = document.getElementById('cinemaSlotsContainer');
+
+            // Lọc các ô theo tầng hầm hiện tại
+            const floorSlots = cinemaMapData.slots.filter(s => s.khu_vuc === currentCinemaFloor);
+
+            // Gom nhóm theo Dãy (Day)
+            const rowsMap = {};
+            floorSlots.forEach(s => {
+                if (!rowsMap[s.day]) rowsMap[s.day] = [];
+                rowsMap[s.day].push(s);
+            });
+
+            // Sắp xếp thứ tự các ô trong dãy
+            Object.keys(rowsMap).forEach(day => {
+                rowsMap[day].sort((a, b) => a.so_thu_tu - b.so_thu_tu);
+            });
+
+            let html = '<div class="cinema-board-canvas">';
+
+            const dayKeys = Object.keys(rowsMap);
+            dayKeys.forEach((day, index) => {
+                const stalls = rowsMap[day];
+                const isVip = day === 'VIP';
+
+                html += `
+                    <div class="cinema-row">
+                        <div class="cinema-row-label">
+                            <div>${isVip ? '<i class="fa-solid fa-crown" style="color: #f59e0b; font-size: 0.75rem;"></i><br>' : ''}DÃY ${day}</div>
+                        </div>
+                        <div class="cinema-row-stalls">
+                `;
+
+                // Tách 2 cụm ghế (trái / phải) để chừa lối đi ở giữa
+                const midpoint = Math.ceil(stalls.length / 2);
+
+                stalls.forEach((slot, sIdx) => {
+                    if (sIdx === midpoint && stalls.length > 5) {
+                        html += `<div class="cinema-aisle-divider"></div>`;
+                    }
+
+                    let stateClass = 'seat-available';
+                    let stateIcon = 'fa-car';
+                    let plateBadge = '';
+
+                    if (slot.trang_thai === 'DaDat') {
+                        stateClass = slot.is_my_slot ? 'seat-mine' : 'seat-occupied';
+                        stateIcon = slot.is_my_slot ? 'fa-user-check' : 'fa-car';
+                        plateBadge = `<span class="slot-plate-tag" title="Biển số: ${slot.full_plate || slot.bien_so_xe}">${slot.bien_so_xe || 'ĐÃ ĐỖ'}</span>`;
+                    } else if (slot.trang_thai === 'BaoTri') {
+                        stateClass = 'seat-occupied';
+                        stateIcon = 'fa-wrench';
+                        plateBadge = `<span class="slot-plate-tag">BẢO TRÌ</span>`;
+                    } else {
+                        plateBadge = `<span class="slot-plate-tag" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">TRỐNG</span>`;
+                    }
+
+                    if (isVip && slot.trang_thai === 'Trong') {
+                        stateClass += ' seat-vip';
+                    }
+
+                    // Nếu đang được chọn
+                    if (selectedCinemaSlot && selectedCinemaSlot.ma_cho_do === slot.ma_cho_do) {
+                        stateClass = 'seat-selected';
+                        stateIcon = 'fa-check';
+                    }
+
+                    const canSelect = (slot.trang_thai === 'Trong') || (currentCinemaMode === 'change' && slot.bien_so_xe === changingPlate);
+
+                    html += `
+                        <div class="parking-seat-slot ${stateClass}" 
+                             id="slot_${slot.ma_cho_do}"
+                             data-slot="${slot.ma_cho_do}"
+                             onclick="${canSelect ? `selectSlot('${slot.ma_cho_do}')` : `alertOccupiedSlot('${slot.ma_cho_do}', '${slot.full_plate || slot.bien_so_xe || ''}')`}"
+                             title="${slot.ten_cho_do} - ${slot.trang_thai === 'Trong' ? 'Chỗ trống, bấm để chọn' : ('Đã có xe đỗ: ' + (slot.full_plate || slot.bien_so_xe || ''))}">
+                            <i class="fa-solid ${stateIcon} slot-car-icon"></i>
+                            <div class="slot-code">${slot.day}-${String(slot.so_thu_tu).padStart(2, '0')}</div>
+                            ${plateBadge}
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                        <div class="cinema-row-label">
+                            <div>${isVip ? '<i class="fa-solid fa-crown" style="color: #f59e0b; font-size: 0.75rem;"></i><br>' : ''}DÃY ${day}</div>
+                        </div>
+                    </div>
+                `;
+
+                // Thêm vạch kẻ đường nội bộ bãi xe ở giữa các dãy
+                if (index < dayKeys.length - 1) {
+                    html += `
+                        <div class="cinema-driving-lane">
+                            <i class="fa-solid fa-arrows-left-right"></i>
+                            <span>════ LÀN ĐƯỜNG XE CHẠY NỘI BỘ TẦNG HẦM ════</span>
+                            <i class="fa-solid fa-arrows-left-right"></i>
+                        </div>
+                    `;
+                }
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+
+            // Nếu có preselected slot
+            if (window._preselectedSlotId && !selectedCinemaSlot) {
+                const found = floorSlots.find(s => s.ma_cho_do === window._preselectedSlotId);
+                if (found) {
+                    selectSlot(found.ma_cho_do);
+                }
+            }
+        }
+
+        function alertOccupiedSlot(slotId, plate) {
+            // Rung lắc ô đỗ để tạo hiệu ứng xúc giác rõ ràng trên giao diện
+            const el = document.getElementById('slot_' + slotId);
+            if (el) {
+                el.classList.remove('slot-shake');
+                void el.offsetWidth;
+                el.classList.add('slot-shake');
+            }
+
+            const plateText = plate ? `(Biển số: <strong>${plate}</strong>)` : '';
+            const msg = `⛔ <strong>VỊ TRÍ ${slotId} ĐÃ CÓ XE ĐỖ:</strong> ${plateText}. Vui lòng chọn một ô đỗ màu xanh lá còn trống!`;
+
+            // HIỂN THỊ RÕ RÀNG TRÊN GIAO DIỆN (KHÔNG DÙNG NOTICE / BROWSER ALERT)
+            showCinemaBanner(msg, 'danger');
+            showToastNotification(`Vị trí ${slotId} đã có xe đỗ! Vui lòng chọn ô màu xanh còn trống.`, 'error', 'Ô Đỗ Đã Có Xe');
+        }
+
+        function selectSlot(slotId) {
+            if (!cinemaMapData || !cinemaMapData.slots) return;
+            const slot = cinemaMapData.slots.find(s => s.ma_cho_do === slotId);
+            if (!slot) return;
+
+            selectedCinemaSlot = slot;
+
+            // Cập nhật giao diện thanh tóm tắt lựa chọn (Dock)
+            const badge = document.getElementById('dockSlotBadge');
+            badge.classList.add('active');
+            document.getElementById('dockSlotCode').textContent = slot.ma_cho_do;
+
+            const floorName = slot.khu_vuc === 'Ham_B1' ? 'Tầng Hầm B1' : 'Tầng Hầm B2';
+            document.getElementById('dockSlotTitle').textContent = `${slot.ten_cho_do} • ${slot.loai_cho_do}`;
+            document.getElementById('dockSlotSub').textContent = `Vị trí sẵn sàng được cấp cho xe của bạn tại ${floorName}`;
+
+            const btnConfirm = document.getElementById('btnConfirmSlot');
+            btnConfirm.disabled = false;
+            if (currentCinemaMode === 'change') {
+                btnConfirm.innerHTML = `<i class="fa-solid fa-repeat"></i> Xác Nhận Đổi Sang Vị Trí ${slot.ma_cho_do}`;
+            } else {
+                btnConfirm.innerHTML = `<i class="fa-solid fa-circle-check"></i> Xác Nhận Chọn Vị Trí ${slot.ma_cho_do}`;
+            }
+
+            // HIỂN THỊ THÔNG BÁO RÕ RÀNG TRÊN GIAO DIỆN (KHÔNG DÙNG NOTICE / ALERT)
+            showCinemaBanner(
+                `🎉 <strong>ĐÃ CHỌN VỊ TRÍ: ${slot.ma_cho_do}</strong> (${slot.ten_cho_do} • ${floorName}). Hãy nhấn nút <strong>"Xác Nhận Vị Trí Này"</strong> ở góc dưới để lưu!`,
+                'success'
+            );
+
+            showToastNotification(`Đã chọn vị trí ${slot.ma_cho_do} (${floorName})! Nhấn nút Xác Nhận bên dưới để lưu.`, 'success', 'Chọn Ô Đỗ Thành Công');
+
+            // Re-render highlight
+            renderCinemaMap();
+
+            // Tự động cuộn mượt mà đến ô đỗ vừa chọn, đảm bảo hiển thị rõ ràng không bị che khuất
+            setTimeout(() => {
+                const el = document.getElementById('slot_' + slotId);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }, 60);
+        }
+
+        function clearSelectedSlot() {
+            selectedCinemaSlot = null;
+            const badge = document.getElementById('dockSlotBadge');
+            badge.classList.remove('active');
+            document.getElementById('dockSlotCode').textContent = 'CHƯA CHỌN';
+            document.getElementById('dockSlotTitle').textContent = 'Vui lòng chọn một ô đỗ màu xanh trên sơ đồ';
+            document.getElementById('dockSlotSub').textContent = 'Vị trí đỗ xe ô tô cố định sẽ được cấp cùng vé tháng cư dân';
+
+            const btnConfirm = document.getElementById('btnConfirmSlot');
+            btnConfirm.disabled = true;
+            btnConfirm.innerHTML = `<i class="fa-solid fa-circle-check"></i> Xác Nhận Vị Trí Này`;
+
+            showCinemaBanner('ℹ️ Đã bỏ chọn vị trí. Hãy nhấp chuột vào một ô màu xanh lá trên sơ đồ để chọn lại.', 'info');
+
+            if (cinemaMapData) renderCinemaMap();
+        }
+
+        async function confirmSlotSelection() {
+            if (!selectedCinemaSlot) {
+                showCinemaBanner('⚠️ <strong>CHƯA CHỌN VỊ TRÍ:</strong> Vui lòng click chọn một ô đỗ màu xanh lá trên sơ đồ trước khi bấm Xác Nhận!', 'warning');
+                showToastNotification('Vui lòng chọn một ô đỗ màu xanh trước khi bấm Xác Nhận!', 'warning', 'Chưa Chọn Ô Đỗ');
+                return;
+            }
+
+            const slot = selectedCinemaSlot;
+            const floorName = slot.khu_vuc === 'Ham_B1' ? 'Hầm B1' : 'Hầm B2';
+
+            if (currentCinemaMode === 'add') {
+                // Gán vào form đăng ký xe
+                document.getElementById('addSlotHidden').value = slot.ma_cho_do;
+                document.getElementById('addSlotTitle').textContent = `${slot.ten_cho_do} (${slot.loai_cho_do})`;
+                document.getElementById('addSlotSubtitle').textContent = `Đã chọn: ${slot.ma_cho_do} tại ${floorName}`;
+                document.getElementById('addSlotSelectorCard').classList.add('selected');
+
+                showToastNotification(`Đã chọn vị trí ${slot.ma_cho_do} (${floorName}) cho phương tiện mới!`, 'success', 'Đã Chọn Vị Trí');
+                closeCinemaModal();
+            } else if (currentCinemaMode === 'change') {
+                // Gọi API đổi vị trí đỗ trực tiếp
+                if (!changingPlate) {
+                    showCinemaBanner('⚠️ Thiếu thông tin biển số xe cần đổi vị trí!', 'danger');
+                    showToastNotification('Thiếu thông tin biển số xe cần đổi!', 'error');
+                    return;
+                }
+
+                const btnConfirm = document.getElementById('btnConfirmSlot');
+                btnConfirm.disabled = true;
+                btnConfirm.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang đổi vị trí...`;
+
+                try {
+                    const res = await fetch('/api/resident/change_slot', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            plate_text: changingPlate,
+                            new_slot_id: slot.ma_cho_do
+                        })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || 'Đổi vị trí thất bại');
+
+                    showCinemaBanner(`🎉 <strong>THÀNH CÔNG:</strong> Xe <strong>${changingPlate}</strong> đã được đổi sang vị trí <strong>${slot.ma_cho_do}</strong> (${slot.ten_cho_do}).`, 'success');
+                    showToastNotification(`Xe ${changingPlate} đã được đổi sang vị trí ${slot.ma_cho_do} thành công!`, 'success', 'Đổi Vị Trí Thành Công');
+
+                    setTimeout(() => {
+                        closeCinemaModal();
+                        loadVehicles();
+                    }, 1200);
+                } catch (err) {
+                    showCinemaBanner(`❌ <strong>LỖI:</strong> ${err.message}`, 'danger');
+                    showToastNotification(err.message, 'error', 'Lỗi Đổi Vị Trí');
+                } finally {
+                    btnConfirm.disabled = false;
+                }
+            } else {
+                // Chế độ xem
+                closeCinemaModal();
+            }
+        }
 
         async function deleteVehicle(plate) {
             if (!confirm(`Bạn có chắc chắn muốn hủy đăng ký phương tiện ${plate}?`)) return;
@@ -1575,10 +2988,10 @@
                 const res = await fetch(`/api/resident/vehicles/${plate}`, { method: 'DELETE' });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Lỗi xóa xe');
-                alert('Đã xóa thành công!');
+                showToastNotification(`Đã hủy đăng ký xe ${plate} và giải phóng vị trí đỗ thành công!`, 'success', 'Xóa Xe Thành Công');
                 loadVehicles();
             } catch (err) {
-                alert(err.message);
+                showToastNotification(err.message, 'error', 'Lỗi Xóa Xe');
             }
         }
 
@@ -1617,11 +3030,11 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Lỗi gia hạn');
 
-                alert(`Gia hạn thành công! Hạn mới của vé tháng: ${data.new_expiry}`);
+                showToastNotification(`Gia hạn vé tháng thành công! Hạn mới: <strong>${data.new_expiry}</strong>`, 'success', 'Gia Hạn Thành Công');
                 closeRenewModal();
                 loadVehicles();
             } catch (err) {
-                alert(err.message);
+                showToastNotification(err.message, 'error', 'Lỗi Gia Hạn');
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Xác nhận gia hạn';
