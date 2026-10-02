@@ -224,9 +224,15 @@
                     <input class="form-input" id="fullName" name="full_name" placeholder="Nguyễn Văn A" required>
                 </div>
 
-                <div class="form-item">
-                    <label class="form-label" for="email">Địa chỉ Email</label>
-                    <input class="form-input" id="email" name="email" type="email" placeholder="email@domain.com">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="form-item">
+                        <label class="form-label" for="phone">Số điện thoại <span style="color: #ef4444;">*</span></label>
+                        <input class="form-input" id="phone" name="phone" type="tel" placeholder="0901234567" required pattern="^0[0-9]{9}$" title="Số điện thoại gồm 10 chữ số bắt đầu bằng số 0">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label" for="email">Địa chỉ Email</label>
+                        <input class="form-input" id="email" name="email" type="email" placeholder="email@domain.com">
+                    </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
@@ -266,10 +272,25 @@
                 role: document.getElementById('role').value,
                 username: document.getElementById('username').value.trim(),
                 full_name: document.getElementById('fullName').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
                 email: document.getElementById('email').value.trim(),
                 password: document.getElementById('password').value,
                 confirm_password: document.getElementById('confirmPassword').value
             };
+
+            const phoneRegex = /^0\d{9}$/;
+            if (!payload.phone) {
+                alertBox.className = 'alert-box error';
+                alertBox.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Vui lòng nhập số điện thoại';
+                alertBox.style.display = 'flex';
+                return;
+            }
+            if (!phoneRegex.test(payload.phone)) {
+                alertBox.className = 'alert-box error';
+                alertBox.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Số điện thoại không hợp lệ (gồm 10 chữ số bắt đầu bằng số 0)';
+                alertBox.style.display = 'flex';
+                return;
+            }
 
             if (payload.password !== payload.confirm_password) {
                 alertBox.className = 'alert-box error';

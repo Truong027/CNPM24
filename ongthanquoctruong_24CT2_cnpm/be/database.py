@@ -230,14 +230,24 @@ def init_db():
             password_hash VARCHAR(255) NOT NULL,
             full_name VARCHAR(100) NOT NULL,
             email VARCHAR(100),
+            phone VARCHAR(20) DEFAULT NULL,
             role VARCHAR(30) DEFAULT 'Admin',
             is_active BOOLEAN DEFAULT TRUE,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            INDEX idx_username (username)
+            INDEX idx_username (username),
+            INDEX idx_phone (phone)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ''')
         print("✅ Bảng 'app_users' đã được tạo.")
+
+        try:
+            c.execute("SHOW COLUMNS FROM app_users LIKE 'phone'")
+            if not c.fetchone():
+                c.execute("ALTER TABLE app_users ADD COLUMN phone VARCHAR(20) DEFAULT NULL AFTER email")
+                print("✅ Đã thêm cột phone vào bảng app_users.")
+        except Error as e:
+            print(f"⚠️ Lỗi nâng cấp cột phone trong app_users: {e}")
 
         # ====== THAY ĐỔI CẤU TRÚC BẢNG VEHICLES (TỰ ĐỘNG NÂNG CẤP) ======
         try:
@@ -1245,8 +1255,8 @@ def update_statistics(date_stat):
             cursor.close()
             conn.close()
 
-def register_user(username, password, full_name, email='', role='User'):
-    """Đăng ký tài khoản người dùng mới."""
+def register_user(username, password, full_name, email='', role='User', phone=''):
+    """Đăng ký tài khoản người dùng mới (kèm số điện thoại)."""
     conn = None
     try:
         conn = get_db_connection()
@@ -1266,11 +1276,17 @@ def register_user(username, password, full_name, email='', role='User'):
             if cursor.fetchone():
                 return None, "Email đã được sử dụng"
 
+        # Kiểm tra số điện thoại đã tồn tại chưa (nếu có)
+        if phone:
+            cursor.execute("SELECT id FROM app_users WHERE phone = %s", (phone,))
+            if cursor.fetchone():
+                return None, "Số điện thoại đã được đăng ký cho tài khoản khác"
+
         password_hash = generate_password_hash(password)
         cursor.execute("""
-            INSERT INTO app_users (username, password_hash, full_name, email, role)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (username, password_hash, full_name, email, role))
+            INSERT INTO app_users (username, password_hash, full_name, email, phone, role)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (username, password_hash, full_name, email, phone or None, role))
         
         import time
         if role == 'Resident':
@@ -1279,8 +1295,8 @@ def register_user(username, password, full_name, email='', role='User'):
             try:
                 cursor.execute("""
                     INSERT INTO cu_dan (MaCuDan, HoTen, CCCD, SoDienThoai, Email, MaCanHo, TaiKhoan, MatKhau, TrangThai)
-                    VALUES (%s, %s, %s, '000', %s, 'Chưa có', %s, %s, 'HoatDong')
-                """, (ma_cu_dan, full_name, ma_cu_dan, email or f"{username}@resident.com", username, password_hash))
+                    VALUES (%s, %s, %s, %s, %s, 'Chưa có', %s, %s, 'HoatDong')
+                """, (ma_cu_dan, full_name, ma_cu_dan, phone or '0901234567', email or f"{username}@resident.com", username, password_hash))
             except Exception as e:
                 print(f"Lỗi đồng bộ cu_dan: {e}")
         else:
@@ -1289,16 +1305,16 @@ def register_user(username, password, full_name, email='', role='User'):
             vai_tro = 'QuanLy' if role == 'Admin' else 'BaoVe'
             try:
                 cursor.execute("""
-                    INSERT INTO nhan_vien (MaNV, HoTen, Email, TaiKhoan, MatKhau, VaiTro, TrangThai)
-                    VALUES (%s, %s, %s, %s, %s, %s, 'HoatDong')
-                """, (ma_nv, full_name, email or f"{username}@system.com", username, password_hash, vai_tro))
+                    INSERT INTO nhan_vien (MaNV, HoTen, SoDienThoai, Email, TaiKhoan, MatKhau, VaiTro, TrangThai)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, 'HoatDong')
+                """, (ma_nv, full_name, phone or None, email or f"{username}@system.com", username, password_hash, vai_tro))
             except Exception as e:
                 print(f"Lỗi đồng bộ nhan_vien: {e}")
 
         conn.commit()
 
         cursor.execute("""
-            SELECT id, username, full_name, email, role
+            SELECT id, username, full_name, email, phone, role
             FROM app_users WHERE username = %s
         """, (username,))
         new_user = cursor.fetchone()

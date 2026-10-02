@@ -1170,9 +1170,14 @@ def api_register():
     confirm = payload.get("confirm_password") or ""
     full_name = (payload.get("full_name") or "").strip()
     email = (payload.get("email") or "").strip()
+    phone = (payload.get("phone") or payload.get("so_dien_thoai") or "").strip()
 
     if not username or not password or not full_name:
         return jsonify({"error": "Vui lòng điền đầy đủ thông tin bắt buộc"}), 400
+    if not phone:
+        return jsonify({"error": "Vui lòng nhập số điện thoại"}), 400
+    if not re.match(r"^0\d{9}$", phone):
+        return jsonify({"error": "Số điện thoại không hợp lệ (phải gồm 10 chữ số bắt đầu bằng số 0)"}), 400
     if len(username) < 3:
         return jsonify({"error": "Tên tài khoản phải có ít nhất 3 ký tự"}), 400
     if len(password) < 6:
@@ -1185,7 +1190,7 @@ def api_register():
         role = "User"
 
     new_user, error = database.register_user(
-        username, password, full_name, email, role=role
+        username, password, full_name, email, role=role, phone=phone
     )
     if error:
         return jsonify({"error": error}), 400
