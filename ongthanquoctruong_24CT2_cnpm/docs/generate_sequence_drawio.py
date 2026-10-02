@@ -5,20 +5,24 @@ Script sinh file Draw.io (.drawio XML) và PlantUML (.puml) cho toàn bộ
 Sơ đồ Tuần tự (Sequence Diagrams) của hệ thống Quản lý Bãi đỗ xe thông minh AI (CNPM24).
 
 Được cập nhật chính xác theo yêu cầu:
-  1. THÊM THANH KÍCH HOẠT (ACTIVATION BAR / EXECUTION SPECIFICATION):
+  1. KHUNG ALT CHỈ NẰM TRONG KHOẢNG TRỐNG GIỮA HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU:
+     - Khung alt KHÔNG bao trọn cột Hệ thống và cột Cơ sở dữ liệu.
+     - Tọa độ x bắt đầu từ Lifeline Hệ thống (x=730) đến Lifeline CSDL (x=1250), chiều rộng 520px.
+     - Hoàn toàn nằm trong khoảng trống (khoảng tương tác giữa Hệ thống và CSDL).
+  2. GHI RÕ ĐIỀU KIỆN KIỂM TRA LÀ GÌ XUỐNG DƯỚI KHOẢNG TRỐNG:
+     - Ghi rõ ràng, trực quan tại khoảng trống đầu khung alt:
+       🔍 [ĐIỀU KIỆN KIỂM TRA]: <Nội dung kiểm tra cụ thể>
+       ✓ [Trường hợp hợp lệ]: <Điều kiện nhánh đúng>
+       ✗ [else - Trường hợp không hợp lệ / Lỗi]: <Điều kiện nhánh lỗi>
+  3. THANH KÍCH HOẠT (ACTIVATION BAR / EXECUTION SPECIFICATION):
      - Mỗi đối tượng (Tác nhân, Giao diện, Hệ thống, Cơ sở dữ liệu) đều có
-       thanh kích hoạt (activation bar) biểu thị khoảng thời gian xử lý thực tế.
+       thanh kích hoạt biểu thị khoảng thời gian xử lý thực tế.
      - Các mũi tên gọi hàm và phản hồi gắn chính xác vào mép thanh kích hoạt.
-  2. KHUNG ALT CHỈ NẰM TRONG HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU:
-     - Khung alt chỉ bao phủ Cột Hệ Thống và Cột Cơ Sở Dữ Liệu (x: 680 -> 1490).
-     - Không bao phủ Cột Tác Nhân và Giao Diện.
-     - Sau khi kết thúc kiểm tra trong alt, Hệ thống mới gửi phản hồi về Giao diện,
-       và Giao diện hiển thị cho Tác nhân.
-  3. ĐƯỜNG DẪN ĐẦY ĐỦ (FULL PATH):
+  4. ĐƯỜNG DẪN ĐẦY ĐỦ (FULL PATH):
      D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\...
      D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: ...
-  4. Tác nhân (Actor): Thể hiện bằng hình con người (UML Actor stick figure) với tên tác nhân ghi ở dưới.
-  5. Phân nhóm chi tiết theo từng Tác nhân:
+  5. Tác nhân (Actor): Thể hiện bằng hình con người (UML Actor stick figure) với tên tác nhân ghi ở dưới.
+  6. Phân nhóm chi tiết theo từng Tác nhân (14 Use Cases):
      - Nhóm 1: Tác nhân Cư Dân / Người Dùng (Resident) -> UC01 đến UC07 + UC02b (Quên mật khẩu)
      - Nhóm 2: Tác nhân Nhân Viên Bảo Vệ (Security Guard / Operator) -> UC08 đến UC10
      - Nhóm 3: Tác nhân Quản Trị Viên (Admin) -> UC11 đến UC13
@@ -58,6 +62,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Kiểm tra tính hợp lệ trong Hệ thống & CSDL]",
+            "check_title": "Kiểm tra trùng lặp thông tin tài khoản (Username & Số điện thoại)",
             "happy_cond": "Username & SĐT chưa từng đăng ký (Hợp lệ)",
             "happy_steps": [
                 ("sys", "sys", "5a. Băm mật khẩu an toàn PBKDF2/SHA-256 (generate_password_hash)"),
@@ -91,6 +96,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Đối soát mật khẩu & Trạng thái tài khoản trong CSDL]",
+            "check_title": "Đối soát mật khẩu băm (password_hash) & Trạng thái tài khoản",
             "happy_cond": "Mật khẩu chính xác & status == 'active' & role == 'Resident'",
             "happy_steps": [
                 ("sys", "sys", "5a. Khởi tạo session['user'] = {id, role: 'Resident', username}"),
@@ -124,6 +130,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Kiểm tra Email & Xử lý mã OTP trong Hệ thống & CSDL]",
+            "check_title": "Kiểm tra tính tồn tại của Email đăng ký & Trạng thái tài khoản",
             "happy_cond": "Email hợp lệ & Khớp tài khoản đang hoạt động",
             "happy_steps": [
                 ("sys", "sys", "5a. Sinh mã OTP ngẫu nhiên 6 chữ số (Hiệu lực trong 5 phút)"),
@@ -158,6 +165,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Kiểm tra tính khả dụng của ô đỗ trong CSDL]",
+            "check_title": "Kiểm tra trạng thái khả dụng của ô đỗ xe trong CSDL (SELECT FOR UPDATE)",
             "happy_cond": "Ô đỗ còn TRỐNG (TrangThai == 'Trong')",
             "happy_steps": [
                 ("sys", "db", "5a. UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s WHERE MaViTri = %s"),
@@ -191,6 +199,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Kiểm tra vị trí mới & Xử lý Transaction trong CSDL]",
+            "check_title": "Kiểm tra vị trí mới & Xử lý Transaction cập nhật ô đỗ",
             "happy_cond": "Vị trí mới còn TRỐNG (TrangThai == 'Trong')",
             "happy_steps": [
                 ("sys", "db", "5a. TRANSACTION: UPDATE bai_do SET TrangThai = 'Trong', BienSoXe = NULL (Ô cũ)"),
@@ -226,6 +235,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Kiểm tra hạn xe & Cập nhật thanh toán trong CSDL]",
+            "check_title": "Kiểm tra thông tin phương tiện & Gói gia hạn trong CSDL",
             "happy_cond": "Tìm thấy phương tiện hợp lệ & Gói gia hạn đúng quy định",
             "happy_steps": [
                 ("sys", "sys", "5a. Tính thời hạn mới: new_expiry = max(current_expiry, today) + 3 months"),
@@ -260,6 +270,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Kiểm tra tính hợp lệ người nhận trong CSDL]",
+            "check_title": "Kiểm tra tính hợp lệ người nhận chuyển nhượng theo SĐT",
             "happy_cond": "Tìm thấy cư dân nhận hợp lệ & Khác chủ xe hiện tại",
             "happy_steps": [
                 ("sys", "db", "5a. INSERT INTO chuyen_nhuong_xe (BienSoXe, NguoiChuyen, NguoiNhan, TrangThai='ChoDuyet')"),
@@ -292,6 +303,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Kiểm tra dữ liệu lịch sử trong Hệ thống]",
+            "check_title": "Kiểm tra tập dữ liệu lịch sử xe vào/ra trong CSDL",
             "happy_cond": "Có dữ liệu lịch sử vào/ra trong hệ thống",
             "happy_steps": [
                 ("sys", "sys", "5a. Tổng hợp danh sách phiên: Giờ vào, Giờ ra, Phí thu, Đường dẫn ảnh snapshot")
@@ -328,6 +340,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Kiểm tra tính hợp lệ & Lưu phiên xe trong CSDL]",
+            "check_title": "Kiểm tra độ chính xác biển số AI & Phiên xe vào hiện tại",
             "happy_cond": "Không có phiên trùng lặp & Biển số nhận diện rõ ràng (Xe vào hợp lệ)",
             "happy_steps": [
                 ("sys", "db", "6a. INSERT INTO parking_sessions (plate_text, check_in_time=NOW(), status='Parked', gate_in='Cổng Vào')"),
@@ -363,6 +376,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Phân loại xe & Đối soát an ninh trong Hệ thống]",
+            "check_title": "Kiểm tra thời hạn vé tháng & Cảnh báo an ninh Blacklist",
             "happy_cond": "Trường hợp 1: Xe Cư dân vé tháng còn hiệu lực (monthly_ticket_expiry >= NOW)",
             "happy_steps": [
                 ("sys", "sys", "6a. Xác nhận miễn phí gửi xe (fee = 0đ) theo chính sách vé tháng cư dân")
@@ -392,6 +406,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Xác nhận thu phí & Ghi nhận CSDL]",
+            "check_title": "Kiểm tra trạng thái xác nhận thu phí & Kích hoạt Barrier",
             "happy_cond": "Xác nhận thu phí thành công (Tiền mặt hoặc Chuyển khoản QR)",
             "happy_steps": [
                 ("sys", "db", "3a. UPDATE parking_sessions SET status = 'Completed', check_out_time = NOW(), fee = 20000"),
@@ -430,6 +445,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Kiểm tra thẩm quyền chỉnh sửa trong Hệ thống & CSDL]",
+            "check_title": "Kiểm tra thẩm quyền chỉnh sửa & Ràng buộc tài khoản Super Admin",
             "happy_cond": "Thao tác hợp lệ (Không tự khóa tài khoản Root Super Admin)",
             "happy_steps": [
                 ("sys", "db", "5a. UPDATE app_users SET role = %s, status = %s WHERE id = %s"),
@@ -463,6 +479,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Xử lý Transaction cập nhật CSDL theo quyết định]",
+            "check_title": "Kiểm tra quyết định của Admin & Xử lý Transaction CSDL",
             "happy_cond": "Admin bấm 'Phê Duyệt' (action == 'approve')",
             "happy_steps": [
                 ("sys", "db", "5a. TRANSACTION: UPDATE phuong_tien & vehicles SET MaCuDan = NguoiNhan WHERE BienSoXe = %s"),
@@ -498,6 +515,7 @@ DIAGRAMS = [
         ],
         "alt_frame": {
             "title": "alt [Kiểm tra & Xử lý dữ liệu thống kê trong Hệ thống]",
+            "check_title": "Kiểm tra tập dữ liệu phát sinh & Thống kê doanh thu trong kỳ",
             "happy_cond": "Có phát sinh lượt xe & Doanh thu trong kỳ báo cáo",
             "happy_steps": [
                 ("sys", "sys", "6a. Tổng hợp tập dữ liệu mảng {dates: [...], revenues: [...], hourly: [...]}")
@@ -550,27 +568,28 @@ def find_db_intervals(steps, ys):
 
 def build_single_diagram_elem(parent_elem, diag):
     # Cấu hình tọa độ cột:
-    # Actor: 80 -> w=70, center=115
-    # UI: 270 -> w=380, center=460
-    # Sys: 710 -> w=420, center=920
-    # DB: 1190 -> w=280, center=1330
+    # Actor: 60 -> w=60, center=90
+    # UI: 200 -> w=320, center=360
+    # Sys: 570 -> w=320, center=730
+    # DB: 1120 -> w=260, center=1250
+    # Khoảng trống giữa Hệ Thống (730) và CSDL (1250) là 520px
     col_x = {
-        "actor": 80,
-        "ui": 270,
-        "sys": 710,
-        "db": 1190
+        "actor": 60,
+        "ui": 200,
+        "sys": 570,
+        "db": 1120
     }
     col_w = {
-        "actor": 70,
-        "ui": 380,
-        "sys": 420,
-        "db": 280
+        "actor": 60,
+        "ui": 320,
+        "sys": 320,
+        "db": 260
     }
     centers = {
-        "actor": col_x["actor"] + col_w["actor"] // 2,  # 115
-        "ui": col_x["ui"] + col_w["ui"] // 2,          # 460
-        "sys": col_x["sys"] + col_w["sys"] // 2,        # 920
-        "db": col_x["db"] + col_w["db"] // 2            # 1330
+        "actor": 90,
+        "ui": 360,
+        "sys": 730,
+        "db": 1250
     }
 
     top_y = 60
@@ -586,7 +605,8 @@ def build_single_diagram_elem(parent_elem, diag):
         y_cursor += msg_step_y
 
     alt_start_y = y_cursor + 10
-    y_cursor += 45
+    # Dành 55px phía trên khung alt để hiển thị rõ ràng điều kiện kiểm tra
+    y_cursor = alt_start_y + 55
 
     happy_step_ys = []
     for _ in diag["alt_frame"]["happy_steps"]:
@@ -594,7 +614,8 @@ def build_single_diagram_elem(parent_elem, diag):
         y_cursor += msg_step_y
 
     alt_divider_y = y_cursor + 15
-    y_cursor += 45
+    # Dành 40px cho nhãn nhánh else
+    y_cursor = alt_divider_y + 40
 
     else_step_ys = []
     for _ in diag["alt_frame"]["else_steps"]:
@@ -611,7 +632,7 @@ def build_single_diagram_elem(parent_elem, diag):
 
     lifeline_bottom_y = y_cursor + 40
     page_h = max(950, lifeline_bottom_y + 80)
-    page_w = 1530
+    page_w = 1550
 
     diagram_elem = ET.SubElement(parent_elem, "diagram", attrib={"id": diag["id"], "name": diag["name"]})
     model_elem = ET.SubElement(diagram_elem, "mxGraphModel", attrib={
@@ -635,7 +656,7 @@ def build_single_diagram_elem(parent_elem, diag):
         "style": "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontColor=#1E293B;fontStyle=1;",
         "vertex": "1"
     })
-    ET.SubElement(title_cell, "mxGeometry", attrib={"x": "50", "y": "15", "width": "1430", "height": "35", "as": "geometry"})
+    ET.SubElement(title_cell, "mxGeometry", attrib={"x": "50", "y": "15", "width": "1450", "height": "35", "as": "geometry"})
 
     # -------------------------------------------------------------
     # 1. CỘT 1: TÁC NHÂN (ACTOR) - HÌNH CON NGƯỜI & TÊN Ở DƯỚI
@@ -694,18 +715,19 @@ def build_single_diagram_elem(parent_elem, diag):
         ET.SubElement(ll_cell, "mxGeometry", attrib={"x": str(col_x[p_key]), "y": str(top_y), "width": str(col_w[p_key]), "height": str(ll_height), "as": "geometry"})
 
     # ---------------------------------------------------------------------------------
-    # KHUNG ALT (CHỈ KIỂM TRA ĐIỀU KIỆN TRONG HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU)
+    # KHUNG ALT (NẰM CHÍNH XÁC TRONG KHOẢNG TRỐNG GIỮA HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU)
+    # Không bao trọn cột Hệ Thống và CSDL; bắt đầu từ lifeline Sys (730) đến lifeline DB (1250)
     # ---------------------------------------------------------------------------------
-    frame_x = 680
-    frame_w = 810
+    frame_x = centers["sys"]
+    frame_w = centers["db"] - centers["sys"]
     frame_h = alt_end_y - alt_start_y
 
-    alt_frame_val = f"<b>alt</b> [{diag['alt_frame']['happy_cond']}]"
+    alt_frame_val = "<b>alt</b>"
     alt_style = (
         "shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;"
-        "container=0;collapsible=0;width=310;height=26;dashed=1;dashPattern=8 4;"
-        "strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=left;"
-        "spacingLeft=10;verticalAlign=top;fontStyle=0;fontSize=11;fontColor=#1E1B4B;"
+        "container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;"
+        "strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;"
+        "verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;"
     )
     frame_cell = ET.SubElement(root, "mxCell", attrib={
         "id": f"{diag['id']}_alt_frame",
@@ -716,13 +738,36 @@ def build_single_diagram_elem(parent_elem, diag):
     })
     ET.SubElement(frame_cell, "mxGeometry", attrib={"x": str(frame_x), "y": str(alt_start_y), "width": str(frame_w), "height": str(frame_h), "as": "geometry"})
 
+    # GHI RÕ ĐIỀU KIỆN KIỂM TRA LÀ GÌ XUỐNG DƯỚI KHOẢNG TRỐNG (BÊN CẠNH TAG ALT)
+    cond_label_val = (
+        f"<b><font color='#4338CA' style='font-size: 11px;'>🔍 [ĐIỀU KIỆN KIỂM TRA]:</font></b> "
+        f"<font color='#0F172A' style='font-size: 11px;'>{diag['alt_frame']['check_title']}</font><br/>"
+        f"<b><font color='#15803D' style='font-size: 10.5px;'>✓ [Trường hợp hợp lệ]:</font></b> "
+        f"<font color='#166534' style='font-size: 10.5px;'>{diag['alt_frame']['happy_cond']}</font>"
+    )
+    cond_cell = ET.SubElement(root, "mxCell", attrib={
+        "id": f"{diag['id']}_alt_cond_label",
+        "parent": "1",
+        "value": cond_label_val,
+        "style": "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;",
+        "vertex": "1"
+    })
+    ET.SubElement(cond_cell, "mxGeometry", attrib={
+        "x": str(frame_x + 65), "y": str(alt_start_y + 3),
+        "width": str(frame_w - 75), "height": "36",
+        "as": "geometry"
+    })
+
     # Vạch phân cách nét đứt [else]
-    else_label = f"<b>[else: {diag['alt_frame']['else_cond']}]</b>"
+    else_label = (
+        f"<b><font color='#B91C1C' style='font-size: 11px;'>✗ [else - Trường hợp không hợp lệ / Lỗi]:</font></b> "
+        f"<font color='#991B1B' style='font-size: 10.5px;'>{diag['alt_frame']['else_cond']}</font>"
+    )
     divider_cell = ET.SubElement(root, "mxCell", attrib={
         "id": f"{diag['id']}_alt_divider",
         "parent": "1",
         "value": else_label,
-        "style": "html=1;strokeWidth=1.5;strokeColor=#94A3B8;dashed=1;dashPattern=6 4;endArrow=none;align=left;verticalAlign=bottom;spacingLeft=15;fontColor=#B91C1C;fontSize=11;fontStyle=0;",
+        "style": "html=1;strokeWidth=1.5;strokeColor=#94A3B8;dashed=1;dashPattern=6 4;endArrow=none;align=left;verticalAlign=bottom;spacingLeft=15;",
         "edge": "1"
     })
     div_geom = ET.SubElement(divider_cell, "mxGeometry", attrib={"relative": "1", "as": "geometry"})
@@ -772,13 +817,9 @@ def build_single_diagram_elem(parent_elem, diag):
     add_activation_bar(f"{diag['id']}_act_sys", centers["sys"], sys_start_y, sys_end_y, "#FFFFFF", "#4338CA")
 
     # 4. Activation bars trên Cơ sở dữ liệu (DB):
-    # Tìm các khoảng thời gian CSDL thực sự được kích hoạt (truy vấn / ghi nhận)
     db_intervals = []
-    # Khoảng DB trong initial_steps:
     db_intervals.extend(find_db_intervals(diag["initial_steps"], initial_step_ys))
-    # Khoảng DB trong happy_steps:
     db_intervals.extend(find_db_intervals(diag["alt_frame"]["happy_steps"], happy_step_ys))
-    # Khoảng DB trong else_steps (nếu có rollback/update):
     db_intervals.extend(find_db_intervals(diag["alt_frame"]["else_steps"], else_step_ys))
 
     for idx, (db_s, db_e) in enumerate(db_intervals):
@@ -890,7 +931,8 @@ def generate_drawio_files(out_dir):
         f.write("' ====================================================================\n")
         f.write("' SƠ ĐỒ TUẦN TỰ (SEQUENCE DIAGRAMS) - HỆ THỐNG QUẢN LÝ BÃI ĐỖ XE AI\n")
         f.write("' Quy chuẩn: Kèm thanh kích hoạt (Activation Bars) cho các hành động xử lý\n")
-        f.write("' Khung alt CHỈ kiểm tra điều kiện trong Hệ thống & CSDL\n")
+        f.write("' Khung alt nằm trong khoảng trống giữa Hệ thống & CSDL (không bao trọn)\n")
+        f.write("' Ghi rõ điều kiện kiểm tra chi tiết trong khoảng trống\n")
         f.write("' Đường dẫn tuyệt đối chuẩn xác: D:\\CNPM24CT2_OngThanQuocTruong\\ongthanquoctruong_24CT2_cnpm\\...\n")
         f.write("' ====================================================================\n\n")
 
@@ -939,8 +981,8 @@ def generate_drawio_files(out_dir):
                 elif s_src == "db" and s_dst == "sys":
                     f.write("deactivate DB\n")
 
-            f.write(f"\n' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu\n")
-            f.write(f"alt {diag['alt_frame']['happy_cond']}\n")
+            f.write(f"\n' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL\n")
+            f.write(f"alt [Kiểm tra: {diag['alt_frame']['check_title']}] - Hợp lệ: {diag['alt_frame']['happy_cond']}\n")
             for s_src, s_dst, s_msg in diag["alt_frame"]["happy_steps"]:
                 p_src = part_map[s_src]
                 p_dst = part_map[s_dst]
@@ -952,7 +994,7 @@ def generate_drawio_files(out_dir):
                 elif s_src == "db" and s_dst == "sys":
                     f.write("    deactivate DB\n")
 
-            f.write(f"else {diag['alt_frame']['else_cond']}\n")
+            f.write(f"else [else - Lỗi]: {diag['alt_frame']['else_cond']}\n")
             for s_src, s_dst, s_msg in diag["alt_frame"]["else_steps"]:
                 p_src = part_map[s_src]
                 p_dst = part_map[s_dst]

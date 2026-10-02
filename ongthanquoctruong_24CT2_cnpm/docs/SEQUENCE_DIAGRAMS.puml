@@ -1,7 +1,8 @@
 ' ====================================================================
 ' SƠ ĐỒ TUẦN TỰ (SEQUENCE DIAGRAMS) - HỆ THỐNG QUẢN LÝ BÃI ĐỖ XE AI
 ' Quy chuẩn: Kèm thanh kích hoạt (Activation Bars) cho các hành động xử lý
-' Khung alt CHỈ kiểm tra điều kiện trong Hệ thống & CSDL
+' Khung alt nằm trong khoảng trống giữa Hệ thống & CSDL (không bao trọn)
+' Ghi rõ điều kiện kiểm tra chi tiết trong khoảng trống
 ' Đường dẫn tuyệt đối chuẩn xác: D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\...
 ' ====================================================================
 
@@ -29,14 +30,14 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về kết quả kiểm tra trùng lặp tài khoản
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Username & SĐT chưa từng đăng ký (Hợp lệ)
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra trùng lặp thông tin tài khoản (Username & Số điện thoại)] - Hợp lệ: Username & SĐT chưa từng đăng ký (Hợp lệ)
     Sys ->> Sys: Băm mật khẩu an toàn PBKDF2/SHA-256 (generate_password_hash)
     Sys ->> DB: INSERT INTO app_users & cu_dan (MaCuDan, HoTen, TenDangNhap, Role='Resident')
     activate DB #F3E8FF
     DB -->> Sys: Xác nhận ghi bản ghi mới thành công (Affected rows = 1)
     deactivate DB
-else Username hoặc SĐT đã tồn tại / Dữ liệu không hợp lệ
+else [else - Lỗi]: Username hoặc SĐT đã tồn tại / Dữ liệu không hợp lệ
     Sys ->> Sys: Hủy thao tác đăng ký & Thiết lập mã trạng thái lỗi (status = 400)
 end
 
@@ -66,14 +67,14 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về thông tin người dùng và mã băm password_hash
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Mật khẩu chính xác & status == 'active' & role == 'Resident'
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Đối soát mật khẩu băm (password_hash) & Trạng thái tài khoản] - Hợp lệ: Mật khẩu chính xác & status == 'active' & role == 'Resident'
     Sys ->> Sys: Khởi tạo session['user'] = {id, role: 'Resident', username}
     Sys ->> DB: UPDATE app_users SET last_login = NOW() WHERE id = %s
     activate DB #F3E8FF
     DB -->> Sys: Xác nhận cập nhật thời gian đăng nhập thành công
     deactivate DB
-else Sai mật khẩu hoặc Tài khoản bị vô hiệu hóa (status != 'active')
+else [else - Lỗi]: Sai mật khẩu hoặc Tài khoản bị vô hiệu hóa (status != 'active')
     Sys ->> Sys: Từ chối xác thực phiên & Thiết lập mã lỗi (status = 401)
 end
 
@@ -103,15 +104,15 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về kết quả tìm kiếm tài khoản theo email
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Email hợp lệ & Khớp tài khoản đang hoạt động
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra tính tồn tại của Email đăng ký & Trạng thái tài khoản] - Hợp lệ: Email hợp lệ & Khớp tài khoản đang hoạt động
     Sys ->> Sys: Sinh mã OTP ngẫu nhiên 6 chữ số (Hiệu lực trong 5 phút)
     Sys ->> DB: INSERT INTO password_reset_tokens (email, otp_hash, expires_at)
     activate DB #F3E8FF
     DB -->> Sys: Xác nhận lưu trữ mã OTP thành công
     deactivate DB
     Sys ->> Sys: Gửi Email chứa mã OTP bảo mật đến hòm thư người dùng
-else Email không tồn tại trong hệ thống hoặc định dạng không hợp lệ
+else [else - Lỗi]: Email không tồn tại trong hệ thống hoặc định dạng không hợp lệ
     Sys ->> Sys: Hủy yêu cầu cấp OTP & Thiết lập thông báo lỗi (Email not found)
 end
 
@@ -141,15 +142,15 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về trạng thái hiện tại của ô đỗ
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Ô đỗ còn TRỐNG (TrangThai == 'Trong')
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra trạng thái khả dụng của ô đỗ xe trong CSDL (SELECT FOR UPDATE)] - Hợp lệ: Ô đỗ còn TRỐNG (TrangThai == 'Trong')
     Sys ->> DB: UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s WHERE MaViTri = %s
     activate DB #F3E8FF
     Sys ->> DB: INSERT INTO vehicles & phuong_tien (BienSoXe, MaCuDan, ViTriDo, NgayHetHan)
     activate DB #F3E8FF
     DB -->> Sys: Xác nhận lưu xe và đặt chỗ ô đỗ thành công
     deactivate DB
-else Vị trí ô đỗ đã có người khác đặt trước (TrangThai == 'DaDat')
+else [else - Lỗi]: Vị trí ô đỗ đã có người khác đặt trước (TrangThai == 'DaDat')
     Sys ->> Sys: Hủy giao dịch đặt ô & Thiết lập mã xung đột dữ liệu (status = 409)
 end
 
@@ -179,8 +180,8 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về trạng thái của vị trí mới
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Vị trí mới còn TRỐNG (TrangThai == 'Trong')
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra vị trí mới & Xử lý Transaction cập nhật ô đỗ] - Hợp lệ: Vị trí mới còn TRỐNG (TrangThai == 'Trong')
     Sys ->> DB: TRANSACTION: UPDATE bai_do SET TrangThai = 'Trong', BienSoXe = NULL (Ô cũ)
     activate DB #F3E8FF
     Sys ->> DB: UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s (Ô mới B1-B05)
@@ -189,7 +190,7 @@ alt Vị trí mới còn TRỐNG (TrangThai == 'Trong')
     activate DB #F3E8FF
     DB ->> Sys: Commit transaction thành công
     deactivate DB
-else Vị trí mới đã bị xe khác chiếm chỗ
+else [else - Lỗi]: Vị trí mới đã bị xe khác chiếm chỗ
     Sys ->> DB: ROLLBACK TRANSACTION (Hủy bỏ mọi thay đổi)
     activate DB #F3E8FF
     Sys ->> Sys: Thiết lập thông báo vị trí mới không khả dụng
@@ -221,8 +222,8 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về ngày hết hạn hiện tại của phương tiện
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Tìm thấy phương tiện hợp lệ & Gói gia hạn đúng quy định
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra thông tin phương tiện & Gói gia hạn trong CSDL] - Hợp lệ: Tìm thấy phương tiện hợp lệ & Gói gia hạn đúng quy định
     Sys ->> Sys: Tính thời hạn mới: new_expiry = max(current_expiry, today) + 3 months
     Sys ->> DB: UPDATE phuong_tien & vehicles SET NgayHetHan = %s WHERE BienSoXe = %s
     activate DB #F3E8FF
@@ -230,7 +231,7 @@ alt Tìm thấy phương tiện hợp lệ & Gói gia hạn đúng quy định
     activate DB #F3E8FF
     DB -->> Sys: Xác nhận cập nhật CSDL thành công
     deactivate DB
-else Biển số xe không tồn tại hoặc lỗi giao dịch
+else [else - Lỗi]: Biển số xe không tồn tại hoặc lỗi giao dịch
     Sys ->> Sys: Hủy giao dịch gia hạn & Thiết lập mã lỗi (status = 404)
 end
 
@@ -260,13 +261,13 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về thông tin cư dân nhận theo số điện thoại
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Tìm thấy cư dân nhận hợp lệ & Khác chủ xe hiện tại
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra tính hợp lệ người nhận chuyển nhượng theo SĐT] - Hợp lệ: Tìm thấy cư dân nhận hợp lệ & Khác chủ xe hiện tại
     Sys ->> DB: INSERT INTO chuyen_nhuong_xe (BienSoXe, NguoiChuyen, NguoiNhan, TrangThai='ChoDuyet')
     activate DB #F3E8FF
     DB -->> Sys: Xác nhận tạo đơn chuyển nhượng thành công (MaYeuCau = 12)
     deactivate DB
-else SĐT không tồn tại hoặc Cố tình chuyển nhượng cho chính mình
+else [else - Lỗi]: SĐT không tồn tại hoặc Cố tình chuyển nhượng cho chính mình
     Sys ->> Sys: Từ chối tạo đơn & Thiết lập thông báo lỗi cư dân không hợp lệ
 end
 
@@ -296,10 +297,10 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về danh sách các phiên gửi xe tương ứng
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Có dữ liệu lịch sử vào/ra trong hệ thống
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra tập dữ liệu lịch sử xe vào/ra trong CSDL] - Hợp lệ: Có dữ liệu lịch sử vào/ra trong hệ thống
     Sys ->> Sys: Tổng hợp danh sách phiên: Giờ vào, Giờ ra, Phí thu, Đường dẫn ảnh snapshot
-else Chưa có lượt gửi xe nào trong khoảng thời gian đã chọn
+else [else - Lỗi]: Chưa có lượt gửi xe nào trong khoảng thời gian đã chọn
     Sys ->> Sys: Khởi tạo danh sách kết quả rỗng (sessions = [])
 end
 
@@ -335,8 +336,8 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về kết quả kiểm tra phiên đỗ hiện tại của xe
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Không có phiên trùng lặp & Biển số nhận diện rõ ràng (Xe vào hợp lệ)
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra độ chính xác biển số AI & Phiên xe vào hiện tại] - Hợp lệ: Không có phiên trùng lặp & Biển số nhận diện rõ ràng (Xe vào hợp lệ)
     Sys ->> DB: INSERT INTO parking_sessions (plate_text, check_in_time=NOW(), status='Parked', gate_in='Cổng Vào')
     activate DB #F3E8FF
     Sys ->> DB: Lưu bản ghi ảnh chụp vào detections & lich_su_ra_vao
@@ -344,7 +345,7 @@ alt Không có phiên trùng lặp & Biển số nhận diện rõ ràng (Xe và
     DB -->> Sys: Xác nhận tạo phiên gửi xe mới thành công
     deactivate DB
     Sys ->> Sys: Kích hoạt tín hiệu điều khiển mở Barrier cổng vào (barrier_state = 'OPEN')
-else Xe đang có phiên mở chưa checkout hoặc Biển số mờ không nhận diện được
+else [else - Lỗi]: Xe đang có phiên mở chưa checkout hoặc Biển số mờ không nhận diện được
     Sys ->> Sys: Giữ nguyên Barrier đóng & Bật cờ cảnh báo an ninh cần kiểm tra thủ công
 end
 
@@ -376,10 +377,10 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về dữ liệu phiên vào, ảnh snapshot vào, nhóm đối tượng, hạn vé tháng
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Trường hợp 1: Xe Cư dân vé tháng còn hiệu lực (monthly_ticket_expiry >= NOW)
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra thời hạn vé tháng & Cảnh báo an ninh Blacklist] - Hợp lệ: Trường hợp 1: Xe Cư dân vé tháng còn hiệu lực (monthly_ticket_expiry >= NOW)
     Sys ->> Sys: Xác nhận miễn phí gửi xe (fee = 0đ) theo chính sách vé tháng cư dân
-else Trường hợp 2: Xe thuộc Danh Sách Đen (group_type == 'Blacklist' / Cảnh báo trộm cắp)
+else [else - Lỗi]: Trường hợp 2: Xe thuộc Danh Sách Đen (group_type == 'Blacklist' / Cảnh báo trộm cắp)
     Sys ->> Sys: Bật cờ cảnh báo an ninh khẩn cấp (security_alert = True, lock_barrier = True)
 end
 
@@ -405,8 +406,8 @@ activate UI #FEF3C7
 UI ->> Sys: POST /api/guard/collect_fee (session_id: 105, amount: 20000, method: 'Cash')
 activate Sys #E0E7FF
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Xác nhận thu phí thành công (Tiền mặt hoặc Chuyển khoản QR)
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra trạng thái xác nhận thu phí & Kích hoạt Barrier] - Hợp lệ: Xác nhận thu phí thành công (Tiền mặt hoặc Chuyển khoản QR)
     Sys ->> DB: UPDATE parking_sessions SET status = 'Completed', check_out_time = NOW(), fee = 20000
     activate DB #F3E8FF
     Sys ->> DB: INSERT INTO hoa_don (MaPhien, SoTien, HinhThucThanhToan, NgayLap)
@@ -414,7 +415,7 @@ alt Xác nhận thu phí thành công (Tiền mặt hoặc Chuyển khoản QR)
     DB -->> Sys: Xác nhận ghi nhận doanh thu và kết thúc phiên gửi xe
     deactivate DB
     Sys ->> Sys: Gửi lệnh điều khiển phần cứng mở cần Barrier cổng ra (Barrier_Out = 'OPEN')
-else Chưa nhận được thanh toán hoặc Có tranh chấp cước phí
+else [else - Lỗi]: Chưa nhận được thanh toán hoặc Có tranh chấp cước phí
     Sys ->> Sys: Giữ nguyên trạng thái Barrier đóng & Bật cảnh báo giao dịch chưa hoàn tất
 end
 
@@ -449,15 +450,15 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về thông tin vai trò hiện tại của tài khoản
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Thao tác hợp lệ (Không tự khóa tài khoản Root Super Admin)
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra thẩm quyền chỉnh sửa & Ràng buộc tài khoản Super Admin] - Hợp lệ: Thao tác hợp lệ (Không tự khóa tài khoản Root Super Admin)
     Sys ->> DB: UPDATE app_users SET role = %s, status = %s WHERE id = %s
     activate DB #F3E8FF
     Sys ->> DB: Đồng bộ cập nhật bảng cu_dan / nhan_vien tương ứng
     activate DB #F3E8FF
     DB -->> Sys: Xác nhận cập nhật thông tin thành công (Affected rows = 1)
     deactivate DB
-else Thao tác không hợp lệ (Cố tình vô hiệu hóa tài khoản Quản trị cao nhất)
+else [else - Lỗi]: Thao tác không hợp lệ (Cố tình vô hiệu hóa tài khoản Quản trị cao nhất)
     Sys ->> Sys: Từ chối cập nhật & Thiết lập mã cấm thao tác (Forbidden status = 403)
 end
 
@@ -487,15 +488,15 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về thông tin: Biển số xe, Cư dân chuyển, Cư dân nhận
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Admin bấm 'Phê Duyệt' (action == 'approve')
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra quyết định của Admin & Xử lý Transaction CSDL] - Hợp lệ: Admin bấm 'Phê Duyệt' (action == 'approve')
     Sys ->> DB: TRANSACTION: UPDATE phuong_tien & vehicles SET MaCuDan = NguoiNhan WHERE BienSoXe = %s
     activate DB #F3E8FF
     Sys ->> DB: UPDATE chuyen_nhuong_xe SET TrangThai = 'DaDuyet', NgayDuyet = NOW()
     activate DB #F3E8FF
     DB ->> Sys: Commit transaction chuyển nhượng thành công
     deactivate DB
-else Admin bấm 'Từ Chối' (action == 'reject')
+else [else - Lỗi]: Admin bấm 'Từ Chối' (action == 'reject')
     Sys ->> DB: UPDATE chuyen_nhuong_xe SET TrangThai = 'TuChoi', LyDo = 'Thông tin không chính xác'
     activate DB #F3E8FF
     DB -->> Sys: Xác nhận cập nhật trạng thái từ chối đơn
@@ -530,10 +531,10 @@ activate DB #F3E8FF
 DB -->> Sys: Trả về tập dữ liệu tổng hợp doanh thu và số lượt xe theo giờ
 deactivate DB
 
-' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
-alt Có phát sinh lượt xe & Doanh thu trong kỳ báo cáo
+' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
+alt [Kiểm tra: Kiểm tra tập dữ liệu phát sinh & Thống kê doanh thu trong kỳ] - Hợp lệ: Có phát sinh lượt xe & Doanh thu trong kỳ báo cáo
     Sys ->> Sys: Tổng hợp tập dữ liệu mảng {dates: [...], revenues: [...], hourly: [...]}
-else Kỳ báo cáo chưa có lượt xe nào phát sinh
+else [else - Lỗi]: Kỳ báo cáo chưa có lượt xe nào phát sinh
     Sys ->> Sys: Khởi tạo tập dữ liệu rỗng {dates: [], revenues: [], total: 0}
 end
 
