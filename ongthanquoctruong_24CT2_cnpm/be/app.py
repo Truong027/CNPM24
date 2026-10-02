@@ -1,3 +1,25 @@
+import os
+import sys
+import subprocess
+
+# Tự động kích hoạt/chuyển tiếp sang môi trường ảo .venv nếu đang chạy bằng Python ngoài
+_BE_DIR = os.path.dirname(os.path.abspath(__file__))
+_PROJECT_DIR = os.path.dirname(_BE_DIR)
+_VENV_PYTHON = os.path.join(_PROJECT_DIR, ".venv", "Scripts", "python.exe")
+if os.path.exists(_VENV_PYTHON) and os.path.abspath(sys.executable).lower() != os.path.abspath(_VENV_PYTHON).lower():
+    try:
+        import easyocr
+    except ImportError:
+        print(f"[*] [AUTO-VENV] Chuyen sang moi truong ao day du AI: {_VENV_PYTHON}")
+        try:
+            sys.exit(subprocess.call([_VENV_PYTHON] + sys.argv))
+        except KeyboardInterrupt:
+            sys.exit(0)
+
+# Đảm bảo thư mục be/ luôn nằm trong sys.path để import các module local
+if _BE_DIR not in sys.path:
+    sys.path.insert(0, _BE_DIR)
+
 import cv2
 import easyocr
 from plate_ocr_integration import get_ocr_model, read_plate_ocr_crnn
