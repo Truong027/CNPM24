@@ -5,16 +5,20 @@ Script sinh file Draw.io (.drawio XML) và PlantUML (.puml) cho toàn bộ
 Sơ đồ Tuần tự (Sequence Diagrams) của hệ thống Quản lý Bãi đỗ xe thông minh AI (CNPM24).
 
 Được cập nhật chính xác theo yêu cầu:
-  1. KHUNG ALT CHỈ NẰM TRONG HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU:
-     - Khung alt chỉ bao phủ Cột Hệ Thống và Cột Cơ Sở Dữ Liệu (x: 680 -> 1480).
+  1. THÊM THANH KÍCH HOẠT (ACTIVATION BAR / EXECUTION SPECIFICATION):
+     - Mỗi đối tượng (Tác nhân, Giao diện, Hệ thống, Cơ sở dữ liệu) đều có
+       thanh kích hoạt (activation bar) biểu thị khoảng thời gian xử lý thực tế.
+     - Các mũi tên gọi hàm và phản hồi gắn chính xác vào mép thanh kích hoạt.
+  2. KHUNG ALT CHỈ NẰM TRONG HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU:
+     - Khung alt chỉ bao phủ Cột Hệ Thống và Cột Cơ Sở Dữ Liệu (x: 680 -> 1490).
      - Không bao phủ Cột Tác Nhân và Giao Diện.
-     - Sau khi kết thúc kiểm tra điều kiện trong alt (Hệ thống & CSDL),
-       Hệ thống mới gửi phản hồi về Giao diện, và Giao diện hiển thị cho Tác nhân.
-  2. ĐƯỜNG DẪN ĐẦY ĐỦ (FULL PATH):
+     - Sau khi kết thúc kiểm tra trong alt, Hệ thống mới gửi phản hồi về Giao diện,
+       và Giao diện hiển thị cho Tác nhân.
+  3. ĐƯỜNG DẪN ĐẦY ĐỦ (FULL PATH):
      D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\...
      D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: ...
-  3. Tác nhân (Actor): Thể hiện bằng hình con người (UML Actor stick figure) với tên tác nhân ghi ở dưới.
-  4. Phân nhóm chi tiết theo từng Tác nhân:
+  4. Tác nhân (Actor): Thể hiện bằng hình con người (UML Actor stick figure) với tên tác nhân ghi ở dưới.
+  5. Phân nhóm chi tiết theo từng Tác nhân:
      - Nhóm 1: Tác nhân Cư Dân / Người Dùng (Resident) -> UC01 đến UC07 + UC02b (Quên mật khẩu)
      - Nhóm 2: Tác nhân Nhân Viên Bảo Vệ (Security Guard / Operator) -> UC08 đến UC10
      - Nhóm 3: Tác nhân Quản Trị Viên (Admin) -> UC11 đến UC13
@@ -523,6 +527,27 @@ def format_path_for_drawio(text):
         formatted_lines.append(line)
     return "<br/>".join(formatted_lines)
 
+def find_db_intervals(steps, ys):
+    """
+    Tìm các khoảng thời gian mà Cơ Sở Dữ Liệu đang được kích hoạt (DB Activation intervals)
+    """
+    intervals = []
+    current_start = None
+    last_end = None
+    for i, (src, dst, msg) in enumerate(steps):
+        if src == 'sys' and dst == 'db':
+            if current_start is None:
+                current_start = ys[i] - 4
+            last_end = ys[i] + 28
+        elif src == 'db' and dst == 'sys':
+            last_end = ys[i] + 4
+            if current_start is not None:
+                intervals.append((current_start, last_end))
+                current_start = None
+    if current_start is not None:
+        intervals.append((current_start, last_end))
+    return intervals
+
 def build_single_diagram_elem(parent_elem, diag):
     # Cấu hình tọa độ cột:
     # Actor: 80 -> w=70, center=115
@@ -541,7 +566,12 @@ def build_single_diagram_elem(parent_elem, diag):
         "sys": 420,
         "db": 280
     }
-    actor_center_x = col_x["actor"] + col_w["actor"] // 2  # 115
+    centers = {
+        "actor": col_x["actor"] + col_w["actor"] // 2,  # 115
+        "ui": col_x["ui"] + col_w["ui"] // 2,          # 460
+        "sys": col_x["sys"] + col_w["sys"] // 2,        # 920
+        "db": col_x["db"] + col_w["db"] // 2            # 1330
+    }
 
     top_y = 60
     header_h = 125
@@ -629,8 +659,8 @@ def build_single_diagram_elem(parent_elem, diag):
         "edge": "1"
     })
     actor_line_geom = ET.SubElement(actor_line_cell, "mxGeometry", attrib={"relative": "1", "as": "geometry"})
-    ET.SubElement(actor_line_geom, "mxPoint", attrib={"x": str(actor_center_x), "y": "170", "as": "sourcePoint"})
-    ET.SubElement(actor_line_geom, "mxPoint", attrib={"x": str(actor_center_x), "y": str(lifeline_bottom_y), "as": "targetPoint"})
+    ET.SubElement(actor_line_geom, "mxPoint", attrib={"x": str(centers["actor"]), "y": "170", "as": "sourcePoint"})
+    ET.SubElement(actor_line_geom, "mxPoint", attrib={"x": str(centers["actor"]), "y": str(lifeline_bottom_y), "as": "targetPoint"})
 
     # -------------------------------------------------------------
     # 2, 3, 4. CÁC CỘT: GIAO DIỆN, HỆ THỐNG, CƠ SỞ DỮ LIỆU
@@ -663,11 +693,116 @@ def build_single_diagram_elem(parent_elem, diag):
         ll_height = lifeline_bottom_y - top_y
         ET.SubElement(ll_cell, "mxGeometry", attrib={"x": str(col_x[p_key]), "y": str(top_y), "width": str(col_w[p_key]), "height": str(ll_height), "as": "geometry"})
 
-    # Hàm trợ giúp vẽ Message
+    # ---------------------------------------------------------------------------------
+    # KHUNG ALT (CHỈ KIỂM TRA ĐIỀU KIỆN TRONG HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU)
+    # ---------------------------------------------------------------------------------
+    frame_x = 680
+    frame_w = 810
+    frame_h = alt_end_y - alt_start_y
+
+    alt_frame_val = f"<b>alt</b> [{diag['alt_frame']['happy_cond']}]"
+    alt_style = (
+        "shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;"
+        "container=0;collapsible=0;width=310;height=26;dashed=1;dashPattern=8 4;"
+        "strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=left;"
+        "spacingLeft=10;verticalAlign=top;fontStyle=0;fontSize=11;fontColor=#1E1B4B;"
+    )
+    frame_cell = ET.SubElement(root, "mxCell", attrib={
+        "id": f"{diag['id']}_alt_frame",
+        "parent": "1",
+        "value": alt_frame_val,
+        "style": alt_style,
+        "vertex": "1"
+    })
+    ET.SubElement(frame_cell, "mxGeometry", attrib={"x": str(frame_x), "y": str(alt_start_y), "width": str(frame_w), "height": str(frame_h), "as": "geometry"})
+
+    # Vạch phân cách nét đứt [else]
+    else_label = f"<b>[else: {diag['alt_frame']['else_cond']}]</b>"
+    divider_cell = ET.SubElement(root, "mxCell", attrib={
+        "id": f"{diag['id']}_alt_divider",
+        "parent": "1",
+        "value": else_label,
+        "style": "html=1;strokeWidth=1.5;strokeColor=#94A3B8;dashed=1;dashPattern=6 4;endArrow=none;align=left;verticalAlign=bottom;spacingLeft=15;fontColor=#B91C1C;fontSize=11;fontStyle=0;",
+        "edge": "1"
+    })
+    div_geom = ET.SubElement(divider_cell, "mxGeometry", attrib={"relative": "1", "as": "geometry"})
+    ET.SubElement(div_geom, "mxPoint", attrib={"x": str(frame_x), "y": str(alt_divider_y), "as": "sourcePoint"})
+    ET.SubElement(div_geom, "mxPoint", attrib={"x": str(frame_x + frame_w), "y": str(alt_divider_y), "as": "targetPoint"})
+
+    # ---------------------------------------------------------------------------------
+    # THANH KÍCH HOẠT (ACTIVATION BARS / EXECUTION SPECIFICATIONS)
+    # Đặt sau alt frame để hiển thị nổi bật trên nền frame và lifeline
+    # ---------------------------------------------------------------------------------
+    bar_width = 12
+
+    def add_activation_bar(bar_id, center_x, start_y, end_y, fill_c="#FFFFFF", stroke_c="#4338CA"):
+        w = bar_width
+        h = max(24, int(end_y - start_y))
+        bx = int(center_x - w // 2)
+        by = int(start_y)
+        bar_style = (
+            f"html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;"
+            f"targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;"
+            f"fillColor={fill_c};strokeColor={stroke_c};strokeWidth=1.5;rounded=0;"
+        )
+        b_cell = ET.SubElement(root, "mxCell", attrib={
+            "id": bar_id,
+            "parent": "1",
+            "value": "",
+            "style": bar_style,
+            "vertex": "1"
+        })
+        ET.SubElement(b_cell, "mxGeometry", attrib={
+            "x": str(bx), "y": str(by), "width": str(w), "height": str(h), "as": "geometry"
+        })
+
+    # 1. Activation bar trên Tác nhân (Actor): từ tin nhắn đầu đến tin nhắn cuối
+    actor_start_y = initial_step_ys[0] - 4
+    actor_end_y = post_step_ys[-1] + 4 if post_step_ys else (else_step_ys[-1] + 4)
+    add_activation_bar(f"{diag['id']}_act_actor", centers["actor"], actor_start_y, actor_end_y, "#FFFFFF", "#1D4ED8")
+
+    # 2. Activation bar trên Giao diện (UI): từ khi nhận yêu cầu đến khi hiển thị kết quả
+    ui_start_y = initial_step_ys[0] - 4
+    ui_end_y = post_step_ys[-1] + 4 if post_step_ys else (else_step_ys[-1] + 4)
+    add_activation_bar(f"{diag['id']}_act_ui", centers["ui"], ui_start_y, ui_end_y, "#FFFFFF", "#D97706")
+
+    # 3. Activation bar trên Hệ thống (Sys): từ khi nhận request (bước 2) đến khi gửi response về UI
+    sys_start_y = initial_step_ys[1] - 4 if len(initial_step_ys) > 1 else (initial_step_ys[0] - 4)
+    sys_end_y = post_step_ys[0] + 4 if post_step_ys else (else_step_ys[-1] + 4)
+    add_activation_bar(f"{diag['id']}_act_sys", centers["sys"], sys_start_y, sys_end_y, "#FFFFFF", "#4338CA")
+
+    # 4. Activation bars trên Cơ sở dữ liệu (DB):
+    # Tìm các khoảng thời gian CSDL thực sự được kích hoạt (truy vấn / ghi nhận)
+    db_intervals = []
+    # Khoảng DB trong initial_steps:
+    db_intervals.extend(find_db_intervals(diag["initial_steps"], initial_step_ys))
+    # Khoảng DB trong happy_steps:
+    db_intervals.extend(find_db_intervals(diag["alt_frame"]["happy_steps"], happy_step_ys))
+    # Khoảng DB trong else_steps (nếu có rollback/update):
+    db_intervals.extend(find_db_intervals(diag["alt_frame"]["else_steps"], else_step_ys))
+
+    for idx, (db_s, db_e) in enumerate(db_intervals):
+        add_activation_bar(f"{diag['id']}_act_db_{idx+1}", centers["db"], db_s, db_e, "#FFFFFF", "#7E22CE")
+
+    # ---------------------------------------------------------------------------------
+    # MŨI TÊN THÔNG ĐIỆP (MESSAGE ARROWS)
+    # Vẽ chính xác từ mép thanh kích hoạt nguồn sang mép thanh kích hoạt đích
+    # ---------------------------------------------------------------------------------
+    w_half = bar_width // 2
+
+    def get_arrow_endpoints(src_k, dst_k):
+        c1 = centers[src_k]
+        c2 = centers[dst_k]
+        if src_k == dst_k:
+            return c1 + w_half, c1 + w_half
+        elif c1 < c2:
+            return c1 + w_half, c2 - w_half
+        else:
+            return c1 - w_half, c2 + w_half
+
     def draw_message(idx_str, src_key, dst_key, msg_text, curr_y, is_error=False):
         msg_id = f"{diag['id']}_msg_{idx_str}"
-        x1 = actor_center_x if src_key == "actor" else (col_x[src_key] + col_w[src_key] // 2)
-        x2 = actor_center_x if dst_key == "actor" else (col_x[dst_key] + col_w[dst_key] // 2)
+        x1, x2 = get_arrow_endpoints(src_key, dst_key)
 
         is_return = ("Trở về" in msg_text or "Trả về" in msg_text or "Phản hồi" in msg_text or "Hiển thị" in msg_text or "Xác nhận" in msg_text or "Báo lỗi" in msg_text) and (x1 > x2)
         is_self = (src_key == dst_key)
@@ -713,55 +848,15 @@ def build_single_diagram_elem(parent_elem, diag):
     for idx, (src_k, dst_k, m_txt) in enumerate(diag["initial_steps"]):
         draw_message(f"init_{idx+1}", src_k, dst_k, m_txt, initial_step_ys[idx])
 
-    # ---------------------------------------------------------------------------------
-    # 2. KHUNG ALT (CHỈ KIỂM TRA ĐIỀU KIỆN TRONG HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU)
-    #    Bao phủ từ x = 680 (bên trái Hệ Thống một chút) tới x = 1490 (qua CSDL)
-    #    Hoàn toàn KHÔNG bao phủ Cột Tác Nhân và Giao Diện!
-    # ---------------------------------------------------------------------------------
-    frame_x = 680
-    frame_w = 810
-    frame_h = alt_end_y - alt_start_y
-
-    alt_frame_val = f"<b>alt</b> [{diag['alt_frame']['happy_cond']}]"
-    alt_style = (
-        "shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;"
-        "container=0;collapsible=0;width=310;height=26;dashed=1;dashPattern=8 4;"
-        "strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=left;"
-        "spacingLeft=10;verticalAlign=top;fontStyle=0;fontSize=11;fontColor=#1E1B4B;"
-    )
-    frame_cell = ET.SubElement(root, "mxCell", attrib={
-        "id": f"{diag['id']}_alt_frame",
-        "parent": "1",
-        "value": alt_frame_val,
-        "style": alt_style,
-        "vertex": "1"
-    })
-    ET.SubElement(frame_cell, "mxGeometry", attrib={"x": str(frame_x), "y": str(alt_start_y), "width": str(frame_w), "height": str(frame_h), "as": "geometry"})
-
-    # Vẽ các tin nhắn nhánh Happy (Thành công / Hợp lệ)
+    # 2. Vẽ các tin nhắn nhánh Happy (Thành công / Hợp lệ) trong alt
     for idx, (src_k, dst_k, m_txt) in enumerate(diag["alt_frame"]["happy_steps"]):
         draw_message(f"happy_{idx+1}", src_k, dst_k, m_txt, happy_step_ys[idx], is_error=False)
 
-    # Vạch phân cách nét đứt [else]
-    else_label = f"<b>[else: {diag['alt_frame']['else_cond']}]</b>"
-    divider_cell = ET.SubElement(root, "mxCell", attrib={
-        "id": f"{diag['id']}_alt_divider",
-        "parent": "1",
-        "value": else_label,
-        "style": "html=1;strokeWidth=1.5;strokeColor=#94A3B8;dashed=1;dashPattern=6 4;endArrow=none;align=left;verticalAlign=bottom;spacingLeft=15;fontColor=#B91C1C;fontSize=11;fontStyle=0;",
-        "edge": "1"
-    })
-    div_geom = ET.SubElement(divider_cell, "mxGeometry", attrib={"relative": "1", "as": "geometry"})
-    ET.SubElement(div_geom, "mxPoint", attrib={"x": str(frame_x), "y": str(alt_divider_y), "as": "sourcePoint"})
-    ET.SubElement(div_geom, "mxPoint", attrib={"x": str(frame_x + frame_w), "y": str(alt_divider_y), "as": "targetPoint"})
-
-    # Vẽ các tin nhắn nhánh Else (Thất bại / Cảnh báo lỗi)
+    # 3. Vẽ các tin nhắn nhánh Else (Thất bại / Cảnh báo lỗi) trong alt
     for idx, (src_k, dst_k, m_txt) in enumerate(diag["alt_frame"]["else_steps"]):
         draw_message(f"else_{idx+1}", src_k, dst_k, m_txt, else_step_ys[idx], is_error=True)
 
-    # ---------------------------------------------------------------------------------
-    # 3. CÁC BƯỚC SAU KHUNG ALT: HỆ THỐNG TRẢ VỀ GIAO DIỆN & GIAO DIỆN HIỂN THỊ TÁC NHÂN
-    # ---------------------------------------------------------------------------------
+    # 4. Các bước sau khung alt: Hệ thống trả về Giao diện & Giao diện hiển thị cho Tác nhân
     for idx, (src_k, dst_k, m_txt) in enumerate(diag.get("post_steps", [])):
         draw_message(f"post_{idx+1}", src_k, dst_k, m_txt, post_step_ys[idx], is_error=False)
 
@@ -772,14 +867,14 @@ def generate_drawio_files(out_dir):
 
     # 1. Master file chứa tất cả các Use Cases
     master_file = os.path.join(out_dir, "SO_DO_TUAN_TU_HE_THONG.drawio")
-    mxfile_master = ET.Element("mxfile", attrib={"host": "app.diagrams.net", "modified": "2026-10-02T08:45:00.000Z", "agent": "Antigravity-CNPM24", "version": "21.6.8", "type": "device"})
+    mxfile_master = ET.Element("mxfile", attrib={"host": "app.diagrams.net", "modified": "2026-10-02T08:50:00.000Z", "agent": "Antigravity-CNPM24", "version": "21.6.8", "type": "device"})
     
     for diag in DIAGRAMS:
         build_single_diagram_elem(mxfile_master, diag)
         
         # 2. File riêng cho từng Use Case
         single_file = os.path.join(drawio_sub_dir, f"{diag['id']}.drawio")
-        mxfile_single = ET.Element("mxfile", attrib={"host": "app.diagrams.net", "modified": "2026-10-02T08:45:00.000Z", "agent": "Antigravity-CNPM24", "version": "21.6.8", "type": "device"})
+        mxfile_single = ET.Element("mxfile", attrib={"host": "app.diagrams.net", "modified": "2026-10-02T08:50:00.000Z", "agent": "Antigravity-CNPM24", "version": "21.6.8", "type": "device"})
         build_single_diagram_elem(mxfile_single, diag)
         t_single = ET.ElementTree(mxfile_single)
         ET.indent(t_single, space="  ", level=0)
@@ -794,7 +889,8 @@ def generate_drawio_files(out_dir):
     with open(puml_file, "w", encoding="utf-8") as f:
         f.write("' ====================================================================\n")
         f.write("' SƠ ĐỒ TUẦN TỰ (SEQUENCE DIAGRAMS) - HỆ THỐNG QUẢN LÝ BÃI ĐỖ XE AI\n")
-        f.write("' Quy chuẩn: Khung alt CHỈ kiểm tra điều kiện trong Hệ thống & CSDL\n")
+        f.write("' Quy chuẩn: Kèm thanh kích hoạt (Activation Bars) cho các hành động xử lý\n")
+        f.write("' Khung alt CHỈ kiểm tra điều kiện trong Hệ thống & CSDL\n")
         f.write("' Đường dẫn tuyệt đối chuẩn xác: D:\\CNPM24CT2_OngThanQuocTruong\\ongthanquoctruong_24CT2_cnpm\\...\n")
         f.write("' ====================================================================\n\n")
 
@@ -834,6 +930,14 @@ def generate_drawio_files(out_dir):
                 arrow = puml_arrow(s_src, s_dst, s_msg)
                 clean_msg = s_msg.split(". ", 1)[-1]
                 f.write(f"{p_src} {arrow} {p_dst}: {clean_msg}\n")
+                if s_dst == "ui" and s_src == "actor":
+                    f.write("activate UI #FEF3C7\n")
+                elif s_dst == "sys" and s_src == "ui":
+                    f.write("activate Sys #E0E7FF\n")
+                elif s_dst == "db" and s_src == "sys":
+                    f.write("activate DB #F3E8FF\n")
+                elif s_src == "db" and s_dst == "sys":
+                    f.write("deactivate DB\n")
 
             f.write(f"\n' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu\n")
             f.write(f"alt {diag['alt_frame']['happy_cond']}\n")
@@ -843,6 +947,10 @@ def generate_drawio_files(out_dir):
                 arrow = puml_arrow(s_src, s_dst, s_msg)
                 clean_msg = s_msg.split(". ", 1)[-1]
                 f.write(f"    {p_src} {arrow} {p_dst}: {clean_msg}\n")
+                if s_dst == "db" and s_src == "sys":
+                    f.write("    activate DB #F3E8FF\n")
+                elif s_src == "db" and s_dst == "sys":
+                    f.write("    deactivate DB\n")
 
             f.write(f"else {diag['alt_frame']['else_cond']}\n")
             for s_src, s_dst, s_msg in diag["alt_frame"]["else_steps"]:
@@ -851,6 +959,10 @@ def generate_drawio_files(out_dir):
                 arrow = puml_arrow(s_src, s_dst, s_msg)
                 clean_msg = s_msg.split(". ", 1)[-1]
                 f.write(f"    {p_src} {arrow} {p_dst}: {clean_msg}\n")
+                if s_dst == "db" and s_src == "sys":
+                    f.write("    activate DB #F3E8FF\n")
+                elif s_src == "db" and s_dst == "sys":
+                    f.write("    deactivate DB\n")
 
             f.write("end\n\n")
 
@@ -860,6 +972,10 @@ def generate_drawio_files(out_dir):
                 arrow = puml_arrow(s_src, s_dst, s_msg)
                 clean_msg = s_msg.split(". ", 1)[-1]
                 f.write(f"{p_src} {arrow} {p_dst}: {clean_msg}\n")
+                if s_src == "sys" and s_dst == "ui":
+                    f.write("deactivate Sys\n")
+                elif s_src == "ui" and s_dst == "actor":
+                    f.write("deactivate UI\n")
 
             f.write("\n@enduml\n\n")
 

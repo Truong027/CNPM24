@@ -21,11 +21,22 @@ Toàn bộ sơ đồ tuần tự được thiết kế tuân thủ 100% hướng
 
 ---
 
+### ⚡ THANH KÍCH HOẠT (ACTIVATION BAR / EXECUTION SPECIFICATION)
+
+Toàn bộ 14 sơ đồ đã được bổ sung **Thanh kích hoạt (Activation Bar)** tiêu chuẩn:
+- **Tác nhân (Actor)**: Kích hoạt trong toàn bộ thời gian tham gia phiên tương tác (từ bước gửi yêu cầu đến khi nhận kết quả hiển thị).
+- **Giao diện (UI Boundary)**: Kích hoạt khi tiếp nhận thao tác của người dùng, duy trì trạng thái chờ trong suốt quá trình backend xử lý và kết thúc khi hiển thị kết quả.
+- **Hệ thống (Sys Control)**: Kích hoạt liên tục từ lúc nhận HTTP Request (POST/GET) từ UI, điều phối nghiệp vụ, kiểm tra rẽ nhánh trong khung `alt`, và giải phóng khi trả về HTTP Response.
+- **Cơ sở dữ liệu (DB Entity)**: Kích hoạt cục bộ **chính xác vào các khoảng thời gian thực thi truy vấn/transaction** (`SELECT` kiểm tra, `INSERT`/`UPDATE` dữ liệu, `COMMIT`/`ROLLBACK`).
+- **Mũi tên thông điệp**: Gắn chính xác vào mép của thanh kích hoạt (thay vì đâm xuyên qua lifeline).
+
+---
+
 ### ⚡ QUY CHUẨN KHUNG RẼ NHÁNH `ALT` (CHỈ TRONG HỆ THỐNG & CƠ SỞ DỮ LIỆU)
 
 Theo đúng yêu cầu nghiệp vụ và bài giảng:
 - **Phạm vi của Khung `alt`**:
-  - Khung `alt` **CHỈ bao phủ Cột Hệ Thống và Cột Cơ Sở Dữ Liệu** (Tọa độ X: `680px` -> `1490px`).
+  - Khung `alt` **CHỈ bao phủ Cột Hệ Thống và Cột Cơ Sở DỮ LIỆU** (Tọa độ X: `680px` -> `1490px`).
   - Khung **KHÔNG bao phủ Cột Tác Nhân và Cột Giao Diện**.
 - **Các bước bên trong Khung `alt`**:
   - **Nhánh `[Điều kiện Hợp lệ]`**: Hệ thống xử lý logic nghiệp vụ nội bộ (băm mật khẩu, tính toán phí, sinh mã OTP) -> Ghi/cập nhật CSDL (`INSERT`/`UPDATE`) -> CSDL xác nhận thành công.
@@ -105,7 +116,7 @@ Các file Draw.io đã sẵn sàng để mở trực tiếp trên [app.diagrams.
 
 ---
 
-## 📝 MINH HỌA SƠ ĐỒ TUẦN TỰ: KHUNG ALT NẰM TRONG HỆ THỐNG & CSDL (MERMAID)
+## 📝 MINH HỌA SƠ ĐỒ TUẦN TỰ KÈM THANH KÍCH HOẠT (MERMAID)
 
 ### 1. UC01 - Đăng Ký Tài Khoản Cư Dân
 ```mermaid
@@ -117,22 +128,30 @@ sequenceDiagram
     participant DB as Cơ sở dữ liệu<br/>[db / Bảng]<br/>HTTT_QuanLyBaiXe_AI / app_users, cu_dan
 
     Resident->>UI: 1. Nhập Họ tên, SĐT, Căn hộ, Mật khẩu & Click 'Đăng ký'
+    activate UI
     UI->>Sys: 2. POST /register (username, password, phone, apartment)
+    activate Sys
     Sys->>DB: 3. SELECT * FROM app_users WHERE username = %s OR phone = %s
+    activate DB
     DB-->>Sys: 4. Trả về kết quả kiểm tra trùng lặp tài khoản
+    deactivate DB
 
     Note over Sys,DB: KHUNG ALT: Chỉ kiểm tra điều kiện & tác động CSDL trong Hệ thống và CSDL
     alt Username & SĐT chưa từng đăng ký (Hợp lệ)
         Sys->>Sys: 5a. Băm mật khẩu an toàn PBKDF2/SHA-256 (generate_password_hash)
         Sys->>DB: 6a. INSERT INTO app_users & cu_dan (MaCuDan, HoTen, TenDangNhap...)
+        activate DB
         DB-->>Sys: 7a. Xác nhận ghi bản ghi mới thành công (Affected rows = 1)
+        deactivate DB
     else Username hoặc SĐT đã tồn tại / Dữ liệu không hợp lệ
         Sys->>Sys: 5b. Hủy thao tác đăng ký & Thiết lập mã trạng thái lỗi (status = 400)
     end
 
     Note over UI,Sys: Sau khi kết thúc alt, Hệ thống phản hồi Giao diện và hiển thị cho người dùng
     Sys-->>UI: 8. Phản hồi thông báo kết quả đăng ký (HTTP 200 Thành công hoặc HTTP 400 Lỗi)
+    deactivate Sys
     UI-->>Resident: 9. Hiển thị kết quả lên giao diện (Chuyển sang trang Đăng nhập hoặc Toast cảnh báo đỏ)
+    deactivate UI
 ```
 
 ---
@@ -147,15 +166,21 @@ sequenceDiagram
     participant DB as Cơ sở dữ liệu<br/>[db / Bảng]<br/>HTTT_QuanLyBaiXe_AI / app_users, password_reset_tokens
 
     User->>UI: 1. Nhập Email đăng ký & Bấm 'Gửi mã xác thực OTP'
+    activate UI
     UI->>Sys: 2. POST /api/forgot-password (email: 'cu_dan@example.com')
+    activate Sys
     Sys->>DB: 3. SELECT id, username FROM app_users WHERE email = %s AND status = 'active'
+    activate DB
     DB-->>Sys: 4. Trả về kết quả tìm kiếm tài khoản theo email
+    deactivate DB
 
     Note over Sys,DB: KHUNG ALT: Xử lý mã OTP và lưu trữ CSDL
     alt Email hợp lệ & Khớp tài khoản đang hoạt động
         Sys->>Sys: 5a. Sinh mã OTP ngẫu nhiên 6 chữ số (Hiệu lực trong 5 phút)
         Sys->>DB: 6a. INSERT INTO password_reset_tokens (email, otp_hash, expires_at)
+        activate DB
         DB-->>Sys: 7a. Xác nhận lưu trữ mã OTP thành công
+        deactivate DB
         Sys->>Sys: 8a. Gửi Email chứa mã OTP bảo mật đến hòm thư người dùng
     else Email không tồn tại trong hệ thống hoặc định dạng không hợp lệ
         Sys->>Sys: 5b. Hủy yêu cầu cấp OTP & Thiết lập thông báo lỗi (Email not found)
@@ -163,5 +188,7 @@ sequenceDiagram
 
     Note over UI,Sys: Sau khi kết thúc alt, phản hồi về Giao diện
     Sys-->>UI: 9. Phản hồi kết quả xử lý (HTTP 200 Đã gửi OTP hoặc HTTP 400 Email không tồn tại)
+    deactivate Sys
     UI-->>User: 10. Chuyển sang trang reset_password.html hoặc Báo lỗi đỏ yêu cầu kiểm tra lại email
+    deactivate UI
 ```
