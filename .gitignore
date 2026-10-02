@@ -1,4 +1,12 @@
 # =======================================================
+# CHỈ THEO DÕI VÀ ĐẨY FOLDER ongthanquoctruong_24CT2_cnpm
+# Bỏ qua toàn bộ các file và thư mục khác ở cấp root
+# =======================================================
+/*
+!/ongthanquoctruong_24CT2_cnpm/
+!/.gitignore
+
+# =======================================================
 # BẢO MẬT: BIẾN MÔI TRƯỜNG & MẬT KHẨU
 # =======================================================
 .env
@@ -10,11 +18,6 @@
 # =======================================================
 # FILE NÉN DUNG LƯỢNG LỚN (>50MB / >100MB)
 # =======================================================
-BienSoXe.rar
-BienSoXe*.rar
-BienSoXe*.zip
-ongthanquoctruong_24CT2_cnpm*.rar
-ongthanquoctruong_24CT2_cnpm*.zip
 *.rar
 *.zip
 *.7z
@@ -24,11 +27,6 @@ ongthanquoctruong_24CT2_cnpm*.zip
 # =======================================================
 # DATASET ẢNH THÔ & CHECKPOINTS HUẤN LUYỆN
 # =======================================================
-BienSoXe/data/
-BienSoXe/archive/
-BienSoXe/runs/
-BienSoXe/be/runs/
-BienSoXe/instance/
 ongthanquoctruong_24CT2_cnpm/data/
 ongthanquoctruong_24CT2_cnpm/archive/
 ongthanquoctruong_24CT2_cnpm/runs/
@@ -43,7 +41,6 @@ ongthanquoctruong_24CT2_cnpm/instance/
 # MÔI TRƯỜNG ẢO & PYTHON CACHE
 # =======================================================
 .venv/
-BienSoXe/.venv/
 ongthanquoctruong_24CT2_cnpm/.venv/
 **/.venv/
 env/
@@ -77,13 +74,6 @@ desktop.ini
 # IDE / EDITOR CONFIGS
 # =======================================================
 .vscode/
-BienSoXe/.vscode/
 ongthanquoctruong_24CT2_cnpm/.vscode/
 **/.vscode/
 .idea/
-
-# =======================================================
-# BỎ QUA CÁC FILE BÁO CÁO NGOÀI THƯ MỤC
-# =======================================================
-/baitap.docx
-/baitap.md
