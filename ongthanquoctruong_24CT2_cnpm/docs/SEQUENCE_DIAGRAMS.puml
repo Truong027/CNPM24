@@ -1,0 +1,281 @@
+' ====================================================================
+' SƠ ĐỒ TUẦN TỰ (SEQUENCE DIAGRAMS) - HỆ THỐNG QUẢN LÝ BÃI ĐỖ XE AI
+' Đúng chuẩn: Tác nhân | Giao diện [File] | Hệ thống [File/Hàm] | CSDL [DB/Bảng]
+' ====================================================================
+
+@startuml uc01_register
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 1. ĐĂNG KÝ TÀI KHOẢN CƯ DÂN
+autonumber
+
+actor "Cư Dân (Resident)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/register.html\n(hoặc fe/templates/login.html#register)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: register()\nbe/database.py: register_resident_user()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\napp_users, cu_dan" as DB #F3E8FF
+
+Actor ->> UI: Nhập họ tên, SĐT, căn hộ, mật khẩu & Bấm 'Đăng ký'
+UI ->> Sys: POST /register (username, password, phone, apartment)
+Sys ->> DB: SELECT * FROM app_users WHERE username = %s OR phone = %s
+DB -->> Sys: Trả về kết quả kiểm tra (Chưa tồn tại)
+Sys ->> Sys: Băm mật khẩu an toàn PBKDF2/SHA-256 (generate_password_hash)
+Sys ->> DB: INSERT INTO app_users & cu_dan (MaCuDan, HoTen, TenDangNhap...)
+DB -->> Sys: Xác nhận ghi bản ghi thành công (Affected rows = 1)
+Sys -->> UI: Phản hồi JSON: {success: true, message: 'Đăng ký thành công'}
+UI -->> Actor: Hiển thị Toast thông báo thành công & Chuyển hướng sang Đăng nhập
+
+@enduml
+
+@startuml uc02_login
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 2. ĐĂNG NHẬP HỆ THỐNG
+autonumber
+
+actor "Người Dùng (Admin/Bảo vệ/Cư dân)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/login.html\n(Form #loginForm)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: login()\nbe/database.py: check_user_credentials()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\napp_users, cu_dan, nhan_vien" as DB #F3E8FF
+
+Actor ->> UI: Nhập tên đăng nhập, mật khẩu & Bấm 'Đăng nhập'
+UI ->> Sys: POST /login (username, password)
+Sys ->> DB: SELECT * FROM app_users WHERE username = %s AND status = 'active'
+DB -->> Sys: Trả về thông tin user & password_hash
+Sys ->> Sys: Đối soát mật khẩu (check_password_hash) & Khởi tạo session['user']
+Sys -->> UI: Phản hồi JSON: {success: true, role: 'Resident'/'Admin'/'Operator'}
+UI ->> Actor: Điều hướng vào trang làm việc tương ứng (/ hoặc /resident-dashboard)
+
+@enduml
+
+@startuml uc03_register_vehicle_cinema
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 3. ĐĂNG KÝ XE & CHỌN Ô ĐỖ CINEMA
+autonumber
+
+actor "Cư Dân (Resident)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/resident_dashboard.html\n(Modal #registerVehicleModal, #cinemaModal)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/resident/register_vehicle\nbe/database.py: register_vehicle_with_slot()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nbai_do, vehicles, phuong_tien" as DB #F3E8FF
+
+Actor ->> UI: Nhập biển số, màu xe & Chọn vị trí ô đỗ (VD: B1-A01) trên sơ đồ
+UI ->> Sys: POST /api/resident/register_vehicle (plate, slot_id, months)
+Sys ->> DB: Kiểm tra ô đỗ: SELECT TrangThai FROM bai_do WHERE MaViTri = %s FOR UPDATE
+DB -->> Sys: Trả về trạng thái ô đỗ (TrangThai = 'Trong')
+Sys ->> DB: UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s
+Sys ->> DB: INSERT INTO vehicles & phuong_tien (BienSoXe, MaCuDan, ViTriDo, NgayHetHan)
+DB -->> Sys: Trả về kết quả ghi dữ liệu thành công
+Sys -->> UI: Phản hồi JSON: {success: true, slot: 'B1-A01', plate: '30H-999.88'}
+UI ->> Actor: Cập nhật thẻ xe 3D lên màn hình & Đổi màu ô đỗ thành Cyan (Xe của bạn)
+
+@enduml
+
+@startuml uc04_change_slot
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 4. ĐỔI VỊ TRÍ ĐỖ XE CINEMA
+autonumber
+
+actor "Cư Dân (Resident)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/resident_dashboard.html\n(Modal #changeSlotModal, renderCinemaSeats)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/parking/change_slot\nbe/database.py: change_vehicle_parking_slot()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nbai_do, vehicles, phuong_tien" as DB #F3E8FF
+
+Actor ->> UI: Chọn xe cần đổi & Click chọn vị trí ô trống mới (VD: B1-B05)
+UI ->> Sys: POST /api/parking/change_slot (plate: '30H-999.88', new_slot: 'B1-B05')
+Sys ->> DB: Kiểm tra ô mới: SELECT TrangThai FROM bai_do WHERE MaViTri = 'B1-B05'
+DB -->> Sys: Xác nhận ô mới còn 'Trong'
+Sys ->> DB: TRANSACTION: Giải phóng ô cũ (TrangThai = 'Trong')
+Sys ->> DB: Đặt chỗ ô mới (TrangThai = 'DaDat') & Cập nhật ViTriDo trong phuong_tien
+DB ->> Sys: Commit transaction thành công
+Sys -->> UI: Phản hồi JSON: {success: true, message: 'Đổi vị trí đỗ thành công'}
+UI -->> Actor: Render lại sơ đồ bãi đỗ Cinema & Hiển thị thông báo thành công
+
+@enduml
+
+@startuml uc05_renew_pass
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 5. GIA HẠN VÉ THÁNG CƯ DÂN
+autonumber
+
+actor "Cư Dân (Resident)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/resident_dashboard.html\n(Modal #renewTicketModal)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/resident/renew_ticket\nbe/database.py: renew_monthly_ticket()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nvehicles, phuong_tien" as DB #F3E8FF
+
+Actor ->> UI: Chọn gói gia hạn (1, 3 hoặc 6 tháng) & Bấm 'Xác nhận gia hạn'
+UI ->> Sys: POST /api/resident/renew_ticket (plate: '30H-999.88', months: 3)
+Sys ->> DB: SELECT NgayHetHan FROM phuong_tien WHERE BienSoXe = %s
+DB -->> Sys: Trả về ngày hết hạn hiện tại
+Sys ->> Sys: Cộng dồn thời hạn mới (new_expiry = max(current_expiry, today) + months)
+Sys ->> DB: UPDATE phuong_tien & vehicles SET NgayHetHan = %s WHERE BienSoXe = %s
+DB -->> Sys: Xác nhận cập nhật CSDL thành công
+Sys -->> UI: Phản hồi JSON: {success: true, new_expiry: '2026-12-31'}
+UI ->> Actor: Cập nhật nhãn hạn vé tháng trên thẻ xe 3D và hiển thị badge 'Còn Hạn'
+
+@enduml
+
+@startuml uc06_transfer_request
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 6. YÊU CẦU CHUYỂN NHƯỢNG XE
+autonumber
+
+actor "Cư Dân (Resident)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/resident_dashboard.html\n(Modal #transferVehicleModal)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/resident/transfer_vehicle\nbe/database.py: create_vehicle_transfer_request()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nchuyen_nhuong_xe, cu_dan, vehicles" as DB #F3E8FF
+
+Actor ->> UI: Nhập SĐT người nhận, căn hộ mới, lý do chuyển nhượng & Bấm 'Gửi yêu cầu'
+UI ->> Sys: POST /api/resident/transfer_vehicle (plate, target_phone, reason)
+Sys ->> DB: SELECT MaCuDan FROM cu_dan WHERE SoDienThoai = %s
+DB -->> Sys: Trả về thông tin cư dân nhận hợp lệ
+Sys ->> DB: INSERT INTO chuyen_nhuong_xe (BienSoXe, NguoiChuyen, NguoiNhan, TrangThai)
+DB ->> Sys: Tạo bản ghi đơn chuyển nhượng mới với TrangThai = 'ChoDuyet'
+Sys -->> UI: Phản hồi JSON: {success: true, request_id: 12, status: 'ChoDuyet'}
+UI -->> Actor: Hiển thị thông báo 'Đã gửi yêu cầu đến Quản trị viên phê duyệt'
+
+@enduml
+
+@startuml uc07_parking_history
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 7. TRA CỨU LỊCH SỬ XE VÀO/RA
+autonumber
+
+actor "Cư Dân (Resident)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/resident_dashboard.html\n(Bảng lịch sử #historySection)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: GET /api/resident/history\nbe/database.py: get_resident_vehicle_history()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nparking_sessions, lich_su_ra_vao" as DB #F3E8FF
+
+Actor ->> UI: Chọn biển số xe cần tra cứu & Khoảng ngày tra cứu
+UI ->> Sys: GET /api/resident/history?plate=30H-999.88
+Sys ->> DB: SELECT * FROM parking_sessions WHERE plate_text = %s ORDER BY check_in_time DESC
+DB -->> Sys: Trả về danh sách phiên: Giờ vào, Giờ ra, Phí thu, Trạng thái, Ảnh chụp
+Sys -->> UI: Phản hồi danh sách phiên gửi xe dưới dạng JSON
+UI ->> Actor: Render bảng lịch sử trực quan kèm ảnh chụp snapshot vào-ra
+
+@enduml
+
+@startuml uc08_auto_checkin
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 8. NHẬN DIỆN AI & TỰ ĐỘNG CHECK-IN XE VÀO
+autonumber
+
+actor "Tài xế / Camera Cổng Vào (Gate Camera & Driver)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/index.html\n(Tab #recognition-page, Live Stream)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: gen_frames() & detect_plates_from_frame()\nbe/database.py: process_parking_transaction()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nparking_sessions, lich_su_ra_vao, detections" as DB #F3E8FF
+
+Actor ->> UI: Xe tiến vào làn cổng vào, camera ghi nhận luồng video (Frames)
+UI ->> Sys: Stream video MJPEG tới backend (Camera Loop gen_frames)
+Sys ->> Sys: YOLOv8 phát hiện bounding box biển số -> CRNN đọc chuỗi ký tự (VD: '51G-123.45')
+Sys ->> DB: Tra cứu xe đang đỗ: SELECT id FROM parking_sessions WHERE plate_text = %s AND status = 'Parked'
+DB ->> Sys: Không có phiên mở -> Xe đang vào mới
+Sys ->> DB: INSERT INTO parking_sessions (plate_text, check_in_time, status='Parked', gate_in='Cổng Vào')
+Sys ->> DB: INSERT INTO lich_su_ra_vao & detections (Lưu lịch sử & độ tin cậy AI)
+DB -->> Sys: Xác nhận tạo phiên gửi xe thành công
+Sys ->> UI: Đẩy thông báo Live Event 'Xe vào thành công' lên Bàn trực bảo vệ
+UI -->> Actor: Mở barrier tự động & Hiển thị biển số trên bảng LED cổng vào
+
+@enduml
+
+@startuml uc09_checkout_verification
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 9. ĐỐI CHIẾU XE RA & CẢNH BÁO BLACKLIST
+autonumber
+
+actor "Nhân Viên Bảo Vệ (Guard)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/index.html\n(Bàn trực #guard-station-page, checkGuardLiveEvent)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: GET /api/guard/verification/<plate>\nbe/database.py: get_guard_verification_info()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nvehicles, parking_sessions, bai_do" as DB #F3E8FF
+
+Actor ->> UI: Camera cổng ra phát hiện xe hoặc Bảo vệ click chọn xe chuẩn bị ra
+UI ->> Sys: GET /api/guard/verification/51G-123.45
+Sys ->> DB: Truy vấn phiên đỗ: SELECT * FROM parking_sessions WHERE plate_text = %s AND status = 'Parked'
+Sys ->> DB: Truy vấn loại xe: SELECT group_type, monthly_ticket_expiry FROM vehicles WHERE plate_text = %s
+DB -->> Sys: Trả về thông tin phiên vào, ảnh snapshot vào, nhóm xe, hạn vé tháng
+Sys ->> Sys: Tính thời gian đỗ, tính cước phí (Vé tháng = 0đ, Vãng lai = theo block giờ)
+Sys ->> Sys: Kiểm tra Blacklist: Nếu group_type = 'Blacklist' -> Bật cờ cảnh báo an ninh
+Sys -->> UI: Phản hồi JSON: {verification_data, fee: 0, is_blacklist: false}
+UI -->> Actor: Hiển thị song song 2 ảnh [Ảnh Vào] vs [Ảnh Ra Thực Tế] & Hộp tính phí
+
+@enduml
+
+@startuml uc10_collect_fee_barrier
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 10. THU PHÍ & KÍCH HOẠT BARRIER CỔNG RA
+autonumber
+
+actor "Nhân Viên Bảo Vệ (Guard)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/index.html\n(#guardFeeBox, #guardConfirmActionBtn)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/guard/collect_fee\nbe/database.py: complete_parking_session()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nparking_sessions, lich_su_ra_vao" as DB #F3E8FF
+
+Actor ->> UI: Bảo vệ xác nhận thu tiền mặt/QR và bấm 'Xác Nhận Thu Phí & Mở Barrier'
+UI ->> Sys: POST /api/guard/collect_fee (session_id: 105, amount: 20000, method: 'Cash')
+Sys ->> DB: UPDATE parking_sessions SET status = 'Completed', check_out_time = NOW(), fee = %s
+Sys ->> DB: UPDATE lich_su_ra_vao SET ThoiGianRa = NOW(), TrangThai = 'DaThanhToan'
+DB -->> Sys: Trả về kết quả cập nhật thành công
+Sys ->> Sys: Kích hoạt tín hiệu mở Barrier (barrier_state = 'OPEN')
+Sys -->> UI: Phản hồi JSON: {success: true, invoice_code: 'HD-20261002-01', barrier: 'OPEN'}
+UI ->> Actor: In hóa đơn điện tử, bật thông báo 'Cho xe qua cổng' & Cổng Barrier nâng lên
+
+@enduml
+
+@startuml uc11_admin_user_mgmt
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 11. QUẢN LÝ TÀI KHOẢN NGƯỜI DÙNG
+autonumber
+
+actor "Quản Trị Viên (Admin)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/index.html\n(Trang quản lý #users-page, Modal #editUserModal)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/admin/users/update\nbe/database.py: admin_update_user_info()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\napp_users, cu_dan, nhan_vien" as DB #F3E8FF
+
+Actor ->> UI: Chọn tài khoản cần chỉnh sửa, cập nhật quyền hạn/trạng thái khóa & Bấm 'Lưu'
+UI ->> Sys: POST /api/admin/users/update (user_id: 5, role: 'Operator', status: 'active')
+Sys ->> DB: UPDATE app_users SET role = %s, status = %s WHERE id = %s
+Sys ->> DB: Đồng bộ cập nhật bảng cu_dan / nhan_vien tương ứng
+DB -->> Sys: Xác nhận cập nhật thông tin thành công
+Sys -->> UI: Phản hồi JSON: {success: true, message: 'Cập nhật tài khoản thành công'}
+UI -->> Actor: Tải lại danh sách tài khoản & Hiển thị badge quyền hạn mới
+
+@enduml
+
+@startuml uc12_admin_approve_transfer
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 12. PHÊ DUYỆT CHUYỂN NHƯỢNG XE
+autonumber
+
+actor "Quản Trị Viên (Admin)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/index.html\n(Trang chuyển nhượng #transfers-page)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/admin/transfer_requests/<id>/action\nbe/database.py: process_transfer_request_action()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nchuyen_nhuong_xe, vehicles, phuong_tien, cu_dan" as DB #F3E8FF
+
+Actor ->> UI: Xem thông tin đơn chuyển nhượng đang chờ & Bấm nút 'Phê Duyệt'
+UI ->> Sys: POST /api/admin/transfer_requests/12/action (action: 'approve')
+Sys ->> DB: Lấy thông tin đơn: SELECT * FROM chuyen_nhuong_xe WHERE MaYeuCau = 12
+DB -->> Sys: Trả về thông tin: Biển số, Người chuyển, Người nhận
+Sys ->> DB: TRANSACTION: UPDATE phuong_tien & vehicles SET MaCuDan = NguoiNhan
+Sys ->> DB: UPDATE chuyen_nhuong_xe SET TrangThai = 'DaDuyet', NgayDuyet = NOW()
+DB ->> Sys: Commit transaction thành công
+Sys -->> UI: Phản hồi JSON: {success: true, message: 'Đã chuyển nhượng xe sang chủ sở hữu mới'}
+UI ->> Actor: Chuyển trạng thái đơn thành 'Đã Duyệt' & Cập nhật danh mục xe
+
+@enduml
+
+@startuml uc13_admin_analytics
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: 13. BÁO CÁO THỐNG KÊ & DOANH THU
+autonumber
+
+actor "Quản Trị Viên (Admin)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nfe/templates/index.html\n(Trang thống kê #reports-page, renderCharts)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nbe/app.py: GET /api/analytics/revenue\nbe/database.py: get_revenue_stats()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nparking_sessions, statistics" as DB #F3E8FF
+
+Actor ->> UI: Chọn xem báo cáo doanh thu theo tháng và biểu đồ mật độ 24 giờ
+UI ->> Sys: GET /api/analytics/revenue & GET /api/analytics/hourly
+Sys ->> DB: SELECT DATE(check_out_time), SUM(fee), COUNT(*) FROM parking_sessions WHERE status='Completed' GROUP BY DATE(check_out_time)
+Sys ->> DB: SELECT HOUR(check_in_time), COUNT(*) FROM parking_sessions GROUP BY HOUR(check_in_time)
+DB -->> Sys: Trả về tập dữ liệu tổng hợp doanh thu và số lượt xe theo giờ
+Sys -->> UI: Phản hồi JSON dữ liệu thống kê phân tích
+UI ->> Actor: Vẽ biểu đồ cột doanh thu & Biểu đồ đường lưu lượng giờ cao điểm (Chart.js)
+
+@enduml
+
