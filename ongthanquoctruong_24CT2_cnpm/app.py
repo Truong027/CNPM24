@@ -21,7 +21,10 @@ BE_DIR = os.path.join(CURRENT_DIR, "be")
 if BE_DIR not in sys.path:
     sys.path.insert(0, BE_DIR)
 
-from app import app
+try:
+    from be.app import app
+except ImportError:
+    from app import app
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
