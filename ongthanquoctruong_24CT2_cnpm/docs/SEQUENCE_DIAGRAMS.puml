@@ -1,8 +1,7 @@
 ' ====================================================================
 ' SƠ ĐỒ TUẦN TỰ (SEQUENCE DIAGRAMS) - HỆ THỐNG QUẢN LÝ BÃI ĐỖ XE AI
-' Phân loại theo Tác nhân: Cư Dân, Bảo Vệ, Quản Trị Viên
+' Quy chuẩn: Khung alt CHỈ kiểm tra điều kiện trong Hệ thống & CSDL
 ' Đường dẫn tuyệt đối chuẩn xác: D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\...
-' Khung điều kiện rẽ nhánh: alt / else
 ' ====================================================================
 
 
@@ -25,16 +24,17 @@ UI ->> Sys: POST /register (username, password, phone, apartment)
 Sys ->> DB: SELECT * FROM app_users WHERE username = %s OR phone = %s
 DB -->> Sys: Trả về kết quả kiểm tra trùng lặp tài khoản
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Username & SĐT chưa từng đăng ký (Hợp lệ)
     Sys ->> Sys: Băm mật khẩu an toàn PBKDF2/SHA-256 (generate_password_hash)
     Sys ->> DB: INSERT INTO app_users & cu_dan (MaCuDan, HoTen, TenDangNhap, Role='Resident')
     DB -->> Sys: Xác nhận ghi bản ghi mới thành công (Affected rows = 1)
-    Sys -->> UI: Phản hồi HTTP 200 {success: true, message: 'Đăng ký thành công'}
-    UI -->> Actor: Hiển thị thông báo thành công & Chuyển hướng sang trang Đăng nhập
 else Username hoặc SĐT đã tồn tại / Dữ liệu không hợp lệ
-    Sys -->> UI: Phản hồi HTTP 400 {success: false, message: 'Tài khoản hoặc SĐT đã tồn tại'}
-    UI -->> Actor: Hiển thị Toast cảnh báo lỗi màu đỏ & Yêu cầu nhập lại thông tin
+    Sys ->> Sys: Hủy thao tác đăng ký & Thiết lập mã trạng thái lỗi (status = 400)
 end
+
+Sys -->> UI: Phản hồi thông báo kết quả đăng ký (HTTP 200 Thành công hoặc HTTP 400 Lỗi)
+UI -->> Actor: Hiển thị kết quả lên giao diện (Chuyển sang trang Đăng nhập hoặc Toast cảnh báo đỏ)
 
 @enduml
 
@@ -53,14 +53,17 @@ UI ->> Sys: POST /login (username, password)
 Sys ->> DB: SELECT id, username, password_hash, role, status FROM app_users WHERE username = %s
 DB -->> Sys: Trả về thông tin người dùng và mã băm password_hash
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Mật khẩu chính xác & status == 'active' & role == 'Resident'
     Sys ->> Sys: Khởi tạo session['user'] = {id, role: 'Resident', username}
-    Sys -->> UI: Phản hồi HTTP 200 {success: true, role: 'Resident', redirect: '/resident-dashboard'}
-    UI ->> Actor: Điều hướng vào Cổng thông tin Cư dân (Resident Dashboard)
+    Sys ->> DB: UPDATE app_users SET last_login = NOW() WHERE id = %s
+    DB -->> Sys: Xác nhận cập nhật thời gian đăng nhập thành công
 else Sai mật khẩu hoặc Tài khoản bị vô hiệu hóa (status != 'active')
-    Sys -->> UI: Phản hồi HTTP 401 {success: false, message: 'Sai tên đăng nhập hoặc mật khẩu'}
-    UI -->> Actor: Hiển thị thông báo lỗi 'Đăng nhập thất bại' & Xóa trống mật khẩu
+    Sys ->> Sys: Từ chối xác thực phiên & Thiết lập mã lỗi (status = 401)
 end
+
+Sys -->> UI: Phản hồi kết quả đăng nhập (JSON token phiên hoặc Thông báo lỗi xác thực)
+UI -->> Actor: Điều hướng vào Resident Dashboard hoặc Hiển thị cảnh báo đăng nhập thất bại
 
 @enduml
 
@@ -79,16 +82,18 @@ UI ->> Sys: POST /api/forgot-password (email: 'cu_dan@example.com')
 Sys ->> DB: SELECT id, username FROM app_users WHERE email = %s AND status = 'active'
 DB -->> Sys: Trả về kết quả tìm kiếm tài khoản theo email
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Email hợp lệ & Khớp tài khoản đang hoạt động
     Sys ->> Sys: Sinh mã OTP ngẫu nhiên 6 chữ số (Hiệu lực trong 5 phút)
-    Sys ->> DB: Lưu mã OTP & Thời gian hết hạn vào bảng password_reset_tokens
+    Sys ->> DB: INSERT INTO password_reset_tokens (email, otp_hash, expires_at)
+    DB -->> Sys: Xác nhận lưu trữ mã OTP thành công
     Sys ->> Sys: Gửi Email chứa mã OTP bảo mật đến hòm thư người dùng
-    Sys -->> UI: Phản hồi HTTP 200 {success: true, message: 'Mã OTP đã được gửi'}
-    UI -->> Actor: Chuyển hướng sang reset_password.html & Hiển thị form nhập OTP, Mật khẩu mới
 else Email không tồn tại trong hệ thống hoặc định dạng không hợp lệ
-    Sys -->> UI: Phản hồi HTTP 400 {error: 'Email không tồn tại trong hệ thống'}
-    UI -->> Actor: Hiển thị thông báo lỗi màu đỏ 'Không tìm thấy tài khoản với email này'
+    Sys ->> Sys: Hủy yêu cầu cấp OTP & Thiết lập thông báo lỗi (Email not found)
 end
+
+Sys -->> UI: Phản hồi kết quả xử lý (HTTP 200 Đã gửi OTP hoặc HTTP 400 Email không tồn tại)
+UI -->> Actor: Chuyển sang trang reset_password.html hoặc Báo lỗi đỏ yêu cầu kiểm tra lại email
 
 @enduml
 
@@ -107,16 +112,17 @@ UI ->> Sys: POST /api/resident/register_vehicle (plate: '30H-999.88', slot_id: '
 Sys ->> DB: Khóa dòng kiểm tra: SELECT TrangThai FROM bai_do WHERE MaViTri = %s FOR UPDATE
 DB -->> Sys: Trả về trạng thái hiện tại của ô đỗ
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Ô đỗ còn TRỐNG (TrangThai == 'Trong')
     Sys ->> DB: UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s WHERE MaViTri = %s
     Sys ->> DB: INSERT INTO vehicles & phuong_tien (BienSoXe, MaCuDan, ViTriDo, NgayHetHan)
     DB -->> Sys: Xác nhận lưu xe và đặt chỗ ô đỗ thành công
-    Sys -->> UI: Phản hồi HTTP 200 {success: true, slot_id: 'B1-A01', plate: '30H-999.88'}
-    UI ->> Actor: Đổi màu ô ghế Cinema sang Cyan (Xe của bạn) & Cập nhật thẻ xe 3D
 else Vị trí ô đỗ đã có người khác đặt trước (TrangThai == 'DaDat')
-    Sys -->> UI: Phản hồi HTTP 409 {success: false, message: 'Vị trí đỗ vừa được đặt, vui lòng chọn ô khác'}
-    UI ->> Actor: Tô đỏ ô đỗ và hiển thị thông báo yêu cầu chọn vị trí khác trên sơ đồ Cinema
+    Sys ->> Sys: Hủy giao dịch đặt ô & Thiết lập mã xung đột dữ liệu (status = 409)
 end
+
+Sys -->> UI: Phản hồi kết quả đăng ký xe & ô đỗ (HTTP 200 Thành công hoặc HTTP 409 Xung đột)
+UI ->> Actor: Đổi màu ô ghế Cinema sang Cyan (Xe của bạn) hoặc Tô đỏ báo người dùng chọn lại
 
 @enduml
 
@@ -135,18 +141,19 @@ UI ->> Sys: POST /api/parking/change_slot (plate: '30H-999.88', new_slot: 'B1-B0
 Sys ->> DB: Tra cứu vị trí mới: SELECT TrangThai FROM bai_do WHERE MaViTri = 'B1-B05'
 DB -->> Sys: Trả về trạng thái của vị trí mới
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Vị trí mới còn TRỐNG (TrangThai == 'Trong')
     Sys ->> DB: TRANSACTION: UPDATE bai_do SET TrangThai = 'Trong', BienSoXe = NULL (Ô cũ)
     Sys ->> DB: UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s (Ô mới B1-B05)
     Sys ->> DB: UPDATE phuong_tien & vehicles SET ViTriDo = 'B1-B05' WHERE BienSoXe = %s
     DB ->> Sys: Commit transaction thành công
-    Sys -->> UI: Phản hồi HTTP 200 {success: true, new_slot: 'B1-B05'}
-    UI -->> Actor: Render lại sơ đồ bãi đỗ Cinema & Hiển thị thông báo đổi vị trí thành công
 else Vị trí mới đã bị xe khác chiếm chỗ
-    Sys ->> DB: ROLLBACK TRANSACTION
-    Sys -->> UI: Phản hồi HTTP 400 {success: false, message: 'Vị trí mới không khả dụng'}
-    UI -->> Actor: Báo lỗi 'Không thể đổi sang vị trí này', giữ nguyên vị trí cũ
+    Sys ->> DB: ROLLBACK TRANSACTION (Hủy bỏ mọi thay đổi)
+    Sys ->> Sys: Thiết lập thông báo vị trí mới không khả dụng
 end
+
+Sys -->> UI: Phản hồi kết quả đổi vị trí (HTTP 200 Thành công hoặc HTTP 400 Thất bại)
+UI -->> Actor: Render lại sơ đồ bãi đỗ Cinema & Hiển thị thông báo kết quả cho cư dân
 
 @enduml
 
@@ -165,17 +172,18 @@ UI ->> Sys: POST /api/resident/renew_ticket (plate: '30H-999.88', months: 3)
 Sys ->> DB: SELECT NgayHetHan FROM phuong_tien WHERE BienSoXe = %s
 DB -->> Sys: Trả về ngày hết hạn hiện tại của phương tiện
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Tìm thấy phương tiện hợp lệ & Gói gia hạn đúng quy định
     Sys ->> Sys: Tính thời hạn mới: new_expiry = max(current_expiry, today) + 3 months
     Sys ->> DB: UPDATE phuong_tien & vehicles SET NgayHetHan = %s WHERE BienSoXe = %s
     Sys ->> DB: INSERT INTO lich_su_thanh_toan (BienSoXe, SoTien, LoaiGiaoDich='GiaHanVeThang')
     DB -->> Sys: Xác nhận cập nhật CSDL thành công
-    Sys -->> UI: Phản hồi HTTP 200 {success: true, new_expiry: '2026-12-31'}
-    UI ->> Actor: Cập nhật nhãn hạn mới trên thẻ xe 3D và hiển thị badge 'Còn Hạn'
 else Biển số xe không tồn tại hoặc lỗi giao dịch
-    Sys -->> UI: Phản hồi HTTP 404 {success: false, message: 'Không tìm thấy xe hoặc giao dịch bị hủy'}
-    UI -->> Actor: Hiển thị thông báo thất bại & Giữ nguyên thời hạn cũ
+    Sys ->> Sys: Hủy giao dịch gia hạn & Thiết lập mã lỗi (status = 404)
 end
+
+Sys -->> UI: Phản hồi kết quả gia hạn (HTTP 200 kèm ngày hết hạn mới hoặc Báo lỗi)
+UI ->> Actor: Cập nhật nhãn hạn mới trên thẻ xe 3D và hiển thị badge 'Còn Hạn'
 
 @enduml
 
@@ -194,15 +202,16 @@ UI ->> Sys: POST /api/resident/transfer_vehicle (plate, target_phone, reason)
 Sys ->> DB: SELECT MaCuDan, HoTen FROM cu_dan WHERE SoDienThoai = %s
 DB -->> Sys: Trả về thông tin cư dân nhận theo số điện thoại
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Tìm thấy cư dân nhận hợp lệ & Khác chủ xe hiện tại
     Sys ->> DB: INSERT INTO chuyen_nhuong_xe (BienSoXe, NguoiChuyen, NguoiNhan, TrangThai='ChoDuyet')
     DB -->> Sys: Xác nhận tạo đơn chuyển nhượng thành công (MaYeuCau = 12)
-    Sys -->> UI: Phản hồi HTTP 200 {success: true, request_id: 12, status: 'ChoDuyet'}
-    UI -->> Actor: Hiển thị thông báo 'Đã gửi đơn chuyển nhượng, vui lòng chờ Admin phê duyệt'
 else SĐT không tồn tại hoặc Cố tình chuyển nhượng cho chính mình
-    Sys -->> UI: Phản hồi HTTP 400 {success: false, message: 'Người nhận không phải cư dân tòa nhà'}
-    UI -->> Actor: Báo lỗi 'Không tìm thấy cư dân nhận, vui lòng kiểm tra lại SĐT'
+    Sys ->> Sys: Từ chối tạo đơn & Thiết lập thông báo lỗi cư dân không hợp lệ
 end
+
+Sys -->> UI: Phản hồi kết quả lập đơn (HTTP 200 {status: 'ChoDuyet'} hoặc HTTP 400 Lỗi)
+UI -->> Actor: Hiển thị thông báo trạng thái đơn hoặc Báo lỗi người nhận không hợp lệ
 
 @enduml
 
@@ -221,13 +230,15 @@ UI ->> Sys: GET /api/resident/history?plate=30H-999.88
 Sys ->> DB: SELECT * FROM parking_sessions WHERE plate_text = %s ORDER BY check_in_time DESC
 DB -->> Sys: Trả về danh sách các phiên gửi xe tương ứng
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Có dữ liệu lịch sử vào/ra trong hệ thống
-    Sys -->> UI: Phản hồi HTTP 200 JSON danh sách phiên: Giờ vào, Giờ ra, Phí thu, Ảnh snapshot
-    UI -->> Actor: Hiển thị bảng lịch sử trực quan kèm nút bấm phóng to xem ảnh camera
+    Sys ->> Sys: Tổng hợp danh sách phiên: Giờ vào, Giờ ra, Phí thu, Đường dẫn ảnh snapshot
 else Chưa có lượt gửi xe nào trong khoảng thời gian đã chọn
-    Sys -->> UI: Phản hồi HTTP 200 {sessions: [], message: 'Không có dữ liệu'}
-    UI -->> Actor: Hiển thị thông báo trạng thái trống 'Chưa phát sinh lượt gửi xe nào'
+    Sys ->> Sys: Khởi tạo danh sách kết quả rỗng (sessions = [])
 end
+
+Sys -->> UI: Phản hồi JSON dữ liệu lịch sử xe vào/ra
+UI ->> Actor: Render bảng lịch sử trực quan kèm nút xem chi tiết ảnh chụp camera
 
 @enduml
 
@@ -252,17 +263,18 @@ Sys ->> Sys: YOLOv8 cắt vùng biển số -> CRNN nhận dạng ký tự (VD: 
 Sys ->> DB: Tra cứu phiên đỗ: SELECT id FROM parking_sessions WHERE plate_text = %s AND status = 'Parked'
 DB -->> Sys: Trả về kết quả kiểm tra phiên đỗ hiện tại của xe
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Không có phiên trùng lặp & Biển số nhận diện rõ ràng (Xe vào hợp lệ)
     Sys ->> DB: INSERT INTO parking_sessions (plate_text, check_in_time=NOW(), status='Parked', gate_in='Cổng Vào')
     Sys ->> DB: Lưu bản ghi ảnh chụp vào detections & lich_su_ra_vao
     DB -->> Sys: Xác nhận tạo phiên gửi xe mới thành công
-    Sys ->> Sys: Gửi tín hiệu điều khiển mở Barrier cổng vào (barrier_state = 'OPEN')
-    Sys ->> UI: Đẩy sự kiện Live Event WebSocket: 'Xe vào thành công' kèm ảnh chụp biển số
-    UI ->> Actor: Cần Barrier nâng lên, màn hình LED hiển thị: 'Kính chào quý khách: 51G-123.45'
+    Sys ->> Sys: Kích hoạt tín hiệu điều khiển mở Barrier cổng vào (barrier_state = 'OPEN')
 else Xe đang có phiên mở chưa checkout hoặc Biển số mờ không nhận diện được
-    Sys ->> UI: Đẩy cảnh báo an ninh về Bàn trực bảo vệ: 'Biển số trùng lặp / Nhận diện mờ'
-    UI ->> Actor: Giữ nguyên Barrier đóng & Bật cửa sổ yêu cầu Bảo vệ kiểm tra, nhập biển số thủ công
+    Sys ->> Sys: Giữ nguyên Barrier đóng & Bật cờ cảnh báo an ninh cần kiểm tra thủ công
 end
+
+Sys ->> UI: Đẩy sự kiện WebSocket Live Event: Thông báo xe vào hoặc Cảnh báo biển số trùng
+UI ->> Actor: Cần Barrier mở (hoặc hiển thị thông báo yêu cầu Bảo vệ nhập biển số thủ công)
 
 @enduml
 
@@ -282,15 +294,15 @@ Sys ->> DB: Truy vấn phiên đỗ: SELECT * FROM parking_sessions WHERE plate_
 Sys ->> DB: Truy vấn phân loại xe: SELECT group_type, monthly_ticket_expiry FROM vehicles WHERE plate_text = %s
 DB -->> Sys: Trả về dữ liệu phiên vào, ảnh snapshot vào, nhóm đối tượng, hạn vé tháng
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Trường hợp 1: Xe Cư dân vé tháng còn hiệu lực (monthly_ticket_expiry >= NOW)
     Sys ->> Sys: Xác nhận miễn phí gửi xe (fee = 0đ) theo chính sách vé tháng cư dân
-    Sys -->> UI: Phản hồi HTTP 200 {is_resident: true, fee: 0, status: 'Valid'}
-    UI -->> Actor: Hiển thị badge xanh 'VÉ THÁNG HỢP LỆ' & So sánh khớp ảnh Vào - Ra
 else Trường hợp 2: Xe thuộc Danh Sách Đen (group_type == 'Blacklist' / Cảnh báo trộm cắp)
     Sys ->> Sys: Bật cờ cảnh báo an ninh khẩn cấp (security_alert = True, lock_barrier = True)
-    Sys -->> UI: Phản hồi HTTP 200 {is_blacklist: true, alert_level: 'HIGH', fee: 0}
-    UI ->> Actor: Khóa nút mở barrier, nhấp nháy đèn đỏ CẢNH BÁO XE GIAN LẬN/TRỘM CẮP & Báo động
 end
+
+Sys -->> UI: Phản hồi thông tin đối chiếu (Khớp vé tháng hoặc Cảnh báo an ninh Blacklist)
+UI -->> Actor: Hiển thị badge xanh 'VÉ THÁNG HỢP LỆ' hoặc Khóa barrier và nhấp nháy còi báo động đỏ
 
 @enduml
 
@@ -307,17 +319,18 @@ database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nparking_se
 Actor ->> UI: Khách thanh toán tiền mặt/quét mã VietQR, Bảo vệ bấm 'Xác Nhận Thu Phí & Mở Cổng'
 UI ->> Sys: POST /api/guard/collect_fee (session_id: 105, amount: 20000, method: 'Cash')
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Xác nhận thu phí thành công (Tiền mặt hoặc Chuyển khoản QR)
     Sys ->> DB: UPDATE parking_sessions SET status = 'Completed', check_out_time = NOW(), fee = 20000
     Sys ->> DB: INSERT INTO hoa_don (MaPhien, SoTien, HinhThucThanhToan, NgayLap)
     DB -->> Sys: Xác nhận ghi nhận doanh thu và kết thúc phiên gửi xe
     Sys ->> Sys: Gửi lệnh điều khiển phần cứng mở cần Barrier cổng ra (Barrier_Out = 'OPEN')
-    Sys -->> UI: Phản hồi HTTP 200 {success: true, invoice_code: 'HD-20261002-01', barrier: 'OPEN'}
-    UI ->> Actor: In hóa đơn/phiếu xuất bãi, nâng cần Barrier cho xe ra & Cập nhật số chỗ trống
 else Chưa nhận được thanh toán hoặc Có tranh chấp cước phí
-    Sys -->> UI: Phản hồi HTTP 400 {success: false, message: 'Giao dịch chưa hoàn tất'}
-    UI ->> Actor: Giữ nguyên Barrier đóng, tiếp tục hiển thị chờ thanh toán
+    Sys ->> Sys: Giữ nguyên trạng thái Barrier đóng & Bật cảnh báo giao dịch chưa hoàn tất
 end
+
+Sys -->> UI: Phản hồi kết quả thanh toán & Trạng thái Barrier (OPEN hoặc LOCKED)
+UI ->> Actor: In hóa đơn/phiếu xuất bãi, nâng cần Barrier cho xe ra hoặc Báo chờ thanh toán
 
 @enduml
 
@@ -341,16 +354,17 @@ UI ->> Sys: POST /api/admin/users/update (user_id: 5, role: 'Operator', status: 
 Sys ->> DB: Tra cứu quyền hạn tài khoản mục tiêu: SELECT role FROM app_users WHERE id = %s
 DB -->> Sys: Trả về thông tin vai trò hiện tại của tài khoản
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Thao tác hợp lệ (Không tự khóa tài khoản Root Super Admin)
     Sys ->> DB: UPDATE app_users SET role = %s, status = %s WHERE id = %s
     Sys ->> DB: Đồng bộ cập nhật bảng cu_dan / nhan_vien tương ứng
     DB -->> Sys: Xác nhận cập nhật thông tin thành công (Affected rows = 1)
-    Sys -->> UI: Phản hồi HTTP 200 {success: true, message: 'Cập nhật tài khoản thành công'}
-    UI -->> Actor: Tải lại danh sách người dùng & Hiển thị badge quyền hạn mới
 else Thao tác không hợp lệ (Cố tình vô hiệu hóa tài khoản Quản trị cao nhất)
-    Sys -->> UI: Phản hồi HTTP 403 {success: false, message: 'Không thể vô hiệu hóa tài khoản Super Admin'}
-    UI ->> Actor: Bật cảnh báo lỗi màu đỏ 'Từ chối thao tác bảo vệ an toàn hệ thống'
+    Sys ->> Sys: Từ chối cập nhật & Thiết lập mã cấm thao tác (Forbidden status = 403)
 end
+
+Sys -->> UI: Phản hồi kết quả cập nhật (HTTP 200 Thành công hoặc HTTP 403 Từ chối)
+UI -->> Actor: Hiển thị thông báo thành công / Cập nhật lại danh sách hoặc Bật cảnh báo lỗi đỏ
 
 @enduml
 
@@ -369,18 +383,18 @@ UI ->> Sys: POST /api/admin/transfer_requests/12/action (action: 'approve' / 're
 Sys ->> DB: Lấy thông tin đơn: SELECT * FROM chuyen_nhuong_xe WHERE MaYeuCau = 12
 DB -->> Sys: Trả về thông tin: Biển số xe, Cư dân chuyển, Cư dân nhận
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Admin bấm 'Phê Duyệt' (action == 'approve')
     Sys ->> DB: TRANSACTION: UPDATE phuong_tien & vehicles SET MaCuDan = NguoiNhan WHERE BienSoXe = %s
     Sys ->> DB: UPDATE chuyen_nhuong_xe SET TrangThai = 'DaDuyet', NgayDuyet = NOW()
     DB ->> Sys: Commit transaction chuyển nhượng thành công
-    Sys -->> UI: Phản hồi HTTP 200 {success: true, message: 'Đã chuyển nhượng xe sang chủ sở hữu mới'}
-    UI ->> Actor: Đổi huy hiệu đơn sang màu xanh 'ĐÃ DUYỆT' & Cập nhật danh mục xe
 else Admin bấm 'Từ Chối' (action == 'reject')
     Sys ->> DB: UPDATE chuyen_nhuong_xe SET TrangThai = 'TuChoi', LyDo = 'Thông tin không chính xác'
     DB -->> Sys: Xác nhận cập nhật trạng thái từ chối đơn
-    Sys -->> UI: Phản hồi HTTP 200 {success: true, message: 'Đã từ chối đơn chuyển nhượng'}
-    UI ->> Actor: Đổi huy hiệu đơn sang màu đỏ 'ĐÃ TỪ CHỐI'
 end
+
+Sys -->> UI: Phản hồi thông báo kết quả phê duyệt / từ chối
+UI ->> Actor: Đổi huy hiệu đơn (Màu xanh 'ĐÃ DUYỆT' hoặc Màu đỏ 'ĐÃ TỪ CHỐI') & Cập nhật danh mục xe
 
 @enduml
 
@@ -400,13 +414,15 @@ Sys ->> DB: SELECT DATE(check_out_time), SUM(fee), COUNT(*) FROM parking_session
 Sys ->> DB: SELECT HOUR(check_in_time), COUNT(*) FROM parking_sessions GROUP BY HOUR(check_in_time)
 DB -->> Sys: Trả về tập dữ liệu tổng hợp doanh thu và số lượt xe theo giờ
 
+' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu
 alt Có phát sinh lượt xe & Doanh thu trong kỳ báo cáo
-    Sys -->> UI: Phản hồi HTTP 200 JSON dữ liệu biểu đồ {dates: [...], revenues: [...], hourly: [...]}
-    UI ->> Actor: Render biểu đồ cột doanh thu & Biểu đồ đường lưu lượng giờ cao điểm (Chart.js)
+    Sys ->> Sys: Tổng hợp tập dữ liệu mảng {dates: [...], revenues: [...], hourly: [...]}
 else Kỳ báo cáo chưa có lượt xe nào phát sinh
-    Sys -->> UI: Phản hồi HTTP 200 JSON tập rỗng {dates: [], revenues: [], total: 0}
-    UI -->> Actor: Hiển thị thông báo 'Chưa có dữ liệu thống kê trong khoảng thời gian đã chọn'
+    Sys ->> Sys: Khởi tạo tập dữ liệu rỗng {dates: [], revenues: [], total: 0}
 end
+
+Sys -->> UI: Phản hồi HTTP 200 JSON dữ liệu biểu đồ phân tích
+UI ->> Actor: Render biểu đồ cột doanh thu & Biểu đồ đường lưu lượng giờ cao điểm (Chart.js)
 
 @enduml
 

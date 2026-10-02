@@ -5,14 +5,16 @@ Script sinh file Draw.io (.drawio XML) và PlantUML (.puml) cho toàn bộ
 Sơ đồ Tuần tự (Sequence Diagrams) của hệ thống Quản lý Bãi đỗ xe thông minh AI (CNPM24).
 
 Được cập nhật chính xác theo yêu cầu:
-  1. ĐƯỜNG DẪN ĐẦY ĐỦ (FULL PATH):
+  1. KHUNG ALT CHỈ NẰM TRONG HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU:
+     - Khung alt chỉ bao phủ Cột Hệ Thống và Cột Cơ Sở Dữ Liệu (x: 680 -> 1480).
+     - Không bao phủ Cột Tác Nhân và Giao Diện.
+     - Sau khi kết thúc kiểm tra điều kiện trong alt (Hệ thống & CSDL),
+       Hệ thống mới gửi phản hồi về Giao diện, và Giao diện hiển thị cho Tác nhân.
+  2. ĐƯỜNG DẪN ĐẦY ĐỦ (FULL PATH):
      D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\...
      D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: ...
-  2. Bổ sung Use Case Quên mật khẩu & OTP:
-     D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\forgot_password.html
   3. Tác nhân (Actor): Thể hiện bằng hình con người (UML Actor stick figure) với tên tác nhân ghi ở dưới.
-  4. Khung kiểm tra điều kiện if/else: Đặt trong frame UML dạng "alt", có vạch phân cách đứt nét giữa luồng Hợp lệ và luồng [else: Thất bại / Cảnh báo].
-  5. Phân nhóm chi tiết theo từng Tác nhân:
+  4. Phân nhóm chi tiết theo từng Tác nhân:
      - Nhóm 1: Tác nhân Cư Dân / Người Dùng (Resident) -> UC01 đến UC07 + UC02b (Quên mật khẩu)
      - Nhóm 2: Tác nhân Nhân Viên Bảo Vệ (Security Guard / Operator) -> UC08 đến UC10
      - Nhóm 3: Tác nhân Quản Trị Viên (Admin) -> UC11 đến UC13
@@ -51,21 +53,22 @@ DIAGRAMS = [
             ("db", "sys", "4. Trả về kết quả kiểm tra trùng lặp tài khoản")
         ],
         "alt_frame": {
-            "title": "alt [Kiểm tra tính hợp lệ của tài khoản & SĐT]",
+            "title": "alt [Kiểm tra tính hợp lệ trong Hệ thống & CSDL]",
             "happy_cond": "Username & SĐT chưa từng đăng ký (Hợp lệ)",
             "happy_steps": [
                 ("sys", "sys", "5a. Băm mật khẩu an toàn PBKDF2/SHA-256 (generate_password_hash)"),
                 ("sys", "db", "6a. INSERT INTO app_users & cu_dan (MaCuDan, HoTen, TenDangNhap, Role='Resident')"),
-                ("db", "sys", "7a. Xác nhận ghi bản ghi mới thành công (Affected rows = 1)"),
-                ("sys", "ui", "8a. Phản hồi HTTP 200 {success: true, message: 'Đăng ký thành công'}"),
-                ("ui", "actor", "9a. Hiển thị thông báo thành công & Chuyển hướng sang trang Đăng nhập")
+                ("db", "sys", "7a. Xác nhận ghi bản ghi mới thành công (Affected rows = 1)")
             ],
             "else_cond": "Username hoặc SĐT đã tồn tại / Dữ liệu không hợp lệ",
             "else_steps": [
-                ("sys", "ui", "5b. Phản hồi HTTP 400 {success: false, message: 'Tài khoản hoặc SĐT đã tồn tại'}"),
-                ("ui", "actor", "6b. Hiển thị Toast cảnh báo lỗi màu đỏ & Yêu cầu nhập lại thông tin")
+                ("sys", "sys", "5b. Hủy thao tác đăng ký & Thiết lập mã trạng thái lỗi (status = 400)")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "8. Phản hồi thông báo kết quả đăng ký (HTTP 200 Thành công hoặc HTTP 400 Lỗi)"),
+            ("ui", "actor", "9. Hiển thị kết quả lên giao diện (Chuyển sang trang Đăng nhập hoặc Toast cảnh báo đỏ)")
+        ]
     },
     {
         "id": "uc02_resident_login",
@@ -83,19 +86,22 @@ DIAGRAMS = [
             ("db", "sys", "4. Trả về thông tin người dùng và mã băm password_hash")
         ],
         "alt_frame": {
-            "title": "alt [Đối soát mật khẩu & Phân quyền truy cập]",
+            "title": "alt [Đối soát mật khẩu & Trạng thái tài khoản trong CSDL]",
             "happy_cond": "Mật khẩu chính xác & status == 'active' & role == 'Resident'",
             "happy_steps": [
                 ("sys", "sys", "5a. Khởi tạo session['user'] = {id, role: 'Resident', username}"),
-                ("sys", "ui", "6a. Phản hồi HTTP 200 {success: true, role: 'Resident', redirect: '/resident-dashboard'}"),
-                ("ui", "actor", "7a. Điều hướng vào Cổng thông tin Cư dân (Resident Dashboard)")
+                ("sys", "db", "6a. UPDATE app_users SET last_login = NOW() WHERE id = %s"),
+                ("db", "sys", "7a. Xác nhận cập nhật thời gian đăng nhập thành công")
             ],
             "else_cond": "Sai mật khẩu hoặc Tài khoản bị vô hiệu hóa (status != 'active')",
             "else_steps": [
-                ("sys", "ui", "5b. Phản hồi HTTP 401 {success: false, message: 'Sai tên đăng nhập hoặc mật khẩu'}"),
-                ("ui", "actor", "6b. Hiển thị thông báo lỗi 'Đăng nhập thất bại' & Xóa trống mật khẩu")
+                ("sys", "sys", "5b. Từ chối xác thực phiên & Thiết lập mã lỗi (status = 401)")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "8. Phản hồi kết quả đăng nhập (JSON token phiên hoặc Thông báo lỗi xác thực)"),
+            ("ui", "actor", "9. Điều hướng vào Resident Dashboard hoặc Hiển thị cảnh báo đăng nhập thất bại")
+        ]
     },
     {
         "id": "uc02b_forgot_password",
@@ -113,21 +119,23 @@ DIAGRAMS = [
             ("db", "sys", "4. Trả về kết quả tìm kiếm tài khoản theo email")
         ],
         "alt_frame": {
-            "title": "alt [Kiểm tra Email & Quy trình gửi mã OTP]",
+            "title": "alt [Kiểm tra Email & Xử lý mã OTP trong Hệ thống & CSDL]",
             "happy_cond": "Email hợp lệ & Khớp tài khoản đang hoạt động",
             "happy_steps": [
                 ("sys", "sys", "5a. Sinh mã OTP ngẫu nhiên 6 chữ số (Hiệu lực trong 5 phút)"),
-                ("sys", "db", "6a. Lưu mã OTP & Thời gian hết hạn vào bảng password_reset_tokens"),
-                ("sys", "sys", "7a. Gửi Email chứa mã OTP bảo mật đến hòm thư người dùng"),
-                ("sys", "ui", "8a. Phản hồi HTTP 200 {success: true, message: 'Mã OTP đã được gửi'}"),
-                ("ui", "actor", "9a. Chuyển hướng sang reset_password.html & Hiển thị form nhập OTP, Mật khẩu mới")
+                ("sys", "db", "6a. INSERT INTO password_reset_tokens (email, otp_hash, expires_at)"),
+                ("db", "sys", "7a. Xác nhận lưu trữ mã OTP thành công"),
+                ("sys", "sys", "8a. Gửi Email chứa mã OTP bảo mật đến hòm thư người dùng")
             ],
             "else_cond": "Email không tồn tại trong hệ thống hoặc định dạng không hợp lệ",
             "else_steps": [
-                ("sys", "ui", "5b. Phản hồi HTTP 400 {error: 'Email không tồn tại trong hệ thống'}"),
-                ("ui", "actor", "6b. Hiển thị thông báo lỗi màu đỏ 'Không tìm thấy tài khoản với email này'")
+                ("sys", "sys", "5b. Hủy yêu cầu cấp OTP & Thiết lập thông báo lỗi (Email not found)")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "9. Phản hồi kết quả xử lý (HTTP 200 Đã gửi OTP hoặc HTTP 400 Email không tồn tại)"),
+            ("ui", "actor", "10. Chuyển sang trang reset_password.html hoặc Báo lỗi đỏ yêu cầu kiểm tra lại email")
+        ]
     },
     {
         "id": "uc03_resident_register_vehicle",
@@ -145,21 +153,22 @@ DIAGRAMS = [
             ("db", "sys", "4. Trả về trạng thái hiện tại của ô đỗ")
         ],
         "alt_frame": {
-            "title": "alt [Kiểm tra tính khả dụng của vị trí ô đỗ]",
+            "title": "alt [Kiểm tra tính khả dụng của ô đỗ trong CSDL]",
             "happy_cond": "Ô đỗ còn TRỐNG (TrangThai == 'Trong')",
             "happy_steps": [
                 ("sys", "db", "5a. UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s WHERE MaViTri = %s"),
                 ("sys", "db", "6a. INSERT INTO vehicles & phuong_tien (BienSoXe, MaCuDan, ViTriDo, NgayHetHan)"),
-                ("db", "sys", "7a. Xác nhận lưu xe và đặt chỗ ô đỗ thành công"),
-                ("sys", "ui", "8a. Phản hồi HTTP 200 {success: true, slot_id: 'B1-A01', plate: '30H-999.88'}"),
-                ("ui", "actor", "9a. Đổi màu ô ghế Cinema sang Cyan (Xe của bạn) & Cập nhật thẻ xe 3D")
+                ("db", "sys", "7a. Xác nhận lưu xe và đặt chỗ ô đỗ thành công")
             ],
             "else_cond": "Vị trí ô đỗ đã có người khác đặt trước (TrangThai == 'DaDat')",
             "else_steps": [
-                ("sys", "ui", "5b. Phản hồi HTTP 409 {success: false, message: 'Vị trí đỗ vừa được đặt, vui lòng chọn ô khác'}"),
-                ("ui", "actor", "6b. Tô đỏ ô đỗ và hiển thị thông báo yêu cầu chọn vị trí khác trên sơ đồ Cinema")
+                ("sys", "sys", "5b. Hủy giao dịch đặt ô & Thiết lập mã xung đột dữ liệu (status = 409)")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "8. Phản hồi kết quả đăng ký xe & ô đỗ (HTTP 200 Thành công hoặc HTTP 409 Xung đột)"),
+            ("ui", "actor", "9. Đổi màu ô ghế Cinema sang Cyan (Xe của bạn) hoặc Tô đỏ báo người dùng chọn lại")
+        ]
     },
     {
         "id": "uc04_resident_change_slot",
@@ -177,23 +186,24 @@ DIAGRAMS = [
             ("db", "sys", "4. Trả về trạng thái của vị trí mới")
         ],
         "alt_frame": {
-            "title": "alt [Kiểm tra vị trí ô đỗ mới]",
+            "title": "alt [Kiểm tra vị trí mới & Xử lý Transaction trong CSDL]",
             "happy_cond": "Vị trí mới còn TRỐNG (TrangThai == 'Trong')",
             "happy_steps": [
                 ("sys", "db", "5a. TRANSACTION: UPDATE bai_do SET TrangThai = 'Trong', BienSoXe = NULL (Ô cũ)"),
                 ("sys", "db", "6a. UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s (Ô mới B1-B05)"),
                 ("sys", "db", "7a. UPDATE phuong_tien & vehicles SET ViTriDo = 'B1-B05' WHERE BienSoXe = %s"),
-                ("db", "sys", "8a. Commit transaction thành công"),
-                ("sys", "ui", "9a. Phản hồi HTTP 200 {success: true, new_slot: 'B1-B05'}"),
-                ("ui", "actor", "10a. Render lại sơ đồ bãi đỗ Cinema & Hiển thị thông báo đổi vị trí thành công")
+                ("db", "sys", "8a. Commit transaction thành công")
             ],
             "else_cond": "Vị trí mới đã bị xe khác chiếm chỗ",
             "else_steps": [
-                ("sys", "db", "5b. ROLLBACK TRANSACTION"),
-                ("sys", "ui", "6b. Phản hồi HTTP 400 {success: false, message: 'Vị trí mới không khả dụng'}"),
-                ("ui", "actor", "7b. Báo lỗi 'Không thể đổi sang vị trí này', giữ nguyên vị trí cũ")
+                ("sys", "db", "5b. ROLLBACK TRANSACTION (Hủy bỏ mọi thay đổi)"),
+                ("sys", "sys", "6b. Thiết lập thông báo vị trí mới không khả dụng")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "9. Phản hồi kết quả đổi vị trí (HTTP 200 Thành công hoặc HTTP 400 Thất bại)"),
+            ("ui", "actor", "10. Render lại sơ đồ bãi đỗ Cinema & Hiển thị thông báo kết quả cho cư dân")
+        ]
     },
     {
         "id": "uc05_resident_renew_pass",
@@ -211,22 +221,23 @@ DIAGRAMS = [
             ("db", "sys", "4. Trả về ngày hết hạn hiện tại của phương tiện")
         ],
         "alt_frame": {
-            "title": "alt [Kiểm tra thông tin phương tiện & Gói gia hạn]",
+            "title": "alt [Kiểm tra hạn xe & Cập nhật thanh toán trong CSDL]",
             "happy_cond": "Tìm thấy phương tiện hợp lệ & Gói gia hạn đúng quy định",
             "happy_steps": [
                 ("sys", "sys", "5a. Tính thời hạn mới: new_expiry = max(current_expiry, today) + 3 months"),
                 ("sys", "db", "6a. UPDATE phuong_tien & vehicles SET NgayHetHan = %s WHERE BienSoXe = %s"),
                 ("sys", "db", "7a. INSERT INTO lich_su_thanh_toan (BienSoXe, SoTien, LoaiGiaoDich='GiaHanVeThang')"),
-                ("db", "sys", "8a. Xác nhận cập nhật CSDL thành công"),
-                ("sys", "ui", "9a. Phản hồi HTTP 200 {success: true, new_expiry: '2026-12-31'}"),
-                ("ui", "actor", "10a. Cập nhật nhãn hạn mới trên thẻ xe 3D và hiển thị badge 'Còn Hạn'")
+                ("db", "sys", "8a. Xác nhận cập nhật CSDL thành công")
             ],
             "else_cond": "Biển số xe không tồn tại hoặc lỗi giao dịch",
             "else_steps": [
-                ("sys", "ui", "5b. Phản hồi HTTP 404 {success: false, message: 'Không tìm thấy xe hoặc giao dịch bị hủy'}"),
-                ("ui", "actor", "6b. Hiển thị thông báo thất bại & Giữ nguyên thời hạn cũ")
+                ("sys", "sys", "5b. Hủy giao dịch gia hạn & Thiết lập mã lỗi (status = 404)")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "9. Phản hồi kết quả gia hạn (HTTP 200 kèm ngày hết hạn mới hoặc Báo lỗi)"),
+            ("ui", "actor", "10. Cập nhật nhãn hạn mới trên thẻ xe 3D và hiển thị badge 'Còn Hạn'")
+        ]
     },
     {
         "id": "uc06_resident_transfer_request",
@@ -244,20 +255,21 @@ DIAGRAMS = [
             ("db", "sys", "4. Trả về thông tin cư dân nhận theo số điện thoại")
         ],
         "alt_frame": {
-            "title": "alt [Kiểm tra tính hợp lệ của người nhận chuyển nhượng]",
+            "title": "alt [Kiểm tra tính hợp lệ người nhận trong CSDL]",
             "happy_cond": "Tìm thấy cư dân nhận hợp lệ & Khác chủ xe hiện tại",
             "happy_steps": [
                 ("sys", "db", "5a. INSERT INTO chuyen_nhuong_xe (BienSoXe, NguoiChuyen, NguoiNhan, TrangThai='ChoDuyet')"),
-                ("db", "sys", "6a. Xác nhận tạo đơn chuyển nhượng thành công (MaYeuCau = 12)"),
-                ("sys", "ui", "7a. Phản hồi HTTP 200 {success: true, request_id: 12, status: 'ChoDuyet'}"),
-                ("ui", "actor", "8a. Hiển thị thông báo 'Đã gửi đơn chuyển nhượng, vui lòng chờ Admin phê duyệt'")
+                ("db", "sys", "6a. Xác nhận tạo đơn chuyển nhượng thành công (MaYeuCau = 12)")
             ],
             "else_cond": "SĐT không tồn tại hoặc Cố tình chuyển nhượng cho chính mình",
             "else_steps": [
-                ("sys", "ui", "5b. Phản hồi HTTP 400 {success: false, message: 'Người nhận không phải cư dân tòa nhà'}"),
-                ("ui", "actor", "6b. Báo lỗi 'Không tìm thấy cư dân nhận, vui lòng kiểm tra lại SĐT'")
+                ("sys", "sys", "5b. Từ chối tạo đơn & Thiết lập thông báo lỗi cư dân không hợp lệ")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "7. Phản hồi kết quả lập đơn (HTTP 200 {status: 'ChoDuyet'} hoặc HTTP 400 Lỗi)"),
+            ("ui", "actor", "8. Hiển thị thông báo trạng thái đơn hoặc Báo lỗi người nhận không hợp lệ")
+        ]
     },
     {
         "id": "uc07_resident_history",
@@ -275,18 +287,20 @@ DIAGRAMS = [
             ("db", "sys", "4. Trả về danh sách các phiên gửi xe tương ứng")
         ],
         "alt_frame": {
-            "title": "alt [Kiểm tra dữ liệu lịch sử]",
+            "title": "alt [Kiểm tra dữ liệu lịch sử trong Hệ thống]",
             "happy_cond": "Có dữ liệu lịch sử vào/ra trong hệ thống",
             "happy_steps": [
-                ("sys", "ui", "5a. Phản hồi HTTP 200 JSON danh sách phiên: Giờ vào, Giờ ra, Phí thu, Ảnh snapshot"),
-                ("ui", "actor", "6a. Hiển thị bảng lịch sử trực quan kèm nút bấm phóng to xem ảnh camera")
+                ("sys", "sys", "5a. Tổng hợp danh sách phiên: Giờ vào, Giờ ra, Phí thu, Đường dẫn ảnh snapshot")
             ],
             "else_cond": "Chưa có lượt gửi xe nào trong khoảng thời gian đã chọn",
             "else_steps": [
-                ("sys", "ui", "5b. Phản hồi HTTP 200 {sessions: [], message: 'Không có dữ liệu'}"),
-                ("ui", "actor", "6b. Hiển thị thông báo trạng thái trống 'Chưa phát sinh lượt gửi xe nào'")
+                ("sys", "sys", "5b. Khởi tạo danh sách kết quả rỗng (sessions = [])")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "6. Phản hồi JSON dữ liệu lịch sử xe vào/ra"),
+            ("ui", "actor", "7. Render bảng lịch sử trực quan kèm nút xem chi tiết ảnh chụp camera")
+        ]
     },
 
     # =========================================================================
@@ -309,22 +323,23 @@ DIAGRAMS = [
             ("db", "sys", "5. Trả về kết quả kiểm tra phiên đỗ hiện tại của xe")
         ],
         "alt_frame": {
-            "title": "alt [Kiểm tra tính hợp lệ của lượt xe vào]",
+            "title": "alt [Kiểm tra tính hợp lệ & Lưu phiên xe trong CSDL]",
             "happy_cond": "Không có phiên trùng lặp & Biển số nhận diện rõ ràng (Xe vào hợp lệ)",
             "happy_steps": [
                 ("sys", "db", "6a. INSERT INTO parking_sessions (plate_text, check_in_time=NOW(), status='Parked', gate_in='Cổng Vào')"),
                 ("sys", "db", "7a. Lưu bản ghi ảnh chụp vào detections & lich_su_ra_vao"),
                 ("db", "sys", "8a. Xác nhận tạo phiên gửi xe mới thành công"),
-                ("sys", "sys", "9a. Gửi tín hiệu điều khiển mở Barrier cổng vào (barrier_state = 'OPEN')"),
-                ("sys", "ui", "10a. Đẩy sự kiện Live Event WebSocket: 'Xe vào thành công' kèm ảnh chụp biển số"),
-                ("ui", "actor", "11a. Cần Barrier nâng lên, màn hình LED hiển thị: 'Kính chào quý khách: 51G-123.45'")
+                ("sys", "sys", "9a. Kích hoạt tín hiệu điều khiển mở Barrier cổng vào (barrier_state = 'OPEN')")
             ],
             "else_cond": "Xe đang có phiên mở chưa checkout hoặc Biển số mờ không nhận diện được",
             "else_steps": [
-                ("sys", "ui", "6b. Đẩy cảnh báo an ninh về Bàn trực bảo vệ: 'Biển số trùng lặp / Nhận diện mờ'"),
-                ("ui", "actor", "7b. Giữ nguyên Barrier đóng & Bật cửa sổ yêu cầu Bảo vệ kiểm tra, nhập biển số thủ công")
+                ("sys", "sys", "6b. Giữ nguyên Barrier đóng & Bật cờ cảnh báo an ninh cần kiểm tra thủ công")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "10. Đẩy sự kiện WebSocket Live Event: Thông báo xe vào hoặc Cảnh báo biển số trùng"),
+            ("ui", "actor", "11. Cần Barrier mở (hoặc hiển thị thông báo yêu cầu Bảo vệ nhập biển số thủ công)")
+        ]
     },
     {
         "id": "uc09_guard_checkout_verification",
@@ -343,20 +358,20 @@ DIAGRAMS = [
             ("db", "sys", "5. Trả về dữ liệu phiên vào, ảnh snapshot vào, nhóm đối tượng, hạn vé tháng")
         ],
         "alt_frame": {
-            "title": "alt [Phân loại đối tượng xe & Đối soát an ninh ra]",
+            "title": "alt [Phân loại xe & Đối soát an ninh trong Hệ thống]",
             "happy_cond": "Trường hợp 1: Xe Cư dân vé tháng còn hiệu lực (monthly_ticket_expiry >= NOW)",
             "happy_steps": [
-                ("sys", "sys", "6a. Xác nhận miễn phí gửi xe (fee = 0đ) theo chính sách vé tháng cư dân"),
-                ("sys", "ui", "7a. Phản hồi HTTP 200 {is_resident: true, fee: 0, status: 'Valid'}"),
-                ("ui", "actor", "8a. Hiển thị badge xanh 'VÉ THÁNG HỢP LỆ' & So sánh khớp ảnh Vào - Ra")
+                ("sys", "sys", "6a. Xác nhận miễn phí gửi xe (fee = 0đ) theo chính sách vé tháng cư dân")
             ],
             "else_cond": "Trường hợp 2: Xe thuộc Danh Sách Đen (group_type == 'Blacklist' / Cảnh báo trộm cắp)",
             "else_steps": [
-                ("sys", "sys", "6b. Bật cờ cảnh báo an ninh khẩn cấp (security_alert = True, lock_barrier = True)"),
-                ("sys", "ui", "7b. Phản hồi HTTP 200 {is_blacklist: true, alert_level: 'HIGH', fee: 0}"),
-                ("ui", "actor", "8b. Khóa nút mở barrier, nhấp nháy đèn đỏ CẢNH BÁO XE GIAN LẬN/TRỘM CẮP & Báo động")
+                ("sys", "sys", "6b. Bật cờ cảnh báo an ninh khẩn cấp (security_alert = True, lock_barrier = True)")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "7. Phản hồi thông tin đối chiếu (Khớp vé tháng hoặc Cảnh báo an ninh Blacklist)"),
+            ("ui", "actor", "8. Hiển thị badge xanh 'VÉ THÁNG HỢP LỆ' hoặc Khóa barrier và nhấp nháy còi báo động đỏ")
+        ]
     },
     {
         "id": "uc10_guard_collect_fee_barrier",
@@ -372,22 +387,23 @@ DIAGRAMS = [
             ("ui", "sys", "2. POST /api/guard/collect_fee (session_id: 105, amount: 20000, method: 'Cash')")
         ],
         "alt_frame": {
-            "title": "alt [Kiểm tra trạng thái thanh toán & Điều khiển Barrier]",
+            "title": "alt [Xác nhận thu phí & Ghi nhận CSDL]",
             "happy_cond": "Xác nhận thu phí thành công (Tiền mặt hoặc Chuyển khoản QR)",
             "happy_steps": [
                 ("sys", "db", "3a. UPDATE parking_sessions SET status = 'Completed', check_out_time = NOW(), fee = 20000"),
                 ("sys", "db", "4a. INSERT INTO hoa_don (MaPhien, SoTien, HinhThucThanhToan, NgayLap)"),
                 ("db", "sys", "5a. Xác nhận ghi nhận doanh thu và kết thúc phiên gửi xe"),
-                ("sys", "sys", "6a. Gửi lệnh điều khiển phần cứng mở cần Barrier cổng ra (Barrier_Out = 'OPEN')"),
-                ("sys", "ui", "7a. Phản hồi HTTP 200 {success: true, invoice_code: 'HD-20261002-01', barrier: 'OPEN'}"),
-                ("ui", "actor", "8a. In hóa đơn/phiếu xuất bãi, nâng cần Barrier cho xe ra & Cập nhật số chỗ trống")
+                ("sys", "sys", "6a. Gửi lệnh điều khiển phần cứng mở cần Barrier cổng ra (Barrier_Out = 'OPEN')")
             ],
             "else_cond": "Chưa nhận được thanh toán hoặc Có tranh chấp cước phí",
             "else_steps": [
-                ("sys", "ui", "3b. Phản hồi HTTP 400 {success: false, message: 'Giao dịch chưa hoàn tất'}"),
-                ("ui", "actor", "4b. Giữ nguyên Barrier đóng, tiếp tục hiển thị chờ thanh toán")
+                ("sys", "sys", "3b. Giữ nguyên trạng thái Barrier đóng & Bật cảnh báo giao dịch chưa hoàn tất")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "7. Phản hồi kết quả thanh toán & Trạng thái Barrier (OPEN hoặc LOCKED)"),
+            ("ui", "actor", "8. In hóa đơn/phiếu xuất bãi, nâng cần Barrier cho xe ra hoặc Báo chờ thanh toán")
+        ]
     },
 
     # =========================================================================
@@ -409,21 +425,22 @@ DIAGRAMS = [
             ("db", "sys", "4. Trả về thông tin vai trò hiện tại của tài khoản")
         ],
         "alt_frame": {
-            "title": "alt [Kiểm tra thẩm quyền chỉnh sửa]",
+            "title": "alt [Kiểm tra thẩm quyền chỉnh sửa trong Hệ thống & CSDL]",
             "happy_cond": "Thao tác hợp lệ (Không tự khóa tài khoản Root Super Admin)",
             "happy_steps": [
                 ("sys", "db", "5a. UPDATE app_users SET role = %s, status = %s WHERE id = %s"),
                 ("sys", "db", "6a. Đồng bộ cập nhật bảng cu_dan / nhan_vien tương ứng"),
-                ("db", "sys", "7a. Xác nhận cập nhật thông tin thành công (Affected rows = 1)"),
-                ("sys", "ui", "8a. Phản hồi HTTP 200 {success: true, message: 'Cập nhật tài khoản thành công'}"),
-                ("ui", "actor", "9a. Tải lại danh sách người dùng & Hiển thị badge quyền hạn mới")
+                ("db", "sys", "7a. Xác nhận cập nhật thông tin thành công (Affected rows = 1)")
             ],
             "else_cond": "Thao tác không hợp lệ (Cố tình vô hiệu hóa tài khoản Quản trị cao nhất)",
             "else_steps": [
-                ("sys", "ui", "5b. Phản hồi HTTP 403 {success: false, message: 'Không thể vô hiệu hóa tài khoản Super Admin'}"),
-                ("ui", "actor", "6b. Bật cảnh báo lỗi màu đỏ 'Từ chối thao tác bảo vệ an toàn hệ thống'")
+                ("sys", "sys", "5b. Từ chối cập nhật & Thiết lập mã cấm thao tác (Forbidden status = 403)")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "8. Phản hồi kết quả cập nhật (HTTP 200 Thành công hoặc HTTP 403 Từ chối)"),
+            ("ui", "actor", "9. Hiển thị thông báo thành công / Cập nhật lại danh sách hoặc Bật cảnh báo lỗi đỏ")
+        ]
     },
     {
         "id": "uc12_admin_approve_transfer",
@@ -441,23 +458,23 @@ DIAGRAMS = [
             ("db", "sys", "4. Trả về thông tin: Biển số xe, Cư dân chuyển, Cư dân nhận")
         ],
         "alt_frame": {
-            "title": "alt [Quyết định xử lý của Quản Trị Viên]",
+            "title": "alt [Xử lý Transaction cập nhật CSDL theo quyết định]",
             "happy_cond": "Admin bấm 'Phê Duyệt' (action == 'approve')",
             "happy_steps": [
                 ("sys", "db", "5a. TRANSACTION: UPDATE phuong_tien & vehicles SET MaCuDan = NguoiNhan WHERE BienSoXe = %s"),
                 ("sys", "db", "6a. UPDATE chuyen_nhuong_xe SET TrangThai = 'DaDuyet', NgayDuyet = NOW()"),
-                ("db", "sys", "7a. Commit transaction chuyển nhượng thành công"),
-                ("sys", "ui", "8a. Phản hồi HTTP 200 {success: true, message: 'Đã chuyển nhượng xe sang chủ sở hữu mới'}"),
-                ("ui", "actor", "9a. Đổi huy hiệu đơn sang màu xanh 'ĐÃ DUYỆT' & Cập nhật danh mục xe")
+                ("db", "sys", "7a. Commit transaction chuyển nhượng thành công")
             ],
             "else_cond": "Admin bấm 'Từ Chối' (action == 'reject')",
             "else_steps": [
                 ("sys", "db", "5b. UPDATE chuyen_nhuong_xe SET TrangThai = 'TuChoi', LyDo = 'Thông tin không chính xác'"),
-                ("db", "sys", "6b. Xác nhận cập nhật trạng thái từ chối đơn"),
-                ("sys", "ui", "7b. Phản hồi HTTP 200 {success: true, message: 'Đã từ chối đơn chuyển nhượng'}"),
-                ("ui", "actor", "8b. Đổi huy hiệu đơn sang màu đỏ 'ĐÃ TỪ CHỐI'")
+                ("db", "sys", "6b. Xác nhận cập nhật trạng thái từ chối đơn")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "8. Phản hồi thông báo kết quả phê duyệt / từ chối"),
+            ("ui", "actor", "9. Đổi huy hiệu đơn (Màu xanh 'ĐÃ DUYỆT' hoặc Màu đỏ 'ĐÃ TỪ CHỐI') & Cập nhật danh mục xe")
+        ]
     },
     {
         "id": "uc13_admin_analytics",
@@ -476,18 +493,20 @@ DIAGRAMS = [
             ("db", "sys", "5. Trả về tập dữ liệu tổng hợp doanh thu và số lượt xe theo giờ")
         ],
         "alt_frame": {
-            "title": "alt [Kiểm tra dữ liệu phát sinh]",
+            "title": "alt [Kiểm tra & Xử lý dữ liệu thống kê trong Hệ thống]",
             "happy_cond": "Có phát sinh lượt xe & Doanh thu trong kỳ báo cáo",
             "happy_steps": [
-                ("sys", "ui", "6a. Phản hồi HTTP 200 JSON dữ liệu biểu đồ {dates: [...], revenues: [...], hourly: [...]}"),
-                ("ui", "actor", "7a. Render biểu đồ cột doanh thu & Biểu đồ đường lưu lượng giờ cao điểm (Chart.js)")
+                ("sys", "sys", "6a. Tổng hợp tập dữ liệu mảng {dates: [...], revenues: [...], hourly: [...]}")
             ],
             "else_cond": "Kỳ báo cáo chưa có lượt xe nào phát sinh",
             "else_steps": [
-                ("sys", "ui", "6b. Phản hồi HTTP 200 JSON tập rỗng {dates: [], revenues: [], total: 0}"),
-                ("ui", "actor", "7b. Hiển thị thông báo 'Chưa có dữ liệu thống kê trong khoảng thời gian đã chọn'")
+                ("sys", "sys", "6b. Khởi tạo tập dữ liệu rỗng {dates: [], revenues: [], total: 0}")
             ]
-        }
+        },
+        "post_steps": [
+            ("sys", "ui", "7. Phản hồi HTTP 200 JSON dữ liệu biểu đồ phân tích"),
+            ("ui", "actor", "8. Render biểu đồ cột doanh thu & Biểu đồ đường lưu lượng giờ cao điểm (Chart.js)")
+        ]
     }
 ]
 
@@ -499,19 +518,22 @@ def format_path_for_drawio(text):
     lines = text.split("\n")
     formatted_lines = []
     for line in lines:
-        # Ngắt dòng nếu đường dẫn dài chứa ROOT_PATH
         if ROOT_PATH in line:
             line = line.replace(ROOT_PATH + "\\", ROOT_PATH + "\\<br/>")
         formatted_lines.append(line)
     return "<br/>".join(formatted_lines)
 
 def build_single_diagram_elem(parent_elem, diag):
-    # Cấu hình tọa độ cột rộng rãi hơn để hiển thị Full Absolute Path
+    # Cấu hình tọa độ cột:
+    # Actor: 80 -> w=70, center=115
+    # UI: 270 -> w=380, center=460
+    # Sys: 710 -> w=420, center=920
+    # DB: 1190 -> w=280, center=1330
     col_x = {
         "actor": 80,
         "ui": 270,
         "sys": 710,
-        "db": 1180
+        "db": 1190
     }
     col_w = {
         "actor": 70,
@@ -550,9 +572,16 @@ def build_single_diagram_elem(parent_elem, diag):
         y_cursor += msg_step_y
 
     alt_end_y = y_cursor + 20
-    lifeline_bottom_y = alt_end_y + 40
+    y_cursor = alt_end_y + 35
+
+    post_step_ys = []
+    for _ in diag.get("post_steps", []):
+        post_step_ys.append(y_cursor)
+        y_cursor += msg_step_y
+
+    lifeline_bottom_y = y_cursor + 40
     page_h = max(950, lifeline_bottom_y + 80)
-    page_w = 1520
+    page_w = 1530
 
     diagram_elem = ET.SubElement(parent_elem, "diagram", attrib={"id": diag["id"], "name": diag["name"]})
     model_elem = ET.SubElement(diagram_elem, "mxGraphModel", attrib={
@@ -576,7 +605,7 @@ def build_single_diagram_elem(parent_elem, diag):
         "style": "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontColor=#1E293B;fontStyle=1;",
         "vertex": "1"
     })
-    ET.SubElement(title_cell, "mxGeometry", attrib={"x": "50", "y": "15", "width": "1420", "height": "35", "as": "geometry"})
+    ET.SubElement(title_cell, "mxGeometry", attrib={"x": "50", "y": "15", "width": "1430", "height": "35", "as": "geometry"})
 
     # -------------------------------------------------------------
     # 1. CỘT 1: TÁC NHÂN (ACTOR) - HÌNH CON NGƯỜI & TÊN Ở DƯỚI
@@ -680,23 +709,25 @@ def build_single_diagram_elem(parent_elem, diag):
             ET.SubElement(geom, "mxPoint", attrib={"x": str(x1), "y": str(curr_y), "as": "sourcePoint"})
             ET.SubElement(geom, "mxPoint", attrib={"x": str(x2), "y": str(curr_y), "as": "targetPoint"})
 
-    # Vẽ các tin nhắn khởi tạo ban đầu (trước frame alt)
+    # 1. Vẽ các tin nhắn khởi tạo ban đầu (trước frame alt)
     for idx, (src_k, dst_k, m_txt) in enumerate(diag["initial_steps"]):
         draw_message(f"init_{idx+1}", src_k, dst_k, m_txt, initial_step_ys[idx])
 
-    # -------------------------------------------------------------
-    # KHUNG ALT (UML ALTERNATIVE COMBINED FRAGMENT)
-    # -------------------------------------------------------------
-    frame_x = 50
-    frame_w = 1430
+    # ---------------------------------------------------------------------------------
+    # 2. KHUNG ALT (CHỈ KIỂM TRA ĐIỀU KIỆN TRONG HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU)
+    #    Bao phủ từ x = 680 (bên trái Hệ Thống một chút) tới x = 1490 (qua CSDL)
+    #    Hoàn toàn KHÔNG bao phủ Cột Tác Nhân và Giao Diện!
+    # ---------------------------------------------------------------------------------
+    frame_x = 680
+    frame_w = 810
     frame_h = alt_end_y - alt_start_y
 
     alt_frame_val = f"<b>alt</b> [{diag['alt_frame']['happy_cond']}]"
     alt_style = (
         "shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;"
-        "container=0;collapsible=0;width=340;height=26;dashed=1;dashPattern=8 4;"
-        "strokeColor=#64748B;fillColor=#F8FAFC;strokeWidth=1.5;align=left;"
-        "spacingLeft=10;verticalAlign=top;fontStyle=0;fontSize=11;fontColor=#0F172A;"
+        "container=0;collapsible=0;width=310;height=26;dashed=1;dashPattern=8 4;"
+        "strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=left;"
+        "spacingLeft=10;verticalAlign=top;fontStyle=0;fontSize=11;fontColor=#1E1B4B;"
     )
     frame_cell = ET.SubElement(root, "mxCell", attrib={
         "id": f"{diag['id']}_alt_frame",
@@ -728,6 +759,12 @@ def build_single_diagram_elem(parent_elem, diag):
     for idx, (src_k, dst_k, m_txt) in enumerate(diag["alt_frame"]["else_steps"]):
         draw_message(f"else_{idx+1}", src_k, dst_k, m_txt, else_step_ys[idx], is_error=True)
 
+    # ---------------------------------------------------------------------------------
+    # 3. CÁC BƯỚC SAU KHUNG ALT: HỆ THỐNG TRẢ VỀ GIAO DIỆN & GIAO DIỆN HIỂN THỊ TÁC NHÂN
+    # ---------------------------------------------------------------------------------
+    for idx, (src_k, dst_k, m_txt) in enumerate(diag.get("post_steps", [])):
+        draw_message(f"post_{idx+1}", src_k, dst_k, m_txt, post_step_ys[idx], is_error=False)
+
 def generate_drawio_files(out_dir):
     os.makedirs(out_dir, exist_ok=True)
     drawio_sub_dir = os.path.join(out_dir, "drawio")
@@ -735,14 +772,14 @@ def generate_drawio_files(out_dir):
 
     # 1. Master file chứa tất cả các Use Cases
     master_file = os.path.join(out_dir, "SO_DO_TUAN_TU_HE_THONG.drawio")
-    mxfile_master = ET.Element("mxfile", attrib={"host": "app.diagrams.net", "modified": "2026-10-02T08:40:00.000Z", "agent": "Antigravity-CNPM24", "version": "21.6.8", "type": "device"})
+    mxfile_master = ET.Element("mxfile", attrib={"host": "app.diagrams.net", "modified": "2026-10-02T08:45:00.000Z", "agent": "Antigravity-CNPM24", "version": "21.6.8", "type": "device"})
     
     for diag in DIAGRAMS:
         build_single_diagram_elem(mxfile_master, diag)
         
         # 2. File riêng cho từng Use Case
         single_file = os.path.join(drawio_sub_dir, f"{diag['id']}.drawio")
-        mxfile_single = ET.Element("mxfile", attrib={"host": "app.diagrams.net", "modified": "2026-10-02T08:40:00.000Z", "agent": "Antigravity-CNPM24", "version": "21.6.8", "type": "device"})
+        mxfile_single = ET.Element("mxfile", attrib={"host": "app.diagrams.net", "modified": "2026-10-02T08:45:00.000Z", "agent": "Antigravity-CNPM24", "version": "21.6.8", "type": "device"})
         build_single_diagram_elem(mxfile_single, diag)
         t_single = ET.ElementTree(mxfile_single)
         ET.indent(t_single, space="  ", level=0)
@@ -757,9 +794,8 @@ def generate_drawio_files(out_dir):
     with open(puml_file, "w", encoding="utf-8") as f:
         f.write("' ====================================================================\n")
         f.write("' SƠ ĐỒ TUẦN TỰ (SEQUENCE DIAGRAMS) - HỆ THỐNG QUẢN LÝ BÃI ĐỖ XE AI\n")
-        f.write("' Phân loại theo Tác nhân: Cư Dân, Bảo Vệ, Quản Trị Viên\n")
+        f.write("' Quy chuẩn: Khung alt CHỈ kiểm tra điều kiện trong Hệ thống & CSDL\n")
         f.write("' Đường dẫn tuyệt đối chuẩn xác: D:\\CNPM24CT2_OngThanQuocTruong\\ongthanquoctruong_24CT2_cnpm\\...\n")
-        f.write("' Khung điều kiện rẽ nhánh: alt / else\n")
         f.write("' ====================================================================\n\n")
 
         current_group = None
@@ -799,7 +835,8 @@ def generate_drawio_files(out_dir):
                 clean_msg = s_msg.split(". ", 1)[-1]
                 f.write(f"{p_src} {arrow} {p_dst}: {clean_msg}\n")
 
-            f.write(f"\nalt {diag['alt_frame']['happy_cond']}\n")
+            f.write(f"\n' Khung alt chỉ kiểm tra điều kiện trong Hệ thống và Cơ sở dữ liệu\n")
+            f.write(f"alt {diag['alt_frame']['happy_cond']}\n")
             for s_src, s_dst, s_msg in diag["alt_frame"]["happy_steps"]:
                 p_src = part_map[s_src]
                 p_dst = part_map[s_dst]
@@ -816,7 +853,15 @@ def generate_drawio_files(out_dir):
                 f.write(f"    {p_src} {arrow} {p_dst}: {clean_msg}\n")
 
             f.write("end\n\n")
-            f.write("@enduml\n\n")
+
+            for s_src, s_dst, s_msg in diag.get("post_steps", []):
+                p_src = part_map[s_src]
+                p_dst = part_map[s_dst]
+                arrow = puml_arrow(s_src, s_dst, s_msg)
+                clean_msg = s_msg.split(". ", 1)[-1]
+                f.write(f"{p_src} {arrow} {p_dst}: {clean_msg}\n")
+
+            f.write("\n@enduml\n\n")
 
     print(f"Master Draw.io file: {master_file}")
     print(f"Single Draw.io files: {drawio_sub_dir}")
