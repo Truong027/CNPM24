@@ -1,104 +1,104 @@
 <?xml version='1.0' encoding='utf-8'?>
-<mxfile host="app.diagrams.net" modified="2026-10-02T08:35:00.000Z" agent="Antigravity-CNPM24" version="21.6.8" type="device">
+<mxfile host="app.diagrams.net" modified="2026-10-02T08:40:00.000Z" agent="Antigravity-CNPM24" version="21.6.8" type="device">
   <diagram id="uc03_resident_register_vehicle" name="[Cư Dân] UC03 - Đăng ký xe &amp; Chọn ô đỗ Cinema">
-    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="980" math="0" shadow="0">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1520" pageHeight="1032" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="uc03_resident_register_vehicle_title" parent="1" value="&lt;b&gt;3.2. SƠ ĐỒ TUẦN TỰ (SEQUENCE DIAGRAM): [CƯ DÂN] UC03 - ĐĂNG KÝ XE &amp; CHỌN Ô ĐỖ CINEMA&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;fontColor=#1E293B;fontStyle=1;" vertex="1">
-          <mxGeometry x="50" y="15" width="1280" height="35" as="geometry" />
+        <mxCell id="uc03_resident_register_vehicle_title" parent="1" value="&lt;b&gt;3.2. SƠ ĐỒ TUẦN TỰ (SEQUENCE DIAGRAM): [CƯ DÂN] UC03 - ĐĂNG KÝ XE &amp; CHỌN Ô ĐỖ CINEMA&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontColor=#1E293B;fontStyle=1;" vertex="1">
+          <mxGeometry x="50" y="15" width="1420" height="35" as="geometry" />
         </mxCell>
         <mxCell id="uc03_resident_register_vehicle_actor_icon" parent="1" value="&lt;b&gt;TÁC NHÂN&lt;/b&gt;&lt;br/&gt;&lt;font color='#1E40AF'&gt;&lt;b&gt;Cư Dân&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font color='#64748B'&gt;(Resident)&lt;/font&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#DBEAFE;strokeColor=#1D4ED8;strokeWidth=2;fontSize=11;fontColor=#0F172A;align=center;" vertex="1">
-          <mxGeometry x="140" y="60" width="60" height="65" as="geometry" />
+          <mxGeometry x="80" y="60" width="70" height="70" as="geometry" />
         </mxCell>
         <mxCell id="uc03_resident_register_vehicle_ll_actor" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#1D4ED8;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="170" y="165" as="sourcePoint" />
-            <mxPoint x="170" y="900" as="targetPoint" />
+            <mxPoint x="115" y="170" as="sourcePoint" />
+            <mxPoint x="115" y="952" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_ll_ui" parent="1" value="&lt;b&gt;GIAO DIỆN&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;i&gt;fe/templates/resident_dashboard.html&lt;br/&gt;(Modal #registerVehicleModal, #cinemaModal)&lt;/i&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=100;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="380" y="60" width="240" height="840" as="geometry" />
+        <mxCell id="uc03_resident_register_vehicle_ll_ui" parent="1" value="&lt;b&gt;GIAO DIỆN&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;fe\templates\resident_dashboard.html&lt;br/&gt;(Modal #registerVehicleModal, #cinemaModal)&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
+          <mxGeometry x="270" y="60" width="380" height="892" as="geometry" />
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;i&gt;be/app.py: POST /api/resident/register_vehicle&lt;br/&gt;be/database.py: register_vehicle_with_slot()&lt;/i&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=100;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="710" y="60" width="260" height="840" as="geometry" />
+        <mxCell id="uc03_resident_register_vehicle_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: POST /api/resident/register_vehicle&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: register_vehicle_with_slot()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
+          <mxGeometry x="710" y="60" width="420" height="892" as="geometry" />
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;bai_do, vehicles, phuong_tien&lt;/i&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=100;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1050" y="60" width="240" height="840" as="geometry" />
+        <mxCell id="uc03_resident_register_vehicle_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;bai_do, vehicles, phuong_tien&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
+          <mxGeometry x="1180" y="60" width="280" height="892" as="geometry" />
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_msg_init_1" parent="1" value="1. Nhập biển số, hiệu xe &amp; Click chọn vị trí ô đỗ Cinema (VD: B1-A01)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;" edge="1">
+        <mxCell id="uc03_resident_register_vehicle_msg_init_1" parent="1" value="1. Nhập biển số, hiệu xe &amp; Click chọn vị trí ô đỗ Cinema (VD: B1-A01)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="170" y="200" as="sourcePoint" />
-            <mxPoint x="500" y="200" as="targetPoint" />
+            <mxPoint x="115" y="230" as="sourcePoint" />
+            <mxPoint x="460" y="230" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_msg_init_2" parent="1" value="2. POST /api/resident/register_vehicle (plate: '30H-999.88', slot_id: 'B1-A01', months: 3)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;" edge="1">
+        <mxCell id="uc03_resident_register_vehicle_msg_init_2" parent="1" value="2. POST /api/resident/register_vehicle (plate: '30H-999.88', slot_id: 'B1-A01', months: 3)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="500" y="250" as="sourcePoint" />
-            <mxPoint x="840" y="250" as="targetPoint" />
+            <mxPoint x="460" y="282" as="sourcePoint" />
+            <mxPoint x="920" y="282" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_msg_init_3" parent="1" value="3. Khóa dòng kiểm tra: SELECT TrangThai FROM bai_do WHERE MaViTri = %s FOR UPDATE" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;" edge="1">
+        <mxCell id="uc03_resident_register_vehicle_msg_init_3" parent="1" value="3. Khóa dòng kiểm tra: SELECT TrangThai FROM bai_do WHERE MaViTri = %s FOR UPDATE" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="840" y="300" as="sourcePoint" />
-            <mxPoint x="1170" y="300" as="targetPoint" />
+            <mxPoint x="920" y="334" as="sourcePoint" />
+            <mxPoint x="1320" y="334" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_msg_init_4" parent="1" value="4. Trả về trạng thái hiện tại của ô đỗ" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10;" edge="1">
+        <mxCell id="uc03_resident_register_vehicle_msg_init_4" parent="1" value="4. Trả về trạng thái hiện tại của ô đỗ" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1170" y="350" as="sourcePoint" />
-            <mxPoint x="840" y="350" as="targetPoint" />
+            <mxPoint x="1320" y="386" as="sourcePoint" />
+            <mxPoint x="920" y="386" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="uc03_resident_register_vehicle_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt; [Ô đỗ còn TRỐNG (TrangThai == 'Trong')]" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=340;height=26;dashed=1;dashPattern=8 4;strokeColor=#64748B;fillColor=#F8FAFC;strokeWidth=1.5;align=left;spacingLeft=10;verticalAlign=top;fontStyle=0;fontSize=11;fontColor=#0F172A;" vertex="1">
-          <mxGeometry x="90" y="410" width="1200" height="450" as="geometry" />
+          <mxGeometry x="50" y="448" width="1430" height="464" as="geometry" />
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_msg_happy_1" parent="1" value="5a. UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s WHERE MaViTri = %s" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;" edge="1">
+        <mxCell id="uc03_resident_register_vehicle_msg_happy_1" parent="1" value="5a. UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s WHERE MaViTri = %s" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="840" y="445" as="sourcePoint" />
-            <mxPoint x="1170" y="445" as="targetPoint" />
+            <mxPoint x="920" y="483" as="sourcePoint" />
+            <mxPoint x="1320" y="483" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_msg_happy_2" parent="1" value="6a. INSERT INTO vehicles &amp; phuong_tien (BienSoXe, MaCuDan, ViTriDo, NgayHetHan)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;" edge="1">
+        <mxCell id="uc03_resident_register_vehicle_msg_happy_2" parent="1" value="6a. INSERT INTO vehicles &amp; phuong_tien (BienSoXe, MaCuDan, ViTriDo, NgayHetHan)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="840" y="495" as="sourcePoint" />
-            <mxPoint x="1170" y="495" as="targetPoint" />
+            <mxPoint x="920" y="535" as="sourcePoint" />
+            <mxPoint x="1320" y="535" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_msg_happy_3" parent="1" value="7a. Xác nhận lưu xe và đặt chỗ ô đỗ thành công" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10;" edge="1">
+        <mxCell id="uc03_resident_register_vehicle_msg_happy_3" parent="1" value="7a. Xác nhận lưu xe và đặt chỗ ô đỗ thành công" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1170" y="545" as="sourcePoint" />
-            <mxPoint x="840" y="545" as="targetPoint" />
+            <mxPoint x="1320" y="587" as="sourcePoint" />
+            <mxPoint x="920" y="587" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_msg_happy_4" parent="1" value="8a. Phản hồi HTTP 200 {success: true, slot_id: 'B1-A01', plate: '30H-999.88'}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10;" edge="1">
+        <mxCell id="uc03_resident_register_vehicle_msg_happy_4" parent="1" value="8a. Phản hồi HTTP 200 {success: true, slot_id: 'B1-A01', plate: '30H-999.88'}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="840" y="595" as="sourcePoint" />
-            <mxPoint x="500" y="595" as="targetPoint" />
+            <mxPoint x="920" y="639" as="sourcePoint" />
+            <mxPoint x="460" y="639" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_msg_happy_5" parent="1" value="9a. Đổi màu ô ghế Cinema sang Cyan (Xe của bạn) &amp; Cập nhật thẻ xe 3D" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10;" edge="1">
+        <mxCell id="uc03_resident_register_vehicle_msg_happy_5" parent="1" value="9a. Đổi màu ô ghế Cinema sang Cyan (Xe của bạn) &amp; Cập nhật thẻ xe 3D" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="500" y="645" as="sourcePoint" />
-            <mxPoint x="170" y="645" as="targetPoint" />
+            <mxPoint x="460" y="691" as="sourcePoint" />
+            <mxPoint x="115" y="691" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="uc03_resident_register_vehicle_alt_divider" parent="1" value="&lt;b&gt;[else: Vị trí ô đỗ đã có người khác đặt trước (TrangThai == 'DaDat')]&lt;/b&gt;" style="html=1;strokeWidth=1.5;strokeColor=#94A3B8;dashed=1;dashPattern=6 4;endArrow=none;align=left;verticalAlign=bottom;spacingLeft=15;fontColor=#B91C1C;fontSize=11;fontStyle=0;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="90" y="710" as="sourcePoint" />
-            <mxPoint x="1290" y="710" as="targetPoint" />
+            <mxPoint x="50" y="758" as="sourcePoint" />
+            <mxPoint x="1480" y="758" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_msg_else_1" parent="1" value="5b. Phản hồi HTTP 409 {success: false, message: 'Vị trí đỗ vừa được đặt, vui lòng chọn ô khác'}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#DC2626;strokeWidth=1.5;fontColor=#991B1B;fontSize=10;" edge="1">
+        <mxCell id="uc03_resident_register_vehicle_msg_else_1" parent="1" value="5b. Phản hồi HTTP 409 {success: false, message: 'Vị trí đỗ vừa được đặt, vui lòng chọn ô khác'}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#DC2626;strokeWidth=1.5;fontColor=#991B1B;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="840" y="740" as="sourcePoint" />
-            <mxPoint x="500" y="740" as="targetPoint" />
+            <mxPoint x="920" y="788" as="sourcePoint" />
+            <mxPoint x="460" y="788" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_msg_else_2" parent="1" value="6b. Tô đỏ ô đỗ và hiển thị thông báo yêu cầu chọn vị trí khác trên sơ đồ Cinema" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#B91C1C;strokeWidth=1.5;fontColor=#7F1D1D;fontSize=10;" edge="1">
+        <mxCell id="uc03_resident_register_vehicle_msg_else_2" parent="1" value="6b. Tô đỏ ô đỗ và hiển thị thông báo yêu cầu chọn vị trí khác trên sơ đồ Cinema" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#B91C1C;strokeWidth=1.5;fontColor=#7F1D1D;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="500" y="790" as="sourcePoint" />
-            <mxPoint x="170" y="790" as="targetPoint" />
+            <mxPoint x="460" y="840" as="sourcePoint" />
+            <mxPoint x="115" y="840" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>

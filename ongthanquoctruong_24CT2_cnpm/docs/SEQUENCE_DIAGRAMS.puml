@@ -1,7 +1,7 @@
 ' ====================================================================
 ' SƠ ĐỒ TUẦN TỰ (SEQUENCE DIAGRAMS) - HỆ THỐNG QUẢN LÝ BÃI ĐỖ XE AI
 ' Phân loại theo Tác nhân: Cư Dân, Bảo Vệ, Quản Trị Viên
-' Chuẩn hóa: Tác nhân (Hình người) | Giao diện [File] | Hệ thống [File/Hàm] | CSDL [DB/Bảng]
+' Đường dẫn tuyệt đối chuẩn xác: D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\...
 ' Khung điều kiện rẽ nhánh: alt / else
 ' ====================================================================
 
@@ -16,8 +16,8 @@ title SƠ ĐỒ TUẦN TỰ: [CƯ DÂN] UC01 - ĐĂNG KÝ TÀI KHOẢN CƯ DÂN
 autonumber
 
 actor "Cư Dân\n(Resident)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/register.html\n(hoặc fe/templates/login.html#register)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: register()\nbe/database.py: register_resident_user()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\register.html" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: register()\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: register_resident_user()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\napp_users, cu_dan" as DB #F3E8FF
 
 Actor ->> UI: Nhập Họ tên, SĐT, Căn hộ, Mật khẩu & Click 'Đăng ký'
@@ -44,8 +44,8 @@ title SƠ ĐỒ TUẦN TỰ: [CƯ DÂN] UC02 - ĐĂNG NHẬP TÀI KHOẢN CƯ D�
 autonumber
 
 actor "Cư Dân\n(Resident)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/login.html\n(Form #loginForm)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: login()\nbe/database.py: check_user_credentials()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\login.html\n(Form #loginForm)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: login()\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: check_user_credentials()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\napp_users, cu_dan" as DB #F3E8FF
 
 Actor ->> UI: Nhập tên đăng nhập, mật khẩu & Bấm 'Đăng nhập'
@@ -64,14 +64,42 @@ end
 
 @enduml
 
+@startuml uc02b_forgot_password
+!theme plain
+title SƠ ĐỒ TUẦN TỰ: [CƯ DÂN] UC02B - QUÊN MẬT KHẨU & ĐẶT LẠI MẬT KHẨU OTP
+autonumber
+
+actor "Người Dùng\n(Cư Dân / Nhân Viên)" as Actor #DBEAFE
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\forgot_password.html\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\reset_password.html" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: api_forgot_password(), api_reset_password()\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: generate_otp(), verify_and_reset_password()" as Sys #E0E7FF
+database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\napp_users, password_reset_tokens" as DB #F3E8FF
+
+Actor ->> UI: Nhập địa chỉ Email đăng ký tài khoản & Bấm 'Gửi mã xác thực OTP'
+UI ->> Sys: POST /api/forgot-password (email: 'cu_dan@example.com')
+Sys ->> DB: SELECT id, username FROM app_users WHERE email = %s AND status = 'active'
+DB -->> Sys: Trả về kết quả tìm kiếm tài khoản theo email
+
+alt Email hợp lệ & Khớp tài khoản đang hoạt động
+    Sys ->> Sys: Sinh mã OTP ngẫu nhiên 6 chữ số (Hiệu lực trong 5 phút)
+    Sys ->> DB: Lưu mã OTP & Thời gian hết hạn vào bảng password_reset_tokens
+    Sys ->> Sys: Gửi Email chứa mã OTP bảo mật đến hòm thư người dùng
+    Sys -->> UI: Phản hồi HTTP 200 {success: true, message: 'Mã OTP đã được gửi'}
+    UI -->> Actor: Chuyển hướng sang reset_password.html & Hiển thị form nhập OTP, Mật khẩu mới
+else Email không tồn tại trong hệ thống hoặc định dạng không hợp lệ
+    Sys -->> UI: Phản hồi HTTP 400 {error: 'Email không tồn tại trong hệ thống'}
+    UI -->> Actor: Hiển thị thông báo lỗi màu đỏ 'Không tìm thấy tài khoản với email này'
+end
+
+@enduml
+
 @startuml uc03_resident_register_vehicle
 !theme plain
 title SƠ ĐỒ TUẦN TỰ: [CƯ DÂN] UC03 - ĐĂNG KÝ XE & CHỌN Ô ĐỖ CINEMA
 autonumber
 
 actor "Cư Dân\n(Resident)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/resident_dashboard.html\n(Modal #registerVehicleModal, #cinemaModal)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/resident/register_vehicle\nbe/database.py: register_vehicle_with_slot()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\resident_dashboard.html\n(Modal #registerVehicleModal, #cinemaModal)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: POST /api/resident/register_vehicle\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: register_vehicle_with_slot()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nbai_do, vehicles, phuong_tien" as DB #F3E8FF
 
 Actor ->> UI: Nhập biển số, hiệu xe & Click chọn vị trí ô đỗ Cinema (VD: B1-A01)
@@ -98,8 +126,8 @@ title SƠ ĐỒ TUẦN TỰ: [CƯ DÂN] UC04 - ĐỔI VỊ TRÍ ĐỖ XE CINEMA
 autonumber
 
 actor "Cư Dân\n(Resident)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/resident_dashboard.html\n(Modal #changeSlotModal, renderCinemaSeats)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/parking/change_slot\nbe/database.py: change_vehicle_parking_slot()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\resident_dashboard.html\n(Modal #changeSlotModal, renderCinemaSeats)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: POST /api/parking/change_slot\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: change_vehicle_parking_slot()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nbai_do, vehicles, phuong_tien" as DB #F3E8FF
 
 Actor ->> UI: Chọn xe cần đổi & Click chọn vị trí ô trống mới (VD: B1-B05)
@@ -128,8 +156,8 @@ title SƠ ĐỒ TUẦN TỰ: [CƯ DÂN] UC05 - GIA HẠN VÉ THÁNG CƯ DÂN
 autonumber
 
 actor "Cư Dân\n(Resident)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/resident_dashboard.html\n(Modal #renewTicketModal)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/resident/renew_ticket\nbe/database.py: renew_monthly_ticket()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\resident_dashboard.html\n(Modal #renewTicketModal)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: POST /api/resident/renew_ticket\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: renew_monthly_ticket()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nvehicles, phuong_tien, lich_su_thanh_toan" as DB #F3E8FF
 
 Actor ->> UI: Chọn gói gia hạn (1, 3 hoặc 6 tháng) & Bấm 'Xác nhận gia hạn'
@@ -157,8 +185,8 @@ title SƠ ĐỒ TUẦN TỰ: [CƯ DÂN] UC06 - YÊU CẦU CHUYỂN NHƯỢNG XE 
 autonumber
 
 actor "Cư Dân\n(Resident)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/resident_dashboard.html\n(Modal #transferVehicleModal)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/resident/transfer_vehicle\nbe/database.py: create_vehicle_transfer_request()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\resident_dashboard.html\n(Modal #transferVehicleModal)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: POST /api/resident/transfer_vehicle\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: create_vehicle_transfer_request()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nchuyen_nhuong_xe, cu_dan, vehicles" as DB #F3E8FF
 
 Actor ->> UI: Nhập SĐT người nhận, lý do chuyển nhượng & Bấm 'Gửi yêu cầu'
@@ -184,8 +212,8 @@ title SƠ ĐỒ TUẦN TỰ: [CƯ DÂN] UC07 - TRA CỨU LỊCH SỬ XE VÀO/RA
 autonumber
 
 actor "Cư Dân\n(Resident)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/resident_dashboard.html\n(Bảng lịch sử #historySection)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: GET /api/resident/history\nbe/database.py: get_resident_vehicle_history()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\resident_dashboard.html\n(Bảng lịch sử #historySection)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: GET /api/resident/history\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: get_resident_vehicle_history()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nparking_sessions, lich_su_ra_vao" as DB #F3E8FF
 
 Actor ->> UI: Chọn biển số xe cần xem lịch sử & Khoảng thời gian
@@ -214,8 +242,8 @@ title SƠ ĐỒ TUẦN TỰ: [BẢO VỆ] UC08 - NHẬN DIỆN AI & TỰ ĐỘNG
 autonumber
 
 actor "Nhân Viên Bảo Vệ\n(Security Guard)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/index.html\n(Tab #recognition-page, Live Stream)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: gen_frames() & detect_plates_from_frame()\nbe/database.py: process_parking_transaction()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\index.html\n(Tab #recognition-page, Live Stream)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: gen_frames() & detect_plates_from_frame()\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: process_parking_transaction()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nparking_sessions, lich_su_ra_vao, detections" as DB #F3E8FF
 
 Actor ->> UI: Xe tiến vào làn cổng, Camera gửi luồng video frames tới màn hình bàn trực
@@ -244,8 +272,8 @@ title SƠ ĐỒ TUẦN TỰ: [BẢO VỆ] UC09 - ĐỐI CHIẾU XE RA & CẢNH B
 autonumber
 
 actor "Nhân Viên Bảo Vệ\n(Security Guard)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/index.html\n(Bàn trực #guard-station-page, checkGuardLiveEvent)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: GET /api/guard/verification/<plate>\nbe/database.py: get_guard_verification_info()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\index.html\n(Bàn trực #guard-station-page, checkGuardLiveEvent)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: GET /api/guard/verification/<plate>\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: get_guard_verification_info()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nvehicles, parking_sessions, bai_do" as DB #F3E8FF
 
 Actor ->> UI: Xe ra đến cổng, Camera đọc biển số hoặc Bảo vệ chọn xe kiểm tra
@@ -272,8 +300,8 @@ title SƠ ĐỒ TUẦN TỰ: [BẢO VỆ] UC10 - THU PHÍ GỬI XE & KÍCH HOẠ
 autonumber
 
 actor "Nhân Viên Bảo Vệ\n(Security Guard)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/index.html\n(#guardFeeBox, #guardConfirmActionBtn)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/guard/collect_fee\nbe/database.py: complete_parking_session()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\index.html\n(#guardFeeBox, #guardConfirmActionBtn)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: POST /api/guard/collect_fee\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: complete_parking_session()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nparking_sessions, lich_su_ra_vao, hoa_don" as DB #F3E8FF
 
 Actor ->> UI: Khách thanh toán tiền mặt/quét mã VietQR, Bảo vệ bấm 'Xác Nhận Thu Phí & Mở Cổng'
@@ -304,8 +332,8 @@ title SƠ ĐỒ TUẦN TỰ: [ADMIN] UC11 - QUẢN LÝ TÀI KHOẢN NGƯỜI DÙ
 autonumber
 
 actor "Quản Trị Viên\n(System Admin)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/index.html\n(Trang quản lý #users-page, Modal #editUserModal)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/admin/users/update\nbe/database.py: admin_update_user_info()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\index.html\n(Trang quản lý #users-page, Modal #editUserModal)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: POST /api/admin/users/update\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: admin_update_user_info()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\napp_users, cu_dan, nhan_vien" as DB #F3E8FF
 
 Actor ->> UI: Chọn tài khoản cần chỉnh sửa, cập nhật quyền hạn/trạng thái & Bấm 'Lưu thay đổi'
@@ -332,8 +360,8 @@ title SƠ ĐỒ TUẦN TỰ: [ADMIN] UC12 - PHÊ DUYỆT ĐƠN CHUYỂN NHƯỢN
 autonumber
 
 actor "Quản Trị Viên\n(System Admin)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/index.html\n(Trang chuyển nhượng #transfers-page)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: POST /api/admin/transfer_requests/<id>/action\nbe/database.py: process_transfer_request_action()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\index.html\n(Trang chuyển nhượng #transfers-page)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: POST /api/admin/transfer_requests/<id>/action\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: process_transfer_request_action()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nchuyen_nhuong_xe, vehicles, phuong_tien" as DB #F3E8FF
 
 Actor ->> UI: Xem chi tiết đơn chuyển nhượng đang chờ duyệt & Bấm nút quyết định
@@ -362,8 +390,8 @@ title SƠ ĐỒ TUẦN TỰ: [ADMIN] UC13 - BÁO CÁO THỐNG KÊ & BIỂU ĐỒ
 autonumber
 
 actor "Quản Trị Viên\n(System Admin)" as Actor #DBEAFE
-participant "Giao diện\n[File code]\nfe/templates/index.html\n(Trang thống kê #reports-page, renderCharts)" as UI #FEF3C7
-participant "Hệ thống\n[File code / Hàm]\nbe/app.py: GET /api/analytics/revenue\nbe/database.py: get_revenue_stats()" as Sys #E0E7FF
+participant "Giao diện\n[File code]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\index.html\n(Trang thống kê #reports-page, renderCharts)" as UI #FEF3C7
+participant "Hệ thống\n[File code / Hàm]\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: GET /api/analytics/revenue\nD:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\database.py: get_revenue_stats()" as Sys #E0E7FF
 database "Cơ sở dữ liệu\n[db / Bảng]\nHTTT_QuanLyBaiXe_AI /\nparking_sessions, statistics" as DB #F3E8FF
 
 Actor ->> UI: Chọn khoảng thời gian xem báo cáo doanh thu & Bấm 'Xem phân tích'
