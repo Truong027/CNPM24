@@ -129,16 +129,28 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc11_admin_user_mgmt_msg_post_1" parent="1" value="8. Phản hồi kết quả cập nhật (HTTP 200 Thành công hoặc HTTP 403 Từ chối)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
+        <mxCell id="uc11_admin_user_mgmt_msg_happy_return" parent="1" value="8a. Trả về thông báo cập nhật thành công (HTTP 200)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#15803D;strokeWidth=1.5;fontColor=#166534;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="724" y="821" as="sourcePoint" />
-            <mxPoint x="366" y="821" as="targetPoint" />
+            <mxPoint x="724" y="640" as="sourcePoint" />
+            <mxPoint x="366" y="640" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc11_admin_user_mgmt_msg_post_2" parent="1" value="9. Hiển thị thông báo thành công / Cập nhật lại danh sách hoặc Bật cảnh báo lỗi đỏ" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
+        <mxCell id="uc11_admin_user_mgmt_msg_happy_actor" parent="1" value="9a. Hiển thị thông báo thành công / Cập nhật lại danh sách" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#15803D;strokeWidth=1.5;fontColor=#166534;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="354" y="873" as="sourcePoint" />
-            <mxPoint x="90" y="873" as="targetPoint" />
+            <mxPoint x="354" y="660" as="sourcePoint" />
+            <mxPoint x="90" y="660" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uc11_admin_user_mgmt_msg_else_return" parent="1" value="8b. Trả về lỗi từ chối thao tác (HTTP 403)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#B91C1C;strokeWidth=1.5;fontColor=#991B1B;fontSize=10.5;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="724" y="760" as="sourcePoint" />
+            <mxPoint x="366" y="760" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uc11_admin_user_mgmt_msg_else_actor" parent="1" value="9b. Bật cảnh báo lỗi đỏ (Từ chối thao tác)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#B91C1C;strokeWidth=1.5;fontColor=#991B1B;fontSize=10.5;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="354" y="780" as="sourcePoint" />
+            <mxPoint x="90" y="780" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
