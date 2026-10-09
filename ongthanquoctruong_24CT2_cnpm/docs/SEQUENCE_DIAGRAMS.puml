@@ -25,24 +25,30 @@ Actor ->> UI: Nhập Họ tên, SĐT, Căn hộ, Mật khẩu & Click 'Đăng k�
 activate UI #FEF3C7
 UI ->> Sys: POST /register (username, password, phone, apartment)
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: SELECT * FROM app_users WHERE username = %s OR phone = %s
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về kết quả kiểm tra trùng lặp tài khoản
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra trùng lặp thông tin tài khoản (Username & Số điện thoại)] - Hợp lệ: Username & SĐT chưa từng đăng ký (Hợp lệ)
     Sys ->> Sys: Băm mật khẩu an toàn PBKDF2/SHA-256 (generate_password_hash)
     Sys ->> DB: INSERT INTO app_users & cu_dan (MaCuDan, HoTen, TenDangNhap, Role='Resident')
     activate DB #F3E8FF
+    deactivate Sys
     DB -->> Sys: Xác nhận ghi bản ghi mới thành công (Affected rows = 1)
     deactivate DB
+    activate Sys #E0E7FF
 else [else - Lỗi]: Username hoặc SĐT đã tồn tại / Dữ liệu không hợp lệ
     Sys ->> Sys: Hủy thao tác đăng ký & Thiết lập mã trạng thái lỗi (status = 400)
 end
 
 Sys -->> UI: Phản hồi thông báo kết quả đăng ký (HTTP 200 Thành công hoặc HTTP 400 Lỗi)
 deactivate Sys
+activate UI #FEF3C7
 UI -->> Actor: Hiển thị kết quả lên giao diện (Chuyển sang trang Đăng nhập hoặc Toast cảnh báo đỏ)
 deactivate UI
 
@@ -62,24 +68,30 @@ Actor ->> UI: Nhập tên đăng nhập, mật khẩu & Bấm 'Đăng nhập'
 activate UI #FEF3C7
 UI ->> Sys: POST /login (username, password)
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: SELECT id, username, password_hash, role, status FROM app_users WHERE username = %s
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về thông tin người dùng và mã băm password_hash
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Đối soát mật khẩu băm (password_hash) & Trạng thái tài khoản] - Hợp lệ: Mật khẩu chính xác & status == 'active' & role == 'Resident'
     Sys ->> Sys: Khởi tạo session['user'] = {id, role: 'Resident', username}
     Sys ->> DB: UPDATE app_users SET last_login = NOW() WHERE id = %s
     activate DB #F3E8FF
+    deactivate Sys
     DB -->> Sys: Xác nhận cập nhật thời gian đăng nhập thành công
     deactivate DB
+    activate Sys #E0E7FF
 else [else - Lỗi]: Sai mật khẩu hoặc Tài khoản bị vô hiệu hóa (status != 'active')
     Sys ->> Sys: Từ chối xác thực phiên & Thiết lập mã lỗi (status = 401)
 end
 
 Sys -->> UI: Phản hồi kết quả đăng nhập (JSON token phiên hoặc Thông báo lỗi xác thực)
 deactivate Sys
+activate UI #FEF3C7
 UI -->> Actor: Điều hướng vào Resident Dashboard hoặc Hiển thị cảnh báo đăng nhập thất bại
 deactivate UI
 
@@ -99,18 +111,23 @@ Actor ->> UI: Nhập địa chỉ Email đăng ký tài khoản & Bấm 'Gửi m
 activate UI #FEF3C7
 UI ->> Sys: POST /api/forgot-password (email: 'cu_dan@example.com')
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: SELECT id, username FROM app_users WHERE email = %s AND status = 'active'
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về kết quả tìm kiếm tài khoản theo email
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra tính tồn tại của Email đăng ký & Trạng thái tài khoản] - Hợp lệ: Email hợp lệ & Khớp tài khoản đang hoạt động
     Sys ->> Sys: Sinh mã OTP ngẫu nhiên 6 chữ số (Hiệu lực trong 5 phút)
     Sys ->> DB: INSERT INTO password_reset_tokens (email, otp_hash, expires_at)
     activate DB #F3E8FF
+    deactivate Sys
     DB -->> Sys: Xác nhận lưu trữ mã OTP thành công
     deactivate DB
+    activate Sys #E0E7FF
     Sys ->> Sys: Gửi Email chứa mã OTP bảo mật đến hòm thư người dùng
 else [else - Lỗi]: Email không tồn tại trong hệ thống hoặc định dạng không hợp lệ
     Sys ->> Sys: Hủy yêu cầu cấp OTP & Thiết lập thông báo lỗi (Email not found)
@@ -118,6 +135,7 @@ end
 
 Sys -->> UI: Phản hồi kết quả xử lý (HTTP 200 Đã gửi OTP hoặc HTTP 400 Email không tồn tại)
 deactivate Sys
+activate UI #FEF3C7
 UI -->> Actor: Chuyển sang trang reset_password.html hoặc Báo lỗi đỏ yêu cầu kiểm tra lại email
 deactivate UI
 
@@ -137,25 +155,32 @@ Actor ->> UI: Nhập biển số, hiệu xe & Click chọn vị trí ô đỗ Ci
 activate UI #FEF3C7
 UI ->> Sys: POST /api/resident/register_vehicle (plate: '30H-999.88', slot_id: 'B1-A01', months: 3)
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: Khóa dòng kiểm tra: SELECT TrangThai FROM bai_do WHERE MaViTri = %s FOR UPDATE
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về trạng thái hiện tại của ô đỗ
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra trạng thái khả dụng của ô đỗ xe trong CSDL (SELECT FOR UPDATE)] - Hợp lệ: Ô đỗ còn TRỐNG (TrangThai == 'Trong')
     Sys ->> DB: UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s WHERE MaViTri = %s
     activate DB #F3E8FF
+    deactivate Sys
     Sys ->> DB: INSERT INTO vehicles & phuong_tien (BienSoXe, MaCuDan, ViTriDo, NgayHetHan)
     activate DB #F3E8FF
+    deactivate Sys
     DB -->> Sys: Xác nhận lưu xe và đặt chỗ ô đỗ thành công
     deactivate DB
+    activate Sys #E0E7FF
 else [else - Lỗi]: Vị trí ô đỗ đã có người khác đặt trước (TrangThai == 'DaDat')
     Sys ->> Sys: Hủy giao dịch đặt ô & Thiết lập mã xung đột dữ liệu (status = 409)
 end
 
 Sys -->> UI: Phản hồi kết quả đăng ký xe & ô đỗ (HTTP 200 Thành công hoặc HTTP 409 Xung đột)
 deactivate Sys
+activate UI #FEF3C7
 UI ->> Actor: Đổi màu ô ghế Cinema sang Cyan (Xe của bạn) hoặc Tô đỏ báo người dùng chọn lại
 deactivate UI
 
@@ -175,29 +200,38 @@ Actor ->> UI: Chọn xe cần đổi & Click chọn vị trí ô trống mới (
 activate UI #FEF3C7
 UI ->> Sys: POST /api/parking/change_slot (plate: '30H-999.88', new_slot: 'B1-B05')
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: Tra cứu vị trí mới: SELECT TrangThai FROM bai_do WHERE MaViTri = 'B1-B05'
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về trạng thái của vị trí mới
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra vị trí mới & Xử lý Transaction cập nhật ô đỗ] - Hợp lệ: Vị trí mới còn TRỐNG (TrangThai == 'Trong')
     Sys ->> DB: TRANSACTION: UPDATE bai_do SET TrangThai = 'Trong', BienSoXe = NULL (Ô cũ)
     activate DB #F3E8FF
+    deactivate Sys
     Sys ->> DB: UPDATE bai_do SET TrangThai = 'DaDat', BienSoXe = %s (Ô mới B1-B05)
     activate DB #F3E8FF
+    deactivate Sys
     Sys ->> DB: UPDATE phuong_tien & vehicles SET ViTriDo = 'B1-B05' WHERE BienSoXe = %s
     activate DB #F3E8FF
+    deactivate Sys
     DB ->> Sys: Commit transaction thành công
     deactivate DB
+    activate Sys #E0E7FF
 else [else - Lỗi]: Vị trí mới đã bị xe khác chiếm chỗ
     Sys ->> DB: ROLLBACK TRANSACTION (Hủy bỏ mọi thay đổi)
     activate DB #F3E8FF
+    deactivate Sys
     Sys ->> Sys: Thiết lập thông báo vị trí mới không khả dụng
 end
 
 Sys -->> UI: Phản hồi kết quả đổi vị trí (HTTP 200 Thành công hoặc HTTP 400 Thất bại)
 deactivate Sys
+activate UI #FEF3C7
 UI -->> Actor: Render lại sơ đồ bãi đỗ Cinema & Hiển thị thông báo kết quả cho cư dân
 deactivate UI
 
@@ -217,26 +251,33 @@ Actor ->> UI: Chọn gói gia hạn (1, 3 hoặc 6 tháng) & Bấm 'Xác nhận 
 activate UI #FEF3C7
 UI ->> Sys: POST /api/resident/renew_ticket (plate: '30H-999.88', months: 3)
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: SELECT NgayHetHan FROM phuong_tien WHERE BienSoXe = %s
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về ngày hết hạn hiện tại của phương tiện
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra thông tin phương tiện & Gói gia hạn trong CSDL] - Hợp lệ: Tìm thấy phương tiện hợp lệ & Gói gia hạn đúng quy định
     Sys ->> Sys: Tính thời hạn mới: new_expiry = max(current_expiry, today) + 3 months
     Sys ->> DB: UPDATE phuong_tien & vehicles SET NgayHetHan = %s WHERE BienSoXe = %s
     activate DB #F3E8FF
+    deactivate Sys
     Sys ->> DB: INSERT INTO lich_su_thanh_toan (BienSoXe, SoTien, LoaiGiaoDich='GiaHanVeThang')
     activate DB #F3E8FF
+    deactivate Sys
     DB -->> Sys: Xác nhận cập nhật CSDL thành công
     deactivate DB
+    activate Sys #E0E7FF
 else [else - Lỗi]: Biển số xe không tồn tại hoặc lỗi giao dịch
     Sys ->> Sys: Hủy giao dịch gia hạn & Thiết lập mã lỗi (status = 404)
 end
 
 Sys -->> UI: Phản hồi kết quả gia hạn (HTTP 200 kèm ngày hết hạn mới hoặc Báo lỗi)
 deactivate Sys
+activate UI #FEF3C7
 UI ->> Actor: Cập nhật nhãn hạn mới trên thẻ xe 3D và hiển thị badge 'Còn Hạn'
 deactivate UI
 
@@ -256,23 +297,29 @@ Actor ->> UI: Nhập SĐT người nhận, lý do chuyển nhượng & Bấm 'G�
 activate UI #FEF3C7
 UI ->> Sys: POST /api/resident/transfer_vehicle (plate, target_phone, reason)
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: SELECT MaCuDan, HoTen FROM cu_dan WHERE SoDienThoai = %s
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về thông tin cư dân nhận theo số điện thoại
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra tính hợp lệ người nhận chuyển nhượng theo SĐT] - Hợp lệ: Tìm thấy cư dân nhận hợp lệ & Khác chủ xe hiện tại
     Sys ->> DB: INSERT INTO chuyen_nhuong_xe (BienSoXe, NguoiChuyen, NguoiNhan, TrangThai='ChoDuyet')
     activate DB #F3E8FF
+    deactivate Sys
     DB -->> Sys: Xác nhận tạo đơn chuyển nhượng thành công (MaYeuCau = 12)
     deactivate DB
+    activate Sys #E0E7FF
 else [else - Lỗi]: SĐT không tồn tại hoặc Cố tình chuyển nhượng cho chính mình
     Sys ->> Sys: Từ chối tạo đơn & Thiết lập thông báo lỗi cư dân không hợp lệ
 end
 
 Sys -->> UI: Phản hồi kết quả lập đơn (HTTP 200 {status: 'ChoDuyet'} hoặc HTTP 400 Lỗi)
 deactivate Sys
+activate UI #FEF3C7
 UI -->> Actor: Hiển thị thông báo trạng thái đơn hoặc Báo lỗi người nhận không hợp lệ
 deactivate UI
 
@@ -292,10 +339,13 @@ Actor ->> UI: Chọn biển số xe cần xem lịch sử & Khoảng thời gian
 activate UI #FEF3C7
 UI ->> Sys: GET /api/resident/history?plate=30H-999.88
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: SELECT * FROM parking_sessions WHERE plate_text = %s ORDER BY check_in_time DESC
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về danh sách các phiên gửi xe tương ứng
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra tập dữ liệu lịch sử xe vào/ra trong CSDL] - Hợp lệ: Có dữ liệu lịch sử vào/ra trong hệ thống
@@ -306,6 +356,7 @@ end
 
 Sys -->> UI: Phản hồi JSON dữ liệu lịch sử xe vào/ra
 deactivate Sys
+activate UI #FEF3C7
 UI ->> Actor: Render bảng lịch sử trực quan kèm nút xem chi tiết ảnh chụp camera
 deactivate UI
 
@@ -330,20 +381,26 @@ Actor ->> UI: Xe tiến vào làn cổng, Camera gửi luồng video frames tớ
 activate UI #FEF3C7
 UI ->> Sys: Stream khung hình video trực tiếp tới backend AI xử lý
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> Sys: YOLOv8 cắt vùng biển số -> CRNN nhận dạng ký tự (VD: '51G-123.45')
 Sys ->> DB: Tra cứu phiên đỗ: SELECT id FROM parking_sessions WHERE plate_text = %s AND status = 'Parked'
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về kết quả kiểm tra phiên đỗ hiện tại của xe
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra độ chính xác biển số AI & Phiên xe vào hiện tại] - Hợp lệ: Không có phiên trùng lặp & Biển số nhận diện rõ ràng (Xe vào hợp lệ)
     Sys ->> DB: INSERT INTO parking_sessions (plate_text, check_in_time=NOW(), status='Parked', gate_in='Cổng Vào')
     activate DB #F3E8FF
+    deactivate Sys
     Sys ->> DB: Lưu bản ghi ảnh chụp vào detections & lich_su_ra_vao
     activate DB #F3E8FF
+    deactivate Sys
     DB -->> Sys: Xác nhận tạo phiên gửi xe mới thành công
     deactivate DB
+    activate Sys #E0E7FF
     Sys ->> Sys: Kích hoạt tín hiệu điều khiển mở Barrier cổng vào (barrier_state = 'OPEN')
 else [else - Lỗi]: Xe đang có phiên mở chưa checkout hoặc Biển số mờ không nhận diện được
     Sys ->> Sys: Giữ nguyên Barrier đóng & Bật cờ cảnh báo an ninh cần kiểm tra thủ công
@@ -351,6 +408,7 @@ end
 
 Sys ->> UI: Đẩy sự kiện WebSocket Live Event: Thông báo xe vào hoặc Cảnh báo biển số trùng
 deactivate Sys
+activate UI #FEF3C7
 UI ->> Actor: Cần Barrier mở (hoặc hiển thị thông báo yêu cầu Bảo vệ nhập biển số thủ công)
 deactivate UI
 
@@ -370,12 +428,16 @@ Actor ->> UI: Xe ra đến cổng, Camera đọc biển số hoặc Bảo vệ c
 activate UI #FEF3C7
 UI ->> Sys: GET /api/guard/verification/51G-123.45
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: Truy vấn phiên đỗ: SELECT * FROM parking_sessions WHERE plate_text = %s AND status = 'Parked'
 activate DB #F3E8FF
+deactivate Sys
 Sys ->> DB: Truy vấn phân loại xe: SELECT group_type, monthly_ticket_expiry FROM vehicles WHERE plate_text = %s
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về dữ liệu phiên vào, ảnh snapshot vào, nhóm đối tượng, hạn vé tháng
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra thời hạn vé tháng & Cảnh báo an ninh Blacklist] - Hợp lệ: Trường hợp 1: Xe Cư dân vé tháng còn hiệu lực (monthly_ticket_expiry >= NOW)
@@ -386,6 +448,7 @@ end
 
 Sys -->> UI: Phản hồi thông tin đối chiếu (Khớp vé tháng hoặc Cảnh báo an ninh Blacklist)
 deactivate Sys
+activate UI #FEF3C7
 UI -->> Actor: Hiển thị badge xanh 'VÉ THÁNG HỢP LỆ' hoặc Khóa barrier và nhấp nháy còi báo động đỏ
 deactivate UI
 
@@ -405,15 +468,19 @@ Actor ->> UI: Khách thanh toán tiền mặt/quét mã VietQR, Bảo vệ bấm
 activate UI #FEF3C7
 UI ->> Sys: POST /api/guard/collect_fee (session_id: 105, amount: 20000, method: 'Cash')
 activate Sys #E0E7FF
+deactivate UI
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra trạng thái xác nhận thu phí & Kích hoạt Barrier] - Hợp lệ: Xác nhận thu phí thành công (Tiền mặt hoặc Chuyển khoản QR)
     Sys ->> DB: UPDATE parking_sessions SET status = 'Completed', check_out_time = NOW(), fee = 20000
     activate DB #F3E8FF
+    deactivate Sys
     Sys ->> DB: INSERT INTO hoa_don (MaPhien, SoTien, HinhThucThanhToan, NgayLap)
     activate DB #F3E8FF
+    deactivate Sys
     DB -->> Sys: Xác nhận ghi nhận doanh thu và kết thúc phiên gửi xe
     deactivate DB
+    activate Sys #E0E7FF
     Sys ->> Sys: Gửi lệnh điều khiển phần cứng mở cần Barrier cổng ra (Barrier_Out = 'OPEN')
 else [else - Lỗi]: Chưa nhận được thanh toán hoặc Có tranh chấp cước phí
     Sys ->> Sys: Giữ nguyên trạng thái Barrier đóng & Bật cảnh báo giao dịch chưa hoàn tất
@@ -421,6 +488,7 @@ end
 
 Sys -->> UI: Phản hồi kết quả thanh toán & Trạng thái Barrier (OPEN hoặc LOCKED)
 deactivate Sys
+activate UI #FEF3C7
 UI ->> Actor: In hóa đơn/phiếu xuất bãi, nâng cần Barrier cho xe ra hoặc Báo chờ thanh toán
 deactivate UI
 
@@ -445,25 +513,32 @@ Actor ->> UI: Chọn tài khoản cần chỉnh sửa, cập nhật quyền hạ
 activate UI #FEF3C7
 UI ->> Sys: POST /api/admin/users/update (user_id: 5, role: 'Operator', status: 'active')
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: Tra cứu quyền hạn tài khoản mục tiêu: SELECT role FROM app_users WHERE id = %s
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về thông tin vai trò hiện tại của tài khoản
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra thẩm quyền chỉnh sửa & Ràng buộc tài khoản Super Admin] - Hợp lệ: Thao tác hợp lệ (Không tự khóa tài khoản Root Super Admin)
     Sys ->> DB: UPDATE app_users SET role = %s, status = %s WHERE id = %s
     activate DB #F3E8FF
+    deactivate Sys
     Sys ->> DB: Đồng bộ cập nhật bảng cu_dan / nhan_vien tương ứng
     activate DB #F3E8FF
+    deactivate Sys
     DB -->> Sys: Xác nhận cập nhật thông tin thành công (Affected rows = 1)
     deactivate DB
+    activate Sys #E0E7FF
 else [else - Lỗi]: Thao tác không hợp lệ (Cố tình vô hiệu hóa tài khoản Quản trị cao nhất)
     Sys ->> Sys: Từ chối cập nhật & Thiết lập mã cấm thao tác (Forbidden status = 403)
 end
 
 Sys -->> UI: Phản hồi kết quả cập nhật (HTTP 200 Thành công hoặc HTTP 403 Từ chối)
 deactivate Sys
+activate UI #FEF3C7
 UI -->> Actor: Hiển thị thông báo thành công / Cập nhật lại danh sách hoặc Bật cảnh báo lỗi đỏ
 deactivate UI
 
@@ -483,28 +558,37 @@ Actor ->> UI: Xem chi tiết đơn chuyển nhượng đang chờ duyệt & Bấ
 activate UI #FEF3C7
 UI ->> Sys: POST /api/admin/transfer_requests/12/action (action: 'approve' / 'reject')
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: Lấy thông tin đơn: SELECT * FROM chuyen_nhuong_xe WHERE MaYeuCau = 12
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về thông tin: Biển số xe, Cư dân chuyển, Cư dân nhận
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra quyết định của Admin & Xử lý Transaction CSDL] - Hợp lệ: Admin bấm 'Phê Duyệt' (action == 'approve')
     Sys ->> DB: TRANSACTION: UPDATE phuong_tien & vehicles SET MaCuDan = NguoiNhan WHERE BienSoXe = %s
     activate DB #F3E8FF
+    deactivate Sys
     Sys ->> DB: UPDATE chuyen_nhuong_xe SET TrangThai = 'DaDuyet', NgayDuyet = NOW()
     activate DB #F3E8FF
+    deactivate Sys
     DB ->> Sys: Commit transaction chuyển nhượng thành công
     deactivate DB
+    activate Sys #E0E7FF
 else [else - Lỗi]: Admin bấm 'Từ Chối' (action == 'reject')
     Sys ->> DB: UPDATE chuyen_nhuong_xe SET TrangThai = 'TuChoi', LyDo = 'Thông tin không chính xác'
     activate DB #F3E8FF
+    deactivate Sys
     DB -->> Sys: Xác nhận cập nhật trạng thái từ chối đơn
     deactivate DB
+    activate Sys #E0E7FF
 end
 
 Sys -->> UI: Phản hồi thông báo kết quả phê duyệt / từ chối
 deactivate Sys
+activate UI #FEF3C7
 UI ->> Actor: Đổi huy hiệu đơn (Màu xanh 'ĐÃ DUYỆT' hoặc Màu đỏ 'ĐÃ TỪ CHỐI') & Cập nhật danh mục xe
 deactivate UI
 
@@ -524,12 +608,16 @@ Actor ->> UI: Chọn khoảng thời gian xem báo cáo doanh thu & Bấm 'Xem p
 activate UI #FEF3C7
 UI ->> Sys: GET /api/analytics/revenue & GET /api/analytics/hourly
 activate Sys #E0E7FF
+deactivate UI
 Sys ->> DB: SELECT DATE(check_out_time), SUM(fee), COUNT(*) FROM parking_sessions WHERE status='Completed' GROUP BY DATE(check_out_time)
 activate DB #F3E8FF
+deactivate Sys
 Sys ->> DB: SELECT HOUR(check_in_time), COUNT(*) FROM parking_sessions GROUP BY HOUR(check_in_time)
 activate DB #F3E8FF
+deactivate Sys
 DB -->> Sys: Trả về tập dữ liệu tổng hợp doanh thu và số lượt xe theo giờ
 deactivate DB
+activate Sys #E0E7FF
 
 ' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL
 alt [Kiểm tra: Kiểm tra tập dữ liệu phát sinh & Thống kê doanh thu trong kỳ] - Hợp lệ: Có phát sinh lượt xe & Doanh thu trong kỳ báo cáo
@@ -540,6 +628,7 @@ end
 
 Sys -->> UI: Phản hồi HTTP 200 JSON dữ liệu biểu đồ phân tích
 deactivate Sys
+activate UI #FEF3C7
 UI ->> Actor: Render biểu đồ cột doanh thu & Biểu đồ đường lưu lượng giờ cao điểm (Chart.js)
 deactivate UI
 

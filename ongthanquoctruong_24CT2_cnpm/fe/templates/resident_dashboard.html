@@ -1454,6 +1454,10 @@
                 <i class="fa-solid fa-house"></i>
                 <span id="userApartment">Căn hộ: ---</span>
             </div>
+            <div class="apartment-badge" style="background: #f8fafc; border-color: #cbd5e1; color: #334155;" title="Ngày tạo tài khoản cư dân">
+                <i class="fa-regular fa-calendar-check" style="color: #2563eb;"></i>
+                <span id="navCreatedAt">Ngày tạo: ---</span>
+            </div>
             <span style="font-weight: 600; font-size: 0.875rem;" id="userFullName">Cư dân</span>
             <button class="btn btn-outline btn-sm" onclick="logout()">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất
@@ -1462,6 +1466,33 @@
     </header>
 
     <div class="container">
+
+        <!-- Banner Chào Mừng & Thông Tin Tài Khoản Cư Dân -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem 1.75rem; background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%); border-left: 4px solid #2563eb; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.04);">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                    <h1 style="font-size: 1.35rem; font-weight: 700; color: #0f172a;">
+                        Xin chào, <span id="welcomeFullName">Cư dân</span>
+                    </h1>
+                    <span style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 9999px; background: #dcfce7; color: #15803d; font-size: 0.75rem; font-weight: 600;">
+                        <i class="fa-solid fa-circle-check"></i> Cư Dân Chính Thức
+                    </span>
+                </div>
+                <p style="color: #64748b; font-size: 0.875rem;">
+                    Hệ thống nhận diện biển số xe AI & Quản lý bãi đỗ thông minh
+                </p>
+            </div>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                <div style="background: white; border: 1px solid var(--border); padding: 0.5rem 0.95rem; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                    <i class="fa-solid fa-building" style="color: #2563eb;"></i>
+                    <span>Căn hộ: <strong id="welcomeApartment" style="color: #0f172a;">---</strong></span>
+                </div>
+                <div style="background: white; border: 1px solid var(--border); padding: 0.5rem 0.95rem; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                    <i class="fa-regular fa-calendar-check" style="color: #10b981;"></i>
+                    <span>Ngày tạo tài khoản: <strong id="welcomeCreatedAt" style="color: #0f172a;">---</strong></span>
+                </div>
+            </div>
+        </div>
 
         <!-- Top Metrics Cards -->
         <div class="stats-grid">
@@ -1495,6 +1526,17 @@
                     <i class="fa-solid fa-triangle-exclamation" style="color: var(--warning);"></i>
                 </div>
                 <div class="stat-card-value" id="statWarningTickets" style="color: var(--warning);">0</div>
+            </div>
+
+            <div class="card" style="border-top: 3px solid #2563eb;">
+                <div class="stat-card-header">
+                    <span>Ngày tạo tài khoản</span>
+                    <i class="fa-regular fa-calendar-days" style="color: #2563eb;"></i>
+                </div>
+                <div class="stat-card-value" id="statCreatedAt" style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-top: 0.2rem;">---</div>
+                <div class="stat-card-sub" style="font-size: 0.75rem; color: #10b981; margin-top: 0.35rem; display: flex; align-items: center; gap: 0.3rem;">
+                    <i class="fa-solid fa-shield-halved"></i> Đã kích hoạt & xác thực
+                </div>
             </div>
         </div>
 
@@ -1661,8 +1703,8 @@
                         <p id="profEmail">---</p>
                     </div>
                     <div class="profile-card-item">
-                        <label>Ngày Đăng Ký Hệ Thống</label>
-                        <p id="profCreatedAt">---</p>
+                        <label><i class="fa-regular fa-calendar-check" style="color: #2563eb; margin-right: 4px;"></i> Ngày Tạo Tài Khoản</label>
+                        <p id="profCreatedAt" style="font-weight: 600; color: #0f172a;">---</p>
                     </div>
                 </div>
 
@@ -1709,6 +1751,14 @@
                             <label class="form-label" for="settingEmail">Địa chỉ Email</label>
                             <input class="form-input" id="settingEmail" name="email" type="email"
                                 placeholder="email@domain.com">
+                        </div>
+
+                        <div class="form-item">
+                            <label class="form-label" for="settingCreatedAt" style="display: flex; align-items: center; gap: 0.35rem;">
+                                <i class="fa-regular fa-calendar-check" style="color: #2563eb;"></i> Ngày tạo tài khoản
+                            </label>
+                            <input class="form-input" id="settingCreatedAt" disabled readonly
+                                style="background: var(--muted); color: #0f172a; cursor: not-allowed; font-weight: 600;" value="---">
                         </div>
 
                         <div class="alert-box" id="profileAlert"></div>
@@ -2105,20 +2155,42 @@
                 const data = await res.json();
                 currentProfile = data;
 
+                const createdStr = data.created_at || data.created_date || '---';
+                const createdDateOnly = data.created_date || createdStr;
+
                 document.getElementById('userApartment').textContent = 'Căn hộ: ' + (data.apartment || 'A-1205');
                 document.getElementById('userFullName').textContent = data.full_name || data.username;
+                if (document.getElementById('navCreatedAt')) {
+                    document.getElementById('navCreatedAt').textContent = 'Ngày tạo: ' + createdDateOnly;
+                }
+
+                if (document.getElementById('welcomeFullName')) {
+                    document.getElementById('welcomeFullName').textContent = data.full_name || data.username;
+                }
+                if (document.getElementById('welcomeApartment')) {
+                    document.getElementById('welcomeApartment').textContent = data.apartment || 'Chưa gán';
+                }
+                if (document.getElementById('welcomeCreatedAt')) {
+                    document.getElementById('welcomeCreatedAt').textContent = createdStr;
+                }
+                if (document.getElementById('statCreatedAt')) {
+                    document.getElementById('statCreatedAt').textContent = createdStr;
+                }
 
                 document.getElementById('profApartment').textContent = data.apartment || 'Chưa gán';
                 document.getElementById('profFullName').textContent = data.full_name || data.username;
                 document.getElementById('profCitizenId').textContent = data.citizen_id || '---';
                 document.getElementById('profPhone').textContent = data.phone || '0901234567';
                 document.getElementById('profEmail').textContent = data.email || '---';
-                document.getElementById('profCreatedAt').textContent = data.created_at || '---';
+                document.getElementById('profCreatedAt').textContent = createdStr;
 
                 // Điền sẵn vào form Settings
                 document.getElementById('settingFullName').value = data.full_name || '';
                 document.getElementById('settingPhone').value = data.phone || '';
                 document.getElementById('settingEmail').value = data.email || '';
+                if (document.getElementById('settingCreatedAt')) {
+                    document.getElementById('settingCreatedAt').value = createdStr;
+                }
             } catch (err) {
                 console.error("Lỗi tải hồ sơ:", err);
             }

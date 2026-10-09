@@ -23,8 +23,14 @@
         <mxCell id="uc01_resident_register_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: register()&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: register_resident_user()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="905" as="geometry" />
         </mxCell>
-        <mxCell id="uc01_resident_register_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;app_users, cu_dan&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="905" as="geometry" />
+        <mxCell id="uc01_resident_register_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;app_users, cu_dan&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc01_resident_register_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="965" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc01_resident_register_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="448" width="520" height="338" as="geometry" />
@@ -38,14 +44,32 @@
             <mxPoint x="1250" y="674" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc01_resident_register_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="651" as="geometry" />
+        <mxCell id="uc01_resident_register_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc01_resident_register_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="651" as="geometry" />
+        <mxCell id="uc01_resident_register_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc01_resident_register_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="547" as="geometry" />
+        <mxCell id="uc01_resident_register_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="817" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc01_resident_register_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc01_resident_register_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="382" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc01_resident_register_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="499" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc01_resident_register_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="603" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc01_resident_register_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="710" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc01_resident_register_act_sys_6" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="817" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc01_resident_register_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="60" as="geometry" />
@@ -118,7 +142,7 @@
         <mxCell id="uc01_resident_register_msg_post_2" parent="1" value="9. Hiển thị kết quả lên giao diện (Chuyển sang trang Đăng nhập hoặc Toast cảnh báo đỏ)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="873" as="sourcePoint" />
-            <mxPoint x="96" y="873" as="targetPoint" />
+            <mxPoint x="90" y="873" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -147,8 +171,14 @@
         <mxCell id="uc02_resident_login_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: login()&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: check_user_credentials()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="905" as="geometry" />
         </mxCell>
-        <mxCell id="uc02_resident_login_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;app_users, cu_dan&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="905" as="geometry" />
+        <mxCell id="uc02_resident_login_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;app_users, cu_dan&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02_resident_login_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="965" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc02_resident_login_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="448" width="520" height="338" as="geometry" />
@@ -162,14 +192,32 @@
             <mxPoint x="1250" y="674" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc02_resident_login_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="651" as="geometry" />
+        <mxCell id="uc02_resident_login_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc02_resident_login_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="651" as="geometry" />
+        <mxCell id="uc02_resident_login_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc02_resident_login_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="547" as="geometry" />
+        <mxCell id="uc02_resident_login_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="817" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02_resident_login_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02_resident_login_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="382" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02_resident_login_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="499" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02_resident_login_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="603" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02_resident_login_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="710" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02_resident_login_act_sys_6" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="817" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc02_resident_login_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="60" as="geometry" />
@@ -242,7 +290,7 @@
         <mxCell id="uc02_resident_login_msg_post_2" parent="1" value="9. Điều hướng vào Resident Dashboard hoặc Hiển thị cảnh báo đăng nhập thất bại" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="873" as="sourcePoint" />
-            <mxPoint x="96" y="873" as="targetPoint" />
+            <mxPoint x="90" y="873" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -271,8 +319,14 @@
         <mxCell id="uc02b_forgot_password_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: api_forgot_password(), api_reset_password()&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: generate_otp(), verify_and_reset_password()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="957" as="geometry" />
         </mxCell>
-        <mxCell id="uc02b_forgot_password_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;app_users, password_reset_tokens&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="957" as="geometry" />
+        <mxCell id="uc02b_forgot_password_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;app_users, password_reset_tokens&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02b_forgot_password_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="1017" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc02b_forgot_password_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="448" width="520" height="390" as="geometry" />
@@ -286,14 +340,32 @@
             <mxPoint x="1250" y="726" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc02b_forgot_password_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="703" as="geometry" />
+        <mxCell id="uc02b_forgot_password_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc02b_forgot_password_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="703" as="geometry" />
+        <mxCell id="uc02b_forgot_password_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc02b_forgot_password_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="599" as="geometry" />
+        <mxCell id="uc02b_forgot_password_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="869" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02b_forgot_password_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02b_forgot_password_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="382" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02b_forgot_password_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="499" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02b_forgot_password_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="603" width="12" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02b_forgot_password_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="762" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02b_forgot_password_act_sys_6" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="869" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc02b_forgot_password_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="60" as="geometry" />
@@ -376,7 +448,7 @@
         <mxCell id="uc02b_forgot_password_msg_post_2" parent="1" value="10. Chuyển sang trang reset_password.html hoặc Báo lỗi đỏ yêu cầu kiểm tra lại email" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="925" as="sourcePoint" />
-            <mxPoint x="96" y="925" as="targetPoint" />
+            <mxPoint x="90" y="925" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -405,8 +477,14 @@
         <mxCell id="uc03_resident_register_vehicle_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: POST /api/resident/register_vehicle&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: register_vehicle_with_slot()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="905" as="geometry" />
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;bai_do, vehicles, phuong_tien&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="905" as="geometry" />
+        <mxCell id="uc03_resident_register_vehicle_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;bai_do, vehicles, phuong_tien&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc03_resident_register_vehicle_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="965" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc03_resident_register_vehicle_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="448" width="520" height="338" as="geometry" />
@@ -420,14 +498,32 @@
             <mxPoint x="1250" y="674" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="651" as="geometry" />
+        <mxCell id="uc03_resident_register_vehicle_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="651" as="geometry" />
+        <mxCell id="uc03_resident_register_vehicle_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc03_resident_register_vehicle_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="547" as="geometry" />
+        <mxCell id="uc03_resident_register_vehicle_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="817" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc03_resident_register_vehicle_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc03_resident_register_vehicle_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="382" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc03_resident_register_vehicle_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="499" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc03_resident_register_vehicle_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="603" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc03_resident_register_vehicle_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="710" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc03_resident_register_vehicle_act_sys_6" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="817" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc03_resident_register_vehicle_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="60" as="geometry" />
@@ -496,7 +592,7 @@
         <mxCell id="uc03_resident_register_vehicle_msg_post_2" parent="1" value="9. Đổi màu ô ghế Cinema sang Cyan (Xe của bạn) hoặc Tô đỏ báo người dùng chọn lại" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="873" as="sourcePoint" />
-            <mxPoint x="96" y="873" as="targetPoint" />
+            <mxPoint x="90" y="873" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -525,8 +621,14 @@
         <mxCell id="uc04_resident_change_slot_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: POST /api/parking/change_slot&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: change_vehicle_parking_slot()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="1009" as="geometry" />
         </mxCell>
-        <mxCell id="uc04_resident_change_slot_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;bai_do, vehicles, phuong_tien&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="1009" as="geometry" />
+        <mxCell id="uc04_resident_change_slot_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;bai_do, vehicles, phuong_tien&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc04_resident_change_slot_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="1069" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc04_resident_change_slot_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="448" width="520" height="442" as="geometry" />
@@ -540,14 +642,32 @@
             <mxPoint x="1250" y="726" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc04_resident_change_slot_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="755" as="geometry" />
+        <mxCell id="uc04_resident_change_slot_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc04_resident_change_slot_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="755" as="geometry" />
+        <mxCell id="uc04_resident_change_slot_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc04_resident_change_slot_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="651" as="geometry" />
+        <mxCell id="uc04_resident_change_slot_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="921" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc04_resident_change_slot_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc04_resident_change_slot_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="382" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc04_resident_change_slot_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="499" width="12" height="116" as="geometry" />
+        </mxCell>
+        <mxCell id="uc04_resident_change_slot_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="655" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc04_resident_change_slot_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="762" width="12" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="uc04_resident_change_slot_act_sys_6" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="921" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc04_resident_change_slot_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="60" as="geometry" />
@@ -631,7 +751,7 @@
         <mxCell id="uc04_resident_change_slot_msg_post_2" parent="1" value="10. Render lại sơ đồ bãi đỗ Cinema &amp; Hiển thị thông báo kết quả cho cư dân" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="977" as="sourcePoint" />
-            <mxPoint x="96" y="977" as="targetPoint" />
+            <mxPoint x="90" y="977" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -660,8 +780,14 @@
         <mxCell id="uc05_resident_renew_pass_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: POST /api/resident/renew_ticket&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: renew_monthly_ticket()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="957" as="geometry" />
         </mxCell>
-        <mxCell id="uc05_resident_renew_pass_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;vehicles, phuong_tien, lich_su_thanh_toan&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="957" as="geometry" />
+        <mxCell id="uc05_resident_renew_pass_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;vehicles, phuong_tien, lich_su_thanh_toan&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc05_resident_renew_pass_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="1017" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc05_resident_renew_pass_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="448" width="520" height="390" as="geometry" />
@@ -675,14 +801,32 @@
             <mxPoint x="1250" y="726" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc05_resident_renew_pass_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="703" as="geometry" />
+        <mxCell id="uc05_resident_renew_pass_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc05_resident_renew_pass_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="703" as="geometry" />
+        <mxCell id="uc05_resident_renew_pass_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc05_resident_renew_pass_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="599" as="geometry" />
+        <mxCell id="uc05_resident_renew_pass_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="869" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc05_resident_renew_pass_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc05_resident_renew_pass_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="382" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc05_resident_renew_pass_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="499" width="12" height="116" as="geometry" />
+        </mxCell>
+        <mxCell id="uc05_resident_renew_pass_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="655" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc05_resident_renew_pass_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="762" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc05_resident_renew_pass_act_sys_6" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="869" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc05_resident_renew_pass_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="60" as="geometry" />
@@ -761,7 +905,7 @@
         <mxCell id="uc05_resident_renew_pass_msg_post_2" parent="1" value="10. Cập nhật nhãn hạn mới trên thẻ xe 3D và hiển thị badge 'Còn Hạn'" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="925" as="sourcePoint" />
-            <mxPoint x="96" y="925" as="targetPoint" />
+            <mxPoint x="90" y="925" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -790,8 +934,14 @@
         <mxCell id="uc06_resident_transfer_request_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: POST /api/resident/transfer_vehicle&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: create_vehicle_transfer_request()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="853" as="geometry" />
         </mxCell>
-        <mxCell id="uc06_resident_transfer_request_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;chuyen_nhuong_xe, cu_dan, vehicles&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="853" as="geometry" />
+        <mxCell id="uc06_resident_transfer_request_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;chuyen_nhuong_xe, cu_dan, vehicles&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc06_resident_transfer_request_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="913" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc06_resident_transfer_request_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="448" width="520" height="286" as="geometry" />
@@ -805,14 +955,32 @@
             <mxPoint x="1250" y="622" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc06_resident_transfer_request_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="599" as="geometry" />
+        <mxCell id="uc06_resident_transfer_request_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc06_resident_transfer_request_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="599" as="geometry" />
+        <mxCell id="uc06_resident_transfer_request_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc06_resident_transfer_request_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="495" as="geometry" />
+        <mxCell id="uc06_resident_transfer_request_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="765" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc06_resident_transfer_request_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc06_resident_transfer_request_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="382" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc06_resident_transfer_request_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="499" width="12" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="uc06_resident_transfer_request_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="551" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc06_resident_transfer_request_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="658" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc06_resident_transfer_request_act_sys_6" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="765" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc06_resident_transfer_request_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="60" as="geometry" />
@@ -875,7 +1043,7 @@
         <mxCell id="uc06_resident_transfer_request_msg_post_2" parent="1" value="8. Hiển thị thông báo trạng thái đơn hoặc Báo lỗi người nhận không hợp lệ" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="821" as="sourcePoint" />
-            <mxPoint x="96" y="821" as="targetPoint" />
+            <mxPoint x="90" y="821" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -904,8 +1072,14 @@
         <mxCell id="uc07_resident_history_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: GET /api/resident/history&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: get_resident_vehicle_history()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="801" as="geometry" />
         </mxCell>
-        <mxCell id="uc07_resident_history_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;parking_sessions, lich_su_ra_vao&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="801" as="geometry" />
+        <mxCell id="uc07_resident_history_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;parking_sessions, lich_su_ra_vao&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc07_resident_history_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="861" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc07_resident_history_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="448" width="520" height="234" as="geometry" />
@@ -919,14 +1093,29 @@
             <mxPoint x="1250" y="570" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc07_resident_history_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="547" as="geometry" />
+        <mxCell id="uc07_resident_history_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc07_resident_history_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="547" as="geometry" />
+        <mxCell id="uc07_resident_history_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc07_resident_history_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="443" as="geometry" />
+        <mxCell id="uc07_resident_history_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="713" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc07_resident_history_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc07_resident_history_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="382" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc07_resident_history_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="499" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc07_resident_history_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="606" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc07_resident_history_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="713" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc07_resident_history_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="60" as="geometry" />
@@ -984,7 +1173,7 @@
         <mxCell id="uc07_resident_history_msg_post_2" parent="1" value="7. Render bảng lịch sử trực quan kèm nút xem chi tiết ảnh chụp camera" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="769" as="sourcePoint" />
-            <mxPoint x="96" y="769" as="targetPoint" />
+            <mxPoint x="90" y="769" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -1013,8 +1202,14 @@
         <mxCell id="uc08_guard_auto_checkin_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: gen_frames() &amp; detect_plates_from_frame()&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: process_parking_transaction()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="1009" as="geometry" />
         </mxCell>
-        <mxCell id="uc08_guard_auto_checkin_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;parking_sessions, lich_su_ra_vao, detections&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="1009" as="geometry" />
+        <mxCell id="uc08_guard_auto_checkin_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;parking_sessions, lich_su_ra_vao, detections&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc08_guard_auto_checkin_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="1069" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc08_guard_auto_checkin_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="500" width="520" height="390" as="geometry" />
@@ -1028,14 +1223,32 @@
             <mxPoint x="1250" y="778" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc08_guard_auto_checkin_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="755" as="geometry" />
+        <mxCell id="uc08_guard_auto_checkin_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc08_guard_auto_checkin_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="755" as="geometry" />
+        <mxCell id="uc08_guard_auto_checkin_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc08_guard_auto_checkin_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="651" as="geometry" />
+        <mxCell id="uc08_guard_auto_checkin_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="921" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc08_guard_auto_checkin_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="116" as="geometry" />
+        </mxCell>
+        <mxCell id="uc08_guard_auto_checkin_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="434" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc08_guard_auto_checkin_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="551" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc08_guard_auto_checkin_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="655" width="12" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="uc08_guard_auto_checkin_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="814" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc08_guard_auto_checkin_act_sys_6" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="921" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc08_guard_auto_checkin_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="382" width="12" height="60" as="geometry" />
@@ -1124,7 +1337,7 @@
         <mxCell id="uc08_guard_auto_checkin_msg_post_2" parent="1" value="11. Cần Barrier mở (hoặc hiển thị thông báo yêu cầu Bảo vệ nhập biển số thủ công)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="977" as="sourcePoint" />
-            <mxPoint x="96" y="977" as="targetPoint" />
+            <mxPoint x="90" y="977" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -1153,8 +1366,14 @@
         <mxCell id="uc09_guard_checkout_verification_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: GET /api/guard/verification/&lt;plate&gt;&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: get_guard_verification_info()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="853" as="geometry" />
         </mxCell>
-        <mxCell id="uc09_guard_checkout_verification_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;vehicles, parking_sessions, bai_do&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="853" as="geometry" />
+        <mxCell id="uc09_guard_checkout_verification_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;vehicles, parking_sessions, bai_do&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc09_guard_checkout_verification_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="913" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc09_guard_checkout_verification_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="500" width="520" height="234" as="geometry" />
@@ -1168,14 +1387,29 @@
             <mxPoint x="1250" y="622" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc09_guard_checkout_verification_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="599" as="geometry" />
+        <mxCell id="uc09_guard_checkout_verification_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc09_guard_checkout_verification_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="599" as="geometry" />
+        <mxCell id="uc09_guard_checkout_verification_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc09_guard_checkout_verification_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="495" as="geometry" />
+        <mxCell id="uc09_guard_checkout_verification_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="765" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc09_guard_checkout_verification_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="116" as="geometry" />
+        </mxCell>
+        <mxCell id="uc09_guard_checkout_verification_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="434" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc09_guard_checkout_verification_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="551" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc09_guard_checkout_verification_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="658" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc09_guard_checkout_verification_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="765" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc09_guard_checkout_verification_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="112" as="geometry" />
@@ -1239,7 +1473,7 @@
         <mxCell id="uc09_guard_checkout_verification_msg_post_2" parent="1" value="8. Hiển thị badge xanh 'VÉ THÁNG HỢP LỆ' hoặc Khóa barrier và nhấp nháy còi báo động đỏ" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="821" as="sourcePoint" />
-            <mxPoint x="96" y="821" as="targetPoint" />
+            <mxPoint x="90" y="821" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -1268,8 +1502,14 @@
         <mxCell id="uc10_guard_collect_fee_barrier_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: POST /api/guard/collect_fee&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: complete_parking_session()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="853" as="geometry" />
         </mxCell>
-        <mxCell id="uc10_guard_collect_fee_barrier_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;parking_sessions, lich_su_ra_vao, hoa_don&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="853" as="geometry" />
+        <mxCell id="uc10_guard_collect_fee_barrier_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;parking_sessions, lich_su_ra_vao, hoa_don&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc10_guard_collect_fee_barrier_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="913" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc10_guard_collect_fee_barrier_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="344" width="520" height="390" as="geometry" />
@@ -1283,14 +1523,29 @@
             <mxPoint x="1250" y="622" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc10_guard_collect_fee_barrier_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="599" as="geometry" />
+        <mxCell id="uc10_guard_collect_fee_barrier_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc10_guard_collect_fee_barrier_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="599" as="geometry" />
+        <mxCell id="uc10_guard_collect_fee_barrier_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc10_guard_collect_fee_barrier_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="495" as="geometry" />
+        <mxCell id="uc10_guard_collect_fee_barrier_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="765" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc10_guard_collect_fee_barrier_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc10_guard_collect_fee_barrier_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="395" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc10_guard_collect_fee_barrier_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="499" width="12" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="uc10_guard_collect_fee_barrier_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="658" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc10_guard_collect_fee_barrier_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="765" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc10_guard_collect_fee_barrier_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="395" width="12" height="112" as="geometry" />
@@ -1354,7 +1609,7 @@
         <mxCell id="uc10_guard_collect_fee_barrier_msg_post_2" parent="1" value="8. In hóa đơn/phiếu xuất bãi, nâng cần Barrier cho xe ra hoặc Báo chờ thanh toán" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="821" as="sourcePoint" />
-            <mxPoint x="96" y="821" as="targetPoint" />
+            <mxPoint x="90" y="821" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -1383,8 +1638,14 @@
         <mxCell id="uc11_admin_user_mgmt_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: POST /api/admin/users/update&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: admin_update_user_info()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="905" as="geometry" />
         </mxCell>
-        <mxCell id="uc11_admin_user_mgmt_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;app_users, cu_dan, nhan_vien&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="905" as="geometry" />
+        <mxCell id="uc11_admin_user_mgmt_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;app_users, cu_dan, nhan_vien&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc11_admin_user_mgmt_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="965" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc11_admin_user_mgmt_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="448" width="520" height="338" as="geometry" />
@@ -1398,14 +1659,32 @@
             <mxPoint x="1250" y="674" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc11_admin_user_mgmt_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="651" as="geometry" />
+        <mxCell id="uc11_admin_user_mgmt_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc11_admin_user_mgmt_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="651" as="geometry" />
+        <mxCell id="uc11_admin_user_mgmt_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc11_admin_user_mgmt_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="547" as="geometry" />
+        <mxCell id="uc11_admin_user_mgmt_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="817" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc11_admin_user_mgmt_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc11_admin_user_mgmt_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="382" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc11_admin_user_mgmt_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="499" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc11_admin_user_mgmt_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="603" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc11_admin_user_mgmt_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="710" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc11_admin_user_mgmt_act_sys_6" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="817" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc11_admin_user_mgmt_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="60" as="geometry" />
@@ -1474,7 +1753,7 @@
         <mxCell id="uc11_admin_user_mgmt_msg_post_2" parent="1" value="9. Hiển thị thông báo thành công / Cập nhật lại danh sách hoặc Bật cảnh báo lỗi đỏ" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#475569;strokeWidth=1.5;fontColor=#334155;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="873" as="sourcePoint" />
-            <mxPoint x="96" y="873" as="targetPoint" />
+            <mxPoint x="90" y="873" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -1503,8 +1782,14 @@
         <mxCell id="uc12_admin_approve_transfer_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: POST /api/admin/transfer_requests/&lt;id&gt;/action&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: process_transfer_request_action()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="957" as="geometry" />
         </mxCell>
-        <mxCell id="uc12_admin_approve_transfer_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;chuyen_nhuong_xe, vehicles, phuong_tien&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="957" as="geometry" />
+        <mxCell id="uc12_admin_approve_transfer_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;chuyen_nhuong_xe, vehicles, phuong_tien&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc12_admin_approve_transfer_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="1017" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc12_admin_approve_transfer_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="448" width="520" height="390" as="geometry" />
@@ -1518,14 +1803,35 @@
             <mxPoint x="1250" y="674" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc12_admin_approve_transfer_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="703" as="geometry" />
+        <mxCell id="uc12_admin_approve_transfer_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc12_admin_approve_transfer_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="703" as="geometry" />
+        <mxCell id="uc12_admin_approve_transfer_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc12_admin_approve_transfer_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="599" as="geometry" />
+        <mxCell id="uc12_admin_approve_transfer_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="869" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc12_admin_approve_transfer_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc12_admin_approve_transfer_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="382" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc12_admin_approve_transfer_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="499" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc12_admin_approve_transfer_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="603" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc12_admin_approve_transfer_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="710" width="12" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="uc12_admin_approve_transfer_act_sys_6" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="762" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc12_admin_approve_transfer_act_sys_7" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="869" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc12_admin_approve_transfer_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="60" as="geometry" />
@@ -1599,7 +1905,7 @@
         <mxCell id="uc12_admin_approve_transfer_msg_post_2" parent="1" value="9. Đổi huy hiệu đơn (Màu xanh 'ĐÃ DUYỆT' hoặc Màu đỏ 'ĐÃ TỪ CHỐI') &amp; Cập nhật danh mục xe" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="925" as="sourcePoint" />
-            <mxPoint x="96" y="925" as="targetPoint" />
+            <mxPoint x="90" y="925" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
@@ -1628,8 +1934,14 @@
         <mxCell id="uc13_admin_analytics_ll_sys" parent="1" value="&lt;b&gt;HỆ THỐNG&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[File code / Hàm]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10px; font-family: Consolas, monospace;'&gt;&lt;i&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\app.py: GET /api/analytics/revenue&lt;br/&gt;D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\&lt;br/&gt;be\database.py: get_revenue_stats()&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#E0E7FF;strokeColor=#4338CA;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
           <mxGeometry x="570" y="60" width="320" height="853" as="geometry" />
         </mxCell>
-        <mxCell id="uc13_admin_analytics_ll_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;parking_sessions, statistics&lt;/i&gt;&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=125;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;rounded=1;shadow=0;fontSize=11;align=center;" vertex="1">
-          <mxGeometry x="1120" y="60" width="260" height="853" as="geometry" />
+        <mxCell id="uc13_admin_analytics_header_db" parent="1" value="&lt;b&gt;CƠ SỞ DỮ LIỆU&lt;/b&gt;&lt;br/&gt;&lt;font color='#B91C1C'&gt;&lt;b&gt;[db / Bảng]&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;font style='font-size: 10.5px;'&gt;&lt;i&gt;HTTT_QuanLyBaiXe_AI /&lt;br/&gt;parking_sessions, statistics&lt;/i&gt;&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;" vertex="1">
+          <mxGeometry x="1120" y="60" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="uc13_admin_analytics_ll_db" parent="1" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="185" as="sourcePoint" />
+            <mxPoint x="1250" y="913" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="uc13_admin_analytics_alt_frame" parent="1" value="&lt;b&gt;alt&lt;/b&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=0;collapsible=0;width=55;height=22;dashed=1;dashPattern=8 4;strokeColor=#4338CA;fillColor=#EEF2FF;strokeWidth=1.5;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#312E81;" vertex="1">
           <mxGeometry x="730" y="500" width="520" height="234" as="geometry" />
@@ -1643,14 +1955,29 @@
             <mxPoint x="1250" y="622" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc13_admin_analytics_act_actor" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="84" y="226" width="12" height="599" as="geometry" />
+        <mxCell id="uc13_admin_analytics_act_actor_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="84" y="226" width="12" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="uc13_admin_analytics_act_ui" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="354" y="226" width="12" height="599" as="geometry" />
+        <mxCell id="uc13_admin_analytics_act_ui_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="226" width="12" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="uc13_admin_analytics_act_sys" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
-          <mxGeometry x="724" y="278" width="12" height="495" as="geometry" />
+        <mxCell id="uc13_admin_analytics_act_ui_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="354" y="765" width="12" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="uc13_admin_analytics_act_sys_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="278" width="12" height="116" as="geometry" />
+        </mxCell>
+        <mxCell id="uc13_admin_analytics_act_sys_2" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="434" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc13_admin_analytics_act_sys_3" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="551" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc13_admin_analytics_act_sys_4" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="658" width="12" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="uc13_admin_analytics_act_sys_5" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#4338CA;strokeWidth=1.5;rounded=0;" vertex="1">
+          <mxGeometry x="724" y="765" width="12" height="24" as="geometry" />
         </mxCell>
         <mxCell id="uc13_admin_analytics_act_db_1" parent="1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;topToBottom=1;fillColor=#FFFFFF;strokeColor=#7E22CE;strokeWidth=1.5;rounded=0;" vertex="1">
           <mxGeometry x="1244" y="330" width="12" height="112" as="geometry" />
@@ -1714,7 +2041,7 @@
         <mxCell id="uc13_admin_analytics_msg_post_2" parent="1" value="8. Render biểu đồ cột doanh thu &amp; Biểu đồ đường lưu lượng giờ cao điểm (Chart.js)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="354" y="821" as="sourcePoint" />
-            <mxPoint x="96" y="821" as="targetPoint" />
+            <mxPoint x="90" y="821" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>

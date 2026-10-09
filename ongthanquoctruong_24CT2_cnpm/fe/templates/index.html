@@ -1680,19 +1680,72 @@
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="tabs-header">
-                        <button class="tab-btn active" onclick="filterUserTab('all', this)">Tất cả tài khoản</button>
-                        <button class="tab-btn" onclick="filterUserTab('Resident', this)">Cư Dân</button>
-                        <button class="tab-btn" onclick="filterUserTab('Operator', this)">Bảo Vệ / Trực Cổng</button>
-                        <button class="tab-btn" onclick="filterUserTab('Admin', this)">Quản Trị Viên</button>
+                <!-- THỐNG KÊ TỔNG QUAN TÀI KHOẢN & SỐ LƯỢNG CƯ DÂN -->
+                <div class="grid-4" style="margin-bottom: 1.5rem;">
+                    <div class="card">
+                        <div class="stat-card-header">
+                            <span>Tổng Số Tài Khoản</span>
+                            <i class="fa-solid fa-users" style="color: #2563eb;"></i>
+                        </div>
+                        <div class="stat-card-value" id="statTotalUsers">0</div>
+                        <div class="stat-card-sub">Toàn bộ tài khoản trong hệ thống</div>
                     </div>
 
-                    <div class="search-bar-row">
-                        <input id="userSearchInput" class="form-input" type="text" placeholder="Tìm kiếm theo tên, tài khoản, SĐT hoặc căn hộ...">
-                        <button class="btn btn-outline" onclick="loadUsersList()">
-                            <i class="fa-solid fa-rotate"></i> Tải lại
+                    <div class="card" style="border-left: 4px solid var(--success);">
+                        <div class="stat-card-header">
+                            <span style="font-weight: 700; color: #166534;">Số Lượng Cư Dân</span>
+                            <i class="fa-solid fa-house-user" style="color: var(--success); font-size: 1.2rem;"></i>
+                        </div>
+                        <div class="stat-card-value" id="statResidentCount" style="color: var(--success);">0</div>
+                        <div class="stat-card-sub" id="statResidentSub">Tài khoản cư dân đang hoạt động</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="stat-card-header">
+                            <span>Nhân Viên Bảo Vệ</span>
+                            <i class="fa-solid fa-user-shield" style="color: var(--warning);"></i>
+                        </div>
+                        <div class="stat-card-value" id="statGuardCount" style="color: var(--warning);">0</div>
+                        <div class="stat-card-sub">Bảo vệ / Nhân viên trực cổng</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="stat-card-header">
+                            <span>Quản Trị Viên</span>
+                            <i class="fa-solid fa-user-gear" style="color: #8b5cf6;"></i>
+                        </div>
+                        <div class="stat-card-value" id="statAdminCount" style="color: #8b5cf6;">0</div>
+                        <div class="stat-card-sub">Quản trị viên (Admin)</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="tabs-header">
+                        <button class="tab-btn active" onclick="filterUserTab('all', this)">
+                            Tất cả tài khoản <span class="badge badge-neutral" id="tabCountAll" style="margin-left: 4px; font-size: 0.75rem;">0</span>
                         </button>
+                        <button class="tab-btn" onclick="filterUserTab('Resident', this)">
+                            <i class="fa-solid fa-house-user"></i> Cư Dân <span class="badge badge-success" id="tabCountResident" style="margin-left: 4px; font-size: 0.75rem;">0</span>
+                        </button>
+                        <button class="tab-btn" onclick="filterUserTab('Operator', this)">
+                            <i class="fa-solid fa-user-shield"></i> Bảo Vệ / Trực Cổng <span class="badge badge-warning" id="tabCountOperator" style="margin-left: 4px; font-size: 0.75rem;">0</span>
+                        </button>
+                        <button class="tab-btn" onclick="filterUserTab('Admin', this)">
+                            <i class="fa-solid fa-user-gear"></i> Quản Trị Viên <span class="badge badge-info" id="tabCountAdmin" style="margin-left: 4px; font-size: 0.75rem;">0</span>
+                        </button>
+                    </div>
+
+                    <div class="search-bar-row" style="display: flex; gap: 0.75rem; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 0.75rem; flex: 1; min-width: 280px;">
+                            <input id="userSearchInput" class="form-input" type="text" placeholder="Tìm kiếm theo tên, tài khoản, SĐT hoặc căn hộ..." oninput="renderUsersTable()">
+                            <button class="btn btn-outline" onclick="loadUsersList()">
+                                <i class="fa-solid fa-rotate"></i> Tải lại
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: #475569; background: #f8fafc; border: 1px solid var(--border); padding: 0.45rem 0.85rem; border-radius: 0.5rem;">
+                            <i class="fa-solid fa-house-user" style="color: var(--success);"></i>
+                            <span>Số lượng cư dân: <strong id="filterResidentCountDisplay" style="color: var(--success); font-weight: 700;">0</strong> tài khoản</span>
+                        </div>
                     </div>
 
                     <div class="table-wrap">
@@ -1703,6 +1756,7 @@
                                     <th>Họ Và Tên</th>
                                     <th>Vai Trò</th>
                                     <th>Căn Hộ / Ca Trực</th>
+                                    <th>Số Cư Dân</th>
                                     <th>Số Điện Thoại</th>
                                     <th>Trạng Thái</th>
                                     <th>Ngày Tạo</th>
@@ -1710,9 +1764,20 @@
                                 </tr>
                             </thead>
                             <tbody id="usersTableBody">
-                                <tr><td colspan="8" style="text-align:center; color: var(--muted-foreground); padding: 2rem;">Đang tải danh sách tài khoản...</td></tr>
+                                <tr><td colspan="9" style="text-align:center; color: var(--muted-foreground); padding: 2rem;">Đang tải danh sách tài khoản...</td></tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1.25rem; background: var(--muted); border-top: 1px solid var(--border); border-radius: 0 0 0.5rem 0.5rem; font-size: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <span style="color: var(--muted-foreground);">
+                            Hiển thị: <strong id="userTableShowingCount" style="color: var(--foreground);">0</strong> tài khoản
+                        </span>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <span style="color: var(--muted-foreground);">
+                                <i class="fa-solid fa-house-user" style="color: var(--success); margin-right: 4px;"></i>
+                                Tổng số lượng cư dân: <strong id="tableFooterResidentCount" style="color: var(--success); font-weight: 700;">0</strong> tài khoản
+                            </span>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -2957,10 +3022,42 @@
             try {
                 const res = await fetch('/api/admin/users');
                 const data = await res.json();
-                state.users = data;
+                state.users = Array.isArray(data) ? data : (data.users || []);
+                updateUserStats();
                 renderUsersTable();
             } catch (err) {
                 console.error("Lỗi users:", err);
+            }
+        }
+
+        function updateUserStats() {
+            const list = state.users || [];
+            const total = list.length;
+            const residents = list.filter(u => u.role === 'Resident').length;
+            const operators = list.filter(u => u.role === 'Operator').length;
+            const admins = list.filter(u => u.role === 'Admin').length;
+            const totalPeopleInApts = list
+                .filter(u => u.role === 'Resident')
+                .reduce((sum, u) => sum + (parseInt(u.resident_count_in_apartment) || 1), 0);
+
+            if (document.getElementById('statTotalUsers')) document.getElementById('statTotalUsers').textContent = total;
+            if (document.getElementById('statResidentCount')) document.getElementById('statResidentCount').textContent = residents;
+            if (document.getElementById('statResidentSub')) {
+                document.getElementById('statResidentSub').textContent = `${residents} tài khoản cư dân (${totalPeopleInApts} nhân khẩu căn hộ)`;
+            }
+            if (document.getElementById('statGuardCount')) document.getElementById('statGuardCount').textContent = operators;
+            if (document.getElementById('statAdminCount')) document.getElementById('statAdminCount').textContent = admins;
+
+            if (document.getElementById('tabCountAll')) document.getElementById('tabCountAll').textContent = total;
+            if (document.getElementById('tabCountResident')) document.getElementById('tabCountResident').textContent = residents;
+            if (document.getElementById('tabCountOperator')) document.getElementById('tabCountOperator').textContent = operators;
+            if (document.getElementById('tabCountAdmin')) document.getElementById('tabCountAdmin').textContent = admins;
+
+            if (document.getElementById('filterResidentCountDisplay')) {
+                document.getElementById('filterResidentCountDisplay').textContent = residents;
+            }
+            if (document.getElementById('tableFooterResidentCount')) {
+                document.getElementById('tableFooterResidentCount').textContent = residents;
             }
         }
 
@@ -2983,8 +3080,12 @@
                 list = list.filter(u => (u.username||'').toLowerCase().includes(search) || (u.full_name||'').toLowerCase().includes(search) || (u.phone||'').includes(search) || (u.apartment||'').toLowerCase().includes(search));
             }
 
+            if (document.getElementById('userTableShowingCount')) {
+                document.getElementById('userTableShowingCount').textContent = list.length;
+            }
+
             if (list.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: var(--muted-foreground);">Không tìm thấy tài khoản nào</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding: 2rem; color: var(--muted-foreground);">Không tìm thấy tài khoản nào</td></tr>';
                 return;
             }
 
@@ -2998,12 +3099,21 @@
 
                 let aptOrShift = u.apartment ? `Căn hộ: <strong>${u.apartment}</strong>` : (u.shift || '---');
 
+                let residentCountCol = '<span style="color: var(--muted-foreground);">---</span>';
+                if (u.role === 'Resident') {
+                    const count = u.resident_count_in_apartment || 1;
+                    residentCountCol = `<span class="badge badge-success" style="font-weight: 600;" title="Số lượng cư dân thuộc căn hộ ${u.apartment || ''}">
+                        <i class="fa-solid fa-users"></i> ${count} cư dân
+                    </span>`;
+                }
+
                 return `
                 <tr>
                     <td><strong>${u.username}</strong></td>
                     <td>${u.full_name || '---'}</td>
                     <td>${roleBadge}</td>
                     <td>${aptOrShift}</td>
+                    <td>${residentCountCol}</td>
                     <td>${u.phone || '---'}</td>
                     <td>${statusBadge}</td>
                     <td>${u.created_str || '---'}</td>

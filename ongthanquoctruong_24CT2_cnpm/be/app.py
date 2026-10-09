@@ -1618,7 +1618,12 @@ def api_resident_profile():
     conn = database.get_db_connection()
     try:
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM cu_dan WHERE TaiKhoan = %s", (username,))
+        cursor.execute("""
+            SELECT c.*, u.created_at AS user_created_at 
+            FROM cu_dan c
+            LEFT JOIN app_users u ON c.TaiKhoan = u.username
+            WHERE c.TaiKhoan = %s
+        """, (username,))
         cudan = cursor.fetchone()
         if not cudan:
             ma_cd = "CD_" + str(abs(hash(username)) % 100000)
@@ -1627,18 +1632,36 @@ def api_resident_profile():
                 VALUES (%s, %s, %s, '0901234567', %s, 'A-1205', %s, 'HoatDong')
             """, (ma_cd, user.get("full_name") or username, ma_cd, user.get("email") or f"{username}@resident.com", username))
             conn.commit()
-            cursor.execute("SELECT * FROM cu_dan WHERE TaiKhoan = %s", (username,))
+            cursor.execute("""
+                SELECT c.*, u.created_at AS user_created_at 
+                FROM cu_dan c
+                LEFT JOIN app_users u ON c.TaiKhoan = u.username
+                WHERE c.TaiKhoan = %s
+            """, (username,))
             cudan = cursor.fetchone()
-            
+
+        raw_created = (cudan.get("NgayDangKy") if cudan else None) or (cudan.get("user_created_at") if cudan else None)
+        if raw_created and hasattr(raw_created, 'strftime'):
+            created_at_fmt = raw_created.strftime("%d/%m/%Y %H:%M")
+            created_date_fmt = raw_created.strftime("%d/%m/%Y")
+        elif raw_created:
+            created_at_fmt = str(raw_created)
+            created_date_fmt = str(raw_created).split(" ")[0]
+        else:
+            today = date.today()
+            created_at_fmt = today.strftime("%d/%m/%Y")
+            created_date_fmt = today.strftime("%d/%m/%Y")
+
         return jsonify({
             "username": username,
-            "full_name": cudan.get("HoTen") or user.get("full_name") or username,
-            "email": cudan.get("Email") or user.get("email") or "",
-            "phone": cudan.get("SoDienThoai") or "0901234567",
-            "apartment": cudan.get("MaCanHo") or "A-1205",
-            "citizen_id": cudan.get("CCCD") or cudan.get("MaCuDan"),
-            "resident_id": cudan.get("MaCuDan"),
-            "created_at": str(cudan.get("NgayDangKy") or date.today())
+            "full_name": (cudan.get("HoTen") if cudan else None) or user.get("full_name") or username,
+            "email": (cudan.get("Email") if cudan else None) or user.get("email") or "",
+            "phone": (cudan.get("SoDienThoai") if cudan else None) or "0901234567",
+            "apartment": (cudan.get("MaCanHo") if cudan else None) or "A-1205",
+            "citizen_id": (cudan.get("CCCD") if cudan else None) or (cudan.get("MaCuDan") if cudan else None),
+            "resident_id": cudan.get("MaCuDan") if cudan else None,
+            "created_at": created_at_fmt,
+            "created_date": created_date_fmt
         })
     except Exception as e:
         print(f"Error fetching resident profile: {e}")

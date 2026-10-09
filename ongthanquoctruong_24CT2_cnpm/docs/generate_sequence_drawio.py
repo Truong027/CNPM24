@@ -31,6 +31,8 @@ Sơ đồ Tuần tự (Sequence Diagrams) của hệ thống Quản lý Bãi đ�
 import os
 import sys
 import xml.etree.ElementTree as ET
+import urllib.parse
+import zlib
 
 # Đảm bảo UTF-8 cho stdout trên Windows
 if sys.platform.startswith("win"):
@@ -566,6 +568,64 @@ def find_db_intervals(steps, ys):
         intervals.append((current_start, last_end))
     return intervals
 
+def find_sys_intervals(steps, ys):
+    """
+    Tìm các khoảng thời gian mà Hệ Thống (Sys) thực sự kích hoạt (Sys Activation intervals).
+    Không kéo dài 1 đường liên tục xuyên suốt (không dài một đường nữa):
+    - Kích hoạt khi nhận yêu cầu từ UI hoặc nhận kết quả/xác nhận từ DB, hoặc tự xử lý nội bộ (self-call).
+    - Tạm dừng (deactivate, chuyển sang nét đứt chờ) khi gửi truy vấn sang DB (sys -> db) và sau đó có DB phản hồi (db -> sys).
+    - Kết thúc khi gửi phản hồi về UI hoặc kết thúc xử lý của khối.
+    """
+    intervals = []
+    n = len(steps)
+    if n == 0 or len(ys) == 0:
+        return intervals
+
+    i = 0
+    while i < n:
+        src, dst, msg = steps[i]
+        curr_y = ys[i]
+
+        if dst == 'sys' or src == 'sys':
+            start_y = curr_y - 4
+            end_y = curr_y + 24
+            
+            j = i
+            while j < n:
+                s_src, s_dst, s_msg = steps[j]
+                s_y = ys[j]
+
+                if s_src == 'sys' and s_dst == 'sys':
+                    end_y = max(end_y, s_y + 28)
+                elif s_src == 'sys' and s_dst == 'db':
+                    db_returns = [k for k in range(j + 1, n) if steps[k][0] == 'db' and steps[k][1] == 'sys']
+                    if db_returns:
+                        has_more_sys_db = any(steps[k][0] == 'sys' and steps[k][1] == 'db' for k in range(j + 1, db_returns[0]))
+                        if not has_more_sys_db:
+                            end_y = s_y + 8
+                            i = j
+                            break
+                        else:
+                            end_y = max(end_y, s_y + 24)
+                    else:
+                        end_y = max(end_y, s_y + 24)
+                elif s_src == 'sys' and s_dst == 'ui':
+                    end_y = s_y + 16
+                    i = j
+                    break
+                elif s_dst == 'sys':
+                    end_y = max(end_y, s_y + 28)
+
+                j += 1
+                if j >= n:
+                    i = n - 1
+                    break
+            
+            intervals.append((start_y, end_y))
+        i += 1
+
+    return intervals
+
 def build_single_diagram_elem(parent_elem, diag):
     # Cấu hình tọa độ cột:
     # Actor: 60 -> w=60, center=90
@@ -692,8 +752,7 @@ def build_single_diagram_elem(parent_elem, diag):
 
     participants = [
         ("ui", f"<b>GIAO DIỆN</b><br/><font color='#B91C1C'><b>[File code]</b></font><br/><font style='font-size: 10px; font-family: Consolas, monospace;'><i>{formatted_ui}</i></font>", "#FEF3C7", "#D97706"),
-        ("sys", f"<b>HỆ THỐNG</b><br/><font color='#B91C1C'><b>[File code / Hàm]</b></font><br/><font style='font-size: 10px; font-family: Consolas, monospace;'><i>{formatted_sys}</i></font>", "#E0E7FF", "#4338CA"),
-        ("db", f"<b>CƠ SỞ DỮ LIỆU</b><br/><font color='#B91C1C'><b>[db / Bảng]</b></font><br/><font style='font-size: 10.5px;'><i>{formatted_db}</i></font>", "#F3E8FF", "#7E22CE")
+        ("sys", f"<b>HỆ THỐNG</b><br/><font color='#B91C1C'><b>[File code / Hàm]</b></font><br/><font style='font-size: 10px; font-family: Consolas, monospace;'><i>{formatted_sys}</i></font>", "#E0E7FF", "#4338CA")
     ]
 
     for p_key, p_label, fill_c, stroke_c in participants:
@@ -713,6 +772,33 @@ def build_single_diagram_elem(parent_elem, diag):
         })
         ll_height = lifeline_bottom_y - top_y
         ET.SubElement(ll_cell, "mxGeometry", attrib={"x": str(col_x[p_key]), "y": str(top_y), "width": str(col_w[p_key]), "height": str(ll_height), "as": "geometry"})
+
+    # 4. CỘT CƠ SỞ DỮ LIỆU: HÌNH TRỤ TRÒN (CYLINDER) + ĐƯỜNG LIFELINE DỌC
+    db_style = (
+        "shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;"
+        "fillColor=#F3E8FF;strokeColor=#7E22CE;strokeWidth=2;fontColor=#0F172A;align=center;fontSize=11;"
+    )
+    db_cell = ET.SubElement(root, "mxCell", attrib={
+        "id": f"{diag['id']}_header_db",
+        "parent": "1",
+        "value": f"<b>CƠ SỞ DỮ LIỆU</b><br/><font color='#B91C1C'><b>[db / Bảng]</b></font><br/><font style='font-size: 10.5px;'><i>{formatted_db}</i></font>",
+        "style": db_style,
+        "vertex": "1"
+    })
+    ET.SubElement(db_cell, "mxGeometry", attrib={"x": str(col_x["db"]), "y": str(top_y), "width": str(col_w["db"]), "height": str(header_h), "as": "geometry"})
+
+    # Đường Lifeline đứt nét chạy dọc từ đáy hình trụ xuống đáy biểu đồ
+    db_line_cell = ET.SubElement(root, "mxCell", attrib={
+        "id": f"{diag['id']}_ll_db",
+        "parent": "1",
+        "value": "",
+        "style": "endArrow=none;dashed=1;html=1;strokeWidth=1.5;strokeColor=#7E22CE;",
+        "edge": "1"
+    })
+    db_line_geom = ET.SubElement(db_line_cell, "mxGeometry", attrib={"relative": "1", "as": "geometry"})
+    db_bottom_y = top_y + header_h
+    ET.SubElement(db_line_geom, "mxPoint", attrib={"x": str(centers["db"]), "y": str(db_bottom_y), "as": "sourcePoint"})
+    ET.SubElement(db_line_geom, "mxPoint", attrib={"x": str(centers["db"]), "y": str(lifeline_bottom_y), "as": "targetPoint"})
 
     # ---------------------------------------------------------------------------------
     # KHUNG ALT (NẰM CHÍNH XÁC TRONG KHOẢNG TRỐNG GIỮA HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU)
@@ -801,22 +887,38 @@ def build_single_diagram_elem(parent_elem, diag):
             "x": str(bx), "y": str(by), "width": str(w), "height": str(h), "as": "geometry"
         })
 
-    # 1. Activation bar trên Tác nhân (Actor): từ tin nhắn đầu đến tin nhắn cuối
+    # 1. Activation bar trên Tác nhân (Actor):
+    # Chỉ kích hoạt ngắn trong khoảng thời gian tác nhân thao tác (Bước 1)
     actor_start_y = initial_step_ys[0] - 4
-    actor_end_y = post_step_ys[-1] + 4 if post_step_ys else (else_step_ys[-1] + 4)
-    add_activation_bar(f"{diag['id']}_act_actor", centers["actor"], actor_start_y, actor_end_y, "#FFFFFF", "#1D4ED8")
+    actor_end_y = initial_step_ys[0] + 28
+    add_activation_bar(f"{diag['id']}_act_actor_1", centers["actor"], actor_start_y, actor_end_y, "#FFFFFF", "#1D4ED8")
 
-    # 2. Activation bar trên Giao diện (UI): từ khi nhận yêu cầu đến khi hiển thị kết quả
-    ui_start_y = initial_step_ys[0] - 4
-    ui_end_y = post_step_ys[-1] + 4 if post_step_ys else (else_step_ys[-1] + 4)
-    add_activation_bar(f"{diag['id']}_act_ui", centers["ui"], ui_start_y, ui_end_y, "#FFFFFF", "#D97706")
+    # 2. Activation bars trên Giao diện (UI):
+    # - Đợt 1: Nhận thao tác người dùng (Bước 1) đến khi gửi xong request sang Hệ thống (Bước 2)
+    #   Sau đó UI chuyển sang trạng thái chờ (inactive), đường lifeline hiển thị dạng nét đứt.
+    # - Đợt 2: Nhận kết quả phản hồi từ Hệ thống (Bước 8 / post_steps[0]) và hiển thị cho người dùng (Bước 9 / post_steps[1])
+    ui_act1_start = initial_step_ys[0] - 4
+    ui_act1_end = initial_step_ys[1] + 8
+    add_activation_bar(f"{diag['id']}_act_ui_1", centers["ui"], ui_act1_start, ui_act1_end, "#FFFFFF", "#D97706")
 
-    # 3. Activation bar trên Hệ thống (Sys): từ khi nhận request (bước 2) đến khi gửi response về UI
-    sys_start_y = initial_step_ys[1] - 4 if len(initial_step_ys) > 1 else (initial_step_ys[0] - 4)
-    sys_end_y = post_step_ys[0] + 4 if post_step_ys else (else_step_ys[-1] + 4)
-    add_activation_bar(f"{diag['id']}_act_sys", centers["sys"], sys_start_y, sys_end_y, "#FFFFFF", "#4338CA")
+    if post_step_ys and len(post_step_ys) >= 2:
+        ui_act2_start = post_step_ys[0] - 4
+        ui_act2_end = post_step_ys[-1] + 8
+        add_activation_bar(f"{diag['id']}_act_ui_2", centers["ui"], ui_act2_start, ui_act2_end, "#FFFFFF", "#D97706")
 
-    # 4. Activation bars trên Cơ sở dữ liệu (DB):
+    # 3. Activation bars trên Hệ thống (Sys): Kích hoạt theo từng khoảng thời gian xử lý thực tế,
+    #    không kéo dài 1 đường liên tục (chuyển sang nét đứt khi chờ CSDL truy vấn/ghi dữ liệu,
+    #    và phân tách rõ ràng giữa các nhánh alt và bước phản hồi).
+    sys_intervals = []
+    sys_intervals.extend(find_sys_intervals(diag["initial_steps"], initial_step_ys))
+    sys_intervals.extend(find_sys_intervals(diag["alt_frame"]["happy_steps"], happy_step_ys))
+    sys_intervals.extend(find_sys_intervals(diag["alt_frame"]["else_steps"], else_step_ys))
+    sys_intervals.extend(find_sys_intervals(diag.get("post_steps", []), post_step_ys))
+
+    for idx, (sys_s, sys_e) in enumerate(sys_intervals):
+        add_activation_bar(f"{diag['id']}_act_sys_{idx+1}", centers["sys"], sys_s, sys_e, "#FFFFFF", "#4338CA")
+
+    # 4. Activation bars trên Cơ sở dữ liệu (DB): Chỉ kích hoạt trong các khoảng thời gian truy vấn / cập nhật thực tế
     db_intervals = []
     db_intervals.extend(find_db_intervals(diag["initial_steps"], initial_step_ys))
     db_intervals.extend(find_db_intervals(diag["alt_frame"]["happy_steps"], happy_step_ys))
@@ -831,19 +933,39 @@ def build_single_diagram_elem(parent_elem, diag):
     # ---------------------------------------------------------------------------------
     w_half = bar_width // 2
 
-    def get_arrow_endpoints(src_k, dst_k):
+    def get_arrow_endpoints(src_k, dst_k, curr_y):
         c1 = centers[src_k]
         c2 = centers[dst_k]
         if src_k == dst_k:
             return c1 + w_half, c1 + w_half
+
+        # Tọa độ x nguồn
+        if src_k == "actor":
+            if curr_y <= initial_step_ys[0] + 30:
+                x1 = c1 + w_half
+            else:
+                x1 = c1
         elif c1 < c2:
-            return c1 + w_half, c2 - w_half
+            x1 = c1 + w_half
         else:
-            return c1 - w_half, c2 + w_half
+            x1 = c1 - w_half
+
+        # Tọa độ x đích
+        if dst_k == "actor":
+            if curr_y <= initial_step_ys[0] + 30:
+                x2 = c2 + w_half
+            else:
+                x2 = c2
+        elif c1 < c2:
+            x2 = c2 - w_half
+        else:
+            x2 = c2 + w_half
+
+        return x1, x2
 
     def draw_message(idx_str, src_key, dst_key, msg_text, curr_y, is_error=False):
         msg_id = f"{diag['id']}_msg_{idx_str}"
-        x1, x2 = get_arrow_endpoints(src_key, dst_key)
+        x1, x2 = get_arrow_endpoints(src_key, dst_key, curr_y)
 
         is_return = ("Trở về" in msg_text or "Trả về" in msg_text or "Phản hồi" in msg_text or "Hiển thị" in msg_text or "Xác nhận" in msg_text or "Báo lỗi" in msg_text) and (x1 > x2)
         is_self = (src_key == dst_key)
@@ -976,10 +1098,13 @@ def generate_drawio_files(out_dir):
                     f.write("activate UI #FEF3C7\n")
                 elif s_dst == "sys" and s_src == "ui":
                     f.write("activate Sys #E0E7FF\n")
+                    f.write("deactivate UI\n")
                 elif s_dst == "db" and s_src == "sys":
                     f.write("activate DB #F3E8FF\n")
+                    f.write("deactivate Sys\n")
                 elif s_src == "db" and s_dst == "sys":
                     f.write("deactivate DB\n")
+                    f.write("activate Sys #E0E7FF\n")
 
             f.write(f"\n' Khung alt kiểm tra điều kiện trong khoảng trống giữa Hệ thống và CSDL\n")
             f.write(f"alt [Kiểm tra: {diag['alt_frame']['check_title']}] - Hợp lệ: {diag['alt_frame']['happy_cond']}\n")
@@ -991,8 +1116,10 @@ def generate_drawio_files(out_dir):
                 f.write(f"    {p_src} {arrow} {p_dst}: {clean_msg}\n")
                 if s_dst == "db" and s_src == "sys":
                     f.write("    activate DB #F3E8FF\n")
+                    f.write("    deactivate Sys\n")
                 elif s_src == "db" and s_dst == "sys":
                     f.write("    deactivate DB\n")
+                    f.write("    activate Sys #E0E7FF\n")
 
             f.write(f"else [else - Lỗi]: {diag['alt_frame']['else_cond']}\n")
             for s_src, s_dst, s_msg in diag["alt_frame"]["else_steps"]:
@@ -1003,8 +1130,10 @@ def generate_drawio_files(out_dir):
                 f.write(f"    {p_src} {arrow} {p_dst}: {clean_msg}\n")
                 if s_dst == "db" and s_src == "sys":
                     f.write("    activate DB #F3E8FF\n")
+                    f.write("    deactivate Sys\n")
                 elif s_src == "db" and s_dst == "sys":
                     f.write("    deactivate DB\n")
+                    f.write("    activate Sys #E0E7FF\n")
 
             f.write("end\n\n")
 
@@ -1016,15 +1145,86 @@ def generate_drawio_files(out_dir):
                 f.write(f"{p_src} {arrow} {p_dst}: {clean_msg}\n")
                 if s_src == "sys" and s_dst == "ui":
                     f.write("deactivate Sys\n")
+                    f.write("activate UI #FEF3C7\n")
                 elif s_src == "ui" and s_dst == "actor":
                     f.write("deactivate UI\n")
 
             f.write("\n@enduml\n\n")
 
+    # 4. Cập nhật và sinh file riêng cho 4 chức năng trong thư mục 'Tuần Tự'
+    tuan_tu_dir = os.path.join(out_dir, "Tuần Tự")
+    os.makedirs(tuan_tu_dir, exist_ok=True)
+    mapping_tuan_tu = {
+        "uc01_resident_register": "chức năng đăng ký người dùng",
+        "uc02_resident_login": "chức năng đăng nhập Người Dùng",
+        "uc11_admin_user_mgmt": "chức năng quản lý và phân quyền người dùng Admin",
+        "uc12_admin_approve_transfer": "chức năng phê duyệt đơn chuyển nhượng Admin"
+    }
+
+    for diag_id, base_name in mapping_tuan_tu.items():
+        diag_item = next((d for d in DIAGRAMS if d["id"] == diag_id), None)
+        if diag_item:
+            # Sinh file .drawio trong Tuần Tự
+            mxfile_tt = ET.Element("mxfile", attrib={"host": "app.diagrams.net", "agent": "Antigravity-CNPM24", "scale": "1", "border": "0"})
+            build_single_diagram_elem(mxfile_tt, diag_item)
+            t_tt = ET.ElementTree(mxfile_tt)
+            ET.indent(t_tt, space="  ", level=0)
+            tt_drawio_file = os.path.join(tuan_tu_dir, f"{base_name}.drawio")
+            t_tt.write(tt_drawio_file, encoding="utf-8", xml_declaration=True)
+
+            # Cập nhật embedded XML trong file .drawio.png tương ứng
+            tt_png_file = os.path.join(tuan_tu_dir, f"{base_name}.drawio.png")
+            with open(tt_drawio_file, "r", encoding="utf-8") as f_xml:
+                raw_xml = f_xml.read()
+            update_png_drawio_xml(tt_png_file, raw_xml)
+
     print(f"Master Draw.io file: {master_file}")
     print(f"Single Draw.io files: {drawio_sub_dir}")
     print(f"PlantUML file: {puml_file}")
+    print(f"Tuần Tự files updated: {tuan_tu_dir}")
+
+def update_png_drawio_xml(png_path, xml_str):
+    """
+    Cập nhật chunk tEXt 'mxfile' trong file PNG để file .drawio.png
+    mở trực tiếp được trong Draw.io (app.diagrams.net) với nội dung sơ đồ mới nhất.
+    """
+    if not os.path.exists(png_path):
+        return
+    try:
+        with open(png_path, "rb") as f:
+            data = f.read()
+
+        encoded_xml = urllib.parse.quote(xml_str).encode("latin1")
+        text_payload = b"mxfile\x00" + encoded_xml
+        crc = zlib.crc32(b"tEXt" + text_payload) & 0xffffffff
+        new_text_chunk = len(text_payload).to_bytes(4, "big") + b"tEXt" + text_payload + crc.to_bytes(4, "big")
+
+        new_data = bytearray(data[:8])
+        pos = 8
+        text_inserted = False
+        while pos < len(data):
+            length = int.from_bytes(data[pos:pos+4], "big")
+            chunk_type = data[pos+4:pos+8]
+            chunk_full_len = 12 + length
+            chunk_bytes = data[pos:pos+chunk_full_len]
+
+            if chunk_type == b"tEXt" and data[pos+8:pos+14] == b"mxfile":
+                new_data.extend(new_text_chunk)
+                text_inserted = True
+            elif chunk_type == b"IDAT" and not text_inserted:
+                new_data.extend(new_text_chunk)
+                text_inserted = True
+                new_data.extend(chunk_bytes)
+            else:
+                new_data.extend(chunk_bytes)
+            pos += chunk_full_len
+
+        with open(png_path, "wb") as f:
+            f.write(new_data)
+    except Exception as e:
+        print(f"Lỗi khi cập nhật metadata PNG {png_path}: {e}")
 
 if __name__ == "__main__":
     docs_dir = os.path.dirname(os.path.abspath(__file__))
     generate_drawio_files(docs_dir)
+

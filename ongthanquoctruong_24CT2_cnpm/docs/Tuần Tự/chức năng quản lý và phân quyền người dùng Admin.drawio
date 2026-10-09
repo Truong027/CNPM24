@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<mxfile host="app.diagrams.net" modified="2026-10-02T08:50:00.000Z" agent="Antigravity-CNPM24" version="21.6.8" type="device">
+<mxfile host="app.diagrams.net" agent="Antigravity-CNPM24" scale="1" border="0">
   <diagram id="uc11_admin_user_mgmt" name="[Admin] UC11 - Quản lý tài khoản người dùng &amp; Phân quyền">
     <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1550" pageHeight="1045" math="0" shadow="0">
       <root>

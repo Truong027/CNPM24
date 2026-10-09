@@ -1830,7 +1830,13 @@ def get_all_users_list():
         cursor.execute(f"""
             SELECT u.id, u.username, u.full_name, u.email, u.role, u.is_active, u.created_at,
                    c.MaCanHo AS apartment, {cd_phone} AS resident_phone,
-                   nv.CaTruc AS shift, {nv_phone} AS guard_phone, nv.VaiTro AS guard_role
+                   nv.CaTruc AS shift, {nv_phone} AS guard_phone, nv.VaiTro AS guard_role,
+                   CASE 
+                       WHEN c.MaCanHo IS NOT NULL AND c.MaCanHo NOT IN ('', 'Chưa có', '---') 
+                       THEN (SELECT COUNT(*) FROM cu_dan cd WHERE cd.MaCanHo = c.MaCanHo)
+                       WHEN u.role = 'Resident' THEN 1
+                       ELSE 0 
+                   END AS resident_count_in_apartment
             FROM app_users u
             LEFT JOIN cu_dan c ON u.username = c.TaiKhoan
             LEFT JOIN nhan_vien nv ON u.username = nv.TaiKhoan
@@ -1840,6 +1846,7 @@ def get_all_users_list():
         for u in users:
             u["phone"] = u.get("guard_phone") or u.get("resident_phone") or "Chưa có"
             u["created_str"] = u["created_at"].strftime("%d/%m/%Y %H:%M") if u.get("created_at") else "---"
+            u["resident_count_in_apartment"] = int(u.get("resident_count_in_apartment") or (1 if u.get("role") == "Resident" else 0))
         return users
     except Error as e:
         print(f"Lỗi lấy danh sách tài khoản: {e}")

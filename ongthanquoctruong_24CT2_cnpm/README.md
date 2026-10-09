@@ -7,6 +7,40 @@
 
 ---
 
+## 🏛️ Kiến Trúc Hệ Thống (System Architecture)
+
+```mermaid
+graph TD
+    subgraph Users [Các tác nhân người dùng]
+        Admin[Quản trị viên / Admin]
+        Guard[Bảo vệ / Guard]
+        Resident[Cư dân / Resident]
+    end
+
+    subgraph Frontend [Giao diện - Frontend]
+        UI[Web Interface HTML/CSS/JS]
+    end
+
+    subgraph Backend [Xử lý - Backend Flask]
+        API[RESTful API & Core Logic]
+        AI[AI Core - YOLOv8 & OCR]
+    end
+
+    subgraph Database [Cơ sở dữ liệu - MySQL]
+        DB[(MySQL Database)]
+    end
+
+    Admin -->|Quản lý hệ thống, Xem thống kê| UI
+    Guard -->|Kiểm soát xe ra/vào, Giám sát| UI
+    Resident -->|Quản lý xe, Sơ đồ bãi đỗ| UI
+
+    UI <-->|HTTP/REST| API
+    API <-->|Xử lý ảnh biển số| AI
+    API <-->|SQL Queries| DB
+```
+
+---
+
 ## 🏗️ Cấu Trúc Dự Án (Project Structure)
 
 Dự án được tái cấu trúc phân tầng rõ ràng giữa **Frontend**, **Backend**, **Kiểm thử (Tests)** và **Tài liệu (Docs)**:

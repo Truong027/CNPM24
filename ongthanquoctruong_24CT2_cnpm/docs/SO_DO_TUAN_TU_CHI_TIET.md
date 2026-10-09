@@ -17,18 +17,20 @@ Toàn bộ sơ đồ tuần tự được thiết kế tuân thủ 100% hướng
 | **1. Tác nhân (Actor)** | **Hình con người (UML Actor stick figure)**, tên ghi ở dưới | `Khách hàng / Tác nhân` | Phân theo vai trò: **Cư Dân**, **Người Dùng**, **Nhân Viên Bảo Vệ**, **Quản Trị Viên** |
 | **2. Giao diện (Boundary)** | Khối chữ nhật màu vàng (`#FEF3C7`) | **`[File code]`** | **Đường dẫn tuyệt đối đầy đủ đến file frontend**:<br/>`D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\fe\templates\...` |
 | **3. Hệ thống (Control)** | Khối chữ nhật màu tím lam (`#E0E7FF`) | **`[File code / Hàm]`** | **Đường dẫn tuyệt đối đầy đủ đến file backend & Tên hàm**:<br/>`D:\CNPM24CT2_OngThanQuocTruong\ongthanquoctruong_24CT2_cnpm\be\app.py: ...` |
-| **4. Cơ sở dữ liệu (Entity)** | Khối chữ nhật màu tím (`#F3E8FF`) | **`[db / Bảng]`** | Tên CSDL (`HTTT_QuanLyBaiXe_AI`) & Danh sách các bảng dữ liệu tác động |
+| **4. Cơ sở dữ liệu (Entity)** | **Hình trụ tròn (Cylinder shape)** màu tím (`#F3E8FF`) | **`[db / Bảng]`** | Tên CSDL (`HTTT_QuanLyBaiXe_AI`) & Danh sách các bảng dữ liệu tác động |
 
 ---
 
 ### ⚡ THANH KÍCH HOẠT (ACTIVATION BAR / EXECUTION SPECIFICATION)
 
-Toàn bộ 14 sơ đồ đã được bổ sung **Thanh kích hoạt (Activation Bar)** tiêu chuẩn:
-- **Tác nhân (Actor)**: Kích hoạt trong toàn bộ thời gian tham gia phiên tương tác (từ bước gửi yêu cầu đến khi nhận kết quả hiển thị).
-- **Giao diện (UI Boundary)**: Kích hoạt khi tiếp nhận thao tác của người dùng, duy trì trạng thái chờ trong suốt quá trình backend xử lý và kết thúc khi hiển thị kết quả.
-- **Hệ thống (Sys Control)**: Kích hoạt liên tục từ lúc nhận HTTP Request (POST/GET) từ UI, điều phối nghiệp vụ, kiểm tra rẽ nhánh trong khung `alt`, và giải phóng khi trả về HTTP Response.
+Toàn bộ 14 sơ đồ được thiết kế với **Thanh kích hoạt (Activation Bar)** chuẩn xác theo logic vòng đời thực tế:
+- **Tác nhân (Actor)**: Kích hoạt ngắn trong thời gian thực hiện thao tác nhập liệu/click nút ban đầu (Bước 1), sau đó ở trạng thái chờ; không kéo dài suốt biểu đồ vì tác nhân là con người (không chiếm CPU tiến trình máy tính).
+- **Giao diện (UI Boundary)**: Kích hoạt theo 2 đợt riêng biệt theo vòng đời ứng dụng web:
+  - *Đợt 1*: Tiếp nhận thao tác từ người dùng (Bước 1) và gửi HTTP Request sang Hệ thống (Bước 2). Sau đó chuyển sang trạng thái chờ (`inactive`), lifeline hiển thị dạng nét đứt.
+  - *Đợt 2*: Tiếp nhận HTTP Response từ Hệ thống (Bước 8) và thực thi render hiển thị kết quả/chuyển trang cho người dùng (Bước 9).
+- **Hệ thống (Sys Control)**: Kích hoạt liên tục từ lúc nhận HTTP Request (POST/GET) từ UI (Bước 2), điều phối nghiệp vụ, gọi CSDL, kiểm tra rẽ nhánh trong khung `alt`, và giải phóng khi trả về HTTP Response (Bước 8).
 - **Cơ sở dữ liệu (DB Entity)**: Kích hoạt cục bộ **chính xác vào các khoảng thời gian thực thi truy vấn/transaction** (`SELECT` kiểm tra, `INSERT`/`UPDATE` dữ liệu, `COMMIT`/`ROLLBACK`).
-- **Mũi tên thông điệp**: Gắn chính xác vào mép của thanh kích hoạt (thay vì đâm xuyên qua lifeline).
+- **Mũi tên thông điệp**: Gắn chính xác vào mép của thanh kích hoạt nguồn và đích (hoặc đường lifeline khi đối tượng đang không kích hoạt).
 
 ---
 
