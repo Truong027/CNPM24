@@ -241,6 +241,31 @@ def init_db():
         ''')
         print("✅ Bảng 'app_users' đã được tạo.")
 
+        c.execute('''
+        CREATE TABLE IF NOT EXISTS phan_quyen_admin (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            Quyen_QuanLyNguoiDung_CapTaiKhoan BOOLEAN DEFAULT TRUE,
+            Quyen_QuanLyPhuongTien_Blacklist BOOLEAN DEFAULT TRUE,
+            Quyen_QuanLySoDoBaiDo_Cinema BOOLEAN DEFAULT TRUE,
+            Quyen_PheDuyet_ChuyenNhuongXe BOOLEAN DEFAULT TRUE,
+            Quyen_XemBaoCao_ThongKeDoanhThu BOOLEAN DEFAULT TRUE,
+            Quyen_ThuNghiem_NhanDienAI BOOLEAN DEFAULT TRUE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Chi tiết chức năng của Admin'
+        ''')
+        
+        c.execute('''
+        CREATE TABLE IF NOT EXISTS phan_quyen_bao_ve (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            Quyen_GiamSatCamera_LiveStream BOOLEAN DEFAULT TRUE,
+            Quyen_KiemSoat_XeVao_XeRa BOOLEAN DEFAULT TRUE,
+            Quyen_DoiChieuAnh_NhanDienAI BOOLEAN DEFAULT TRUE,
+            Quyen_XuLyCanhBao_XeBlacklist BOOLEAN DEFAULT TRUE,
+            Quyen_TraCuuCuocPhi_ThuTien BOOLEAN DEFAULT TRUE,
+            Quyen_DieuKhien_MoDongBarrier BOOLEAN DEFAULT TRUE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Chi tiết chức năng của Bảo vệ'
+        ''')
+        print("✅ Bảng 'phan_quyen_admin' và 'phan_quyen_bao_ve' đã được tạo (phục vụ vẽ sơ đồ ERD).")
+
         try:
             c.execute("SHOW COLUMNS FROM app_users LIKE 'phone'")
             if not c.fetchone():
