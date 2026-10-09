@@ -1,0 +1,91 @@
+// ==============================================================================
+// SƠ ĐỒ THỂ HIỆN RÕ RÀNG MỐI QUAN HỆ GIỮA CÁC TÀI KHOẢN VÀ QUYỀN HẠN
+// (Dùng để vẽ trực quan trên GitDiagram)
+// ==============================================================================
+
+Table app_users {
+  id int [pk, increment]
+  username varchar [note: 'Mã nhân viên / Mã căn hộ']
+  full_name varchar
+  phone varchar [unique, note: 'Số điện thoại đăng nhập']
+  password_hash varchar
+  role varchar [note: 'Phân quyền: Admin, Guard, Resident']
+  is_active boolean
+}
+
+Table cu_dan {
+  MaCuDan varchar [pk]
+  HoTen varchar
+  CCCD varchar
+  SoDienThoai varchar
+  MaCanHo varchar
+  app_user_id int [note: 'Liên kết tới tài khoản app']
+}
+
+Table nhan_vien {
+  MaNV varchar [pk]
+  HoTen varchar
+  CaTruc varchar
+  VaiTro varchar
+  app_user_id int [note: 'Liên kết tới tài khoản app']
+}
+
+// KHỐI QUYỀN HẠN CHI TIẾT (ĐỂ VẼ LÊN SƠ ĐỒ CHO TRỰC QUAN)
+Table QUYEN_ADMIN {
+  id int [pk]
+  QuanLyNguoiDung_CapTaiKhoan boolean
+  QuanLyDanhMuc_PhuongTien boolean
+  PhanNhom_Blacklist_Whitelist boolean
+  QuanLySoDo_BaiDoCinema boolean
+  PheDuyet_ChuyenNhuongXe boolean
+  XemThongKe_DoanhThu boolean
+  ThuNghiem_NhanDienAI boolean
+  admin_user_id int
+}
+
+Table QUYEN_BAO_VE {
+  id int [pk]
+  GiamSatCamera_LiveStream boolean
+  KiemSoat_XeVao_XeRa boolean
+  DoiChieuAnh_NhanDienAI boolean
+  XuLyCanhBao_XeBlacklist boolean
+  TraCuuCuocPhi_ThuTien boolean
+  DieuKhien_MoDongBarrier boolean
+  guard_user_id int
+}
+
+Table QUYEN_CU_DAN {
+  id int [pk]
+  DangKy_GiaHanVeThang boolean
+  DangKy_XeChoCanHo boolean
+  Chon_DoiViTri_DoXe boolean
+  YeuCau_ChuyenNhuongXe boolean
+  TraCuuLichSu_VaoRa boolean
+  resident_user_id int
+}
+
+// BẢNG NGHIỆP VỤ (VÍ DỤ)
+Table phuong_tien {
+  BienSoXe varchar [pk]
+  MaCuDan varchar
+  LoaiXe varchar
+}
+
+Table lich_su_ra_vao {
+  MaGiaoDich int [pk]
+  BienSoXe varchar
+  ThoiGianVao datetime
+  ThoiGianRa datetime
+  MaNV_XacNhan int
+}
+
+// CÁC ĐƯỜNG LIÊN KẾT (FOREIGN KEYS) HIỂN THỊ RÕ RÀNG TÁC NHÂN ĐƯỢC VÀO NHỮNG CÁI NÀO
+Ref: app_users.id < cu_dan.app_user_id
+Ref: app_users.id < nhan_vien.app_user_id
+
+Ref: app_users.id - QUYEN_ADMIN.admin_user_id
+Ref: app_users.id - QUYEN_BAO_VE.guard_user_id
+Ref: app_users.id - QUYEN_CU_DAN.resident_user_id
+
+Ref: cu_dan.MaCuDan < phuong_tien.MaCuDan
+Ref: nhan_vien.MaNV < lich_su_ra_vao.MaNV_XacNhan
