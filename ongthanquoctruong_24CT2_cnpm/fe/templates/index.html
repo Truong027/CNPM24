@@ -3130,8 +3130,8 @@
                                     <i class="fa-solid ${u.is_active ? 'fa-lock' : 'fa-lock-open'}"></i>
                                 </button>
                             ` : ''}
-                            ${u.role === 'Operator' ? `
-                                <button class="btn btn-destructive btn-sm" title="Xóa bảo vệ" onclick="deleteGuard('${u.username}')">
+                            ${u.role !== 'Admin' ? `
+                                <button class="btn btn-destructive btn-sm" title="Xóa tài khoản" onclick="deleteUser('${u.username}')">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             ` : ''}
@@ -3397,10 +3397,10 @@
             }
         });
 
-        async function deleteGuard(username) {
-            if (!confirm(`Bạn có chắc chắn muốn xóa tài khoản bảo vệ '${username}'?`)) return;
+        async function deleteUser(username) {
+            if (!confirm(`Bạn có chắc chắn muốn xóa tài khoản '${username}' (bao gồm toàn bộ dữ liệu liên quan)?`)) return;
             try {
-                const res = await fetch(`/api/admin/guards/${username}`, { method: 'DELETE' });
+                const res = await fetch(`/api/admin/users/${username}`, { method: 'DELETE' });
                 const data = await res.json();
                 if (data.success) {
                     alert(data.message);
@@ -3409,7 +3409,7 @@
                     alert(data.error);
                 }
             } catch (err) {
-                alert("Lỗi xóa bảo vệ");
+                alert("Lỗi xóa tài khoản");
             }
         }
 

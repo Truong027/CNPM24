@@ -53,6 +53,10 @@ from threading import Lock, Thread
 from queue import Queue, Empty
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from roles.admin_user import is_admin, get_admin_dashboard_url
+from roles.guard_user import is_guard, get_guard_dashboard_url
+from roles.resident_user import is_resident, get_resident_dashboard_url
+
 # Pillow 10 removed Image.ANTIALIAS, but easyocr 1.7.0 still references it.
 if not hasattr(Image, "ANTIALIAS"):
     Image.ANTIALIAS = Image.Resampling.LANCZOS
@@ -1151,7 +1155,13 @@ def api_login():
         "role": user.get("role") or "User",
     }
     
-    redirect_url = "/resident-dashboard" if session["user"]["role"] == "Resident" else "/"
+    if is_resident(session["user"]):
+        redirect_url = get_resident_dashboard_url()
+    elif is_guard(session["user"]):
+        redirect_url = get_guard_dashboard_url()
+    else:
+        redirect_url = get_admin_dashboard_url()
+        
     return jsonify({"success": True, "user": session["user"], "redirect": redirect_url})
 
 
@@ -2531,6 +2541,18 @@ def api_admin_delete_guard(username):
         return jsonify({"error": "Chỉ Quản trị viên mới có quyền truy cập"}), 403
 
     success, msg = database.admin_delete_guard(username)
+    if success:
+        return jsonify({"success": True, "message": msg})
+    return jsonify({"error": msg}), 400
+
+@app.route("/api/admin/users/<username>", methods=["DELETE"])
+@login_required
+def api_admin_delete_user(username):
+    user = session.get("user")
+    if not user or user.get("role") != "Admin":
+        return jsonify({"error": "Chỉ Quản trị viên mới có quyền truy cập"}), 403
+
+    success, msg = database.admin_delete_user(username)
     if success:
         return jsonify({"success": True, "message": msg})
     return jsonify({"error": msg}), 400

@@ -2139,6 +2139,42 @@ def admin_delete_guard(username):
             cursor.close()
             conn.close()
 
+def admin_delete_user(username):
+    """Xóa tài khoản người dùng (bao gồm Cư dân, Bảo vệ). Đồng bộ xóa bảng liên kết."""
+    conn = None
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return False, "Không thể kết nối CSDL"
+        cursor = conn.cursor(dictionary=True)
+        
+        cursor.execute("SELECT role FROM app_users WHERE username = %s", (username,))
+        u = cursor.fetchone()
+        if not u:
+            return False, "Không tìm thấy tài khoản"
+            
+        if u["role"] == "Admin":
+            return False, "Không thể xóa tài khoản Quản trị viên"
+            
+        # Xóa dữ liệu liên kết tùy theo role
+        if u["role"] in ["Operator", "Security"]:
+            cursor.execute("DELETE FROM nhan_vien WHERE TaiKhoan = %s", (username,))
+        elif u["role"] == "Resident":
+            # Cập nhật các phương tiện của cư dân này thành null (hoặc không)
+            cursor.execute("UPDATE phuong_tien SET MaCuDan = NULL WHERE MaCuDan = %s", (username,))
+            cursor.execute("UPDATE vehicles SET resident_username = NULL WHERE resident_username = %s", (username,))
+            cursor.execute("DELETE FROM cu_dan WHERE TaiKhoan = %s", (username,))
+            
+        cursor.execute("DELETE FROM app_users WHERE username = %s", (username,))
+        conn.commit()
+        return True, "Đã xóa tài khoản thành công"
+    except Error as e:
+        return False, f"Lỗi CSDL: {e}"
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+
 def admin_create_resident(username, full_name, password, phone='', email='', apartment_number='', cccd='', initial_plate=''):
     """Quản trị viên tạo tài khoản cho Cư dân (khi trang đăng ký bị lỗi hoặc cấp phát tại quầy)."""
     conn = None
