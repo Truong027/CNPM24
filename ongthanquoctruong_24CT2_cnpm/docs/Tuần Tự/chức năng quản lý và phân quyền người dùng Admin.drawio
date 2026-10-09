@@ -89,7 +89,7 @@
             <mxPoint x="724" y="282" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc11_admin_user_mgmt_msg_init_3" parent="1" value="3. Tra cứu quyền hạn tài khoản mục tiêu: SELECT role FROM app_users WHERE id = %s" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
+        <mxCell id="uc11_admin_user_mgmt_msg_init_3" parent="1" value="3. Tra cứu quyền hạn tài khoản mục tiêu: SELECT role FROM app_users WHERE phone = %s" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="736" y="334" as="sourcePoint" />
             <mxPoint x="1244" y="334" as="targetPoint" />
@@ -101,7 +101,7 @@
             <mxPoint x="736" y="386" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uc11_admin_user_mgmt_msg_happy_1" parent="1" value="5a. UPDATE app_users SET role = %s, status = %s WHERE id = %s" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
+        <mxCell id="uc11_admin_user_mgmt_msg_happy_1" parent="1" value="5a. UPDATE app_users SET role = %s, status = %s WHERE phone = %s" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeColor=#1E293B;strokeWidth=1.5;fontColor=#0F172A;fontSize=10.5;" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="736" y="503" as="sourcePoint" />
             <mxPoint x="1244" y="503" as="targetPoint" />
