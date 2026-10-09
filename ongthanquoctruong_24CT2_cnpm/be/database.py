@@ -1116,8 +1116,8 @@ def get_all_vehicles():
             cursor.close()
             conn.close()
 
-def authenticate_user(username, password):
-    """Xác thực người dùng bằng password hash."""
+def authenticate_user(phone, password):
+    """Xác thực người dùng bằng password hash (sử dụng Số điện thoại)."""
     conn = None
     try:
         conn = get_db_connection()
@@ -1126,11 +1126,11 @@ def authenticate_user(username, password):
 
         cursor = conn.cursor(dictionary=True)
         cursor.execute("""
-            SELECT id, username, password_hash, full_name, email, role, is_active
+            SELECT id, username, password_hash, full_name, email, phone, role, is_active
             FROM app_users
-            WHERE username = %s
+            WHERE phone = %s
             LIMIT 1
-        """, (username,))
+        """, (phone,))
         user = cursor.fetchone()
         if not user:
             return None
@@ -1139,8 +1139,8 @@ def authenticate_user(username, password):
         if user and check_password_hash(user['password_hash'], password):
             # Đồng bộ lịch sử đăng nhập vào bảng tiếng Việt: lich_su_dang_nhap
             try:
-                # Tìm MaNV từ bảng nhan_vien bằng TaiKhoan (username)
-                cursor.execute("SELECT MaNV FROM nhan_vien WHERE TaiKhoan = %s", (username,))
+                # Tìm MaNV từ bảng nhan_vien bằng SoDienThoai
+                cursor.execute("SELECT MaNV FROM nhan_vien WHERE SoDienThoai = %s", (phone,))
                 nv = cursor.fetchone()
                 if nv:
                     cursor.execute("""
@@ -1265,10 +1265,7 @@ def register_user(username, password, full_name, email='', role='User', phone=''
 
         cursor = conn.cursor(dictionary=True)
 
-        # Kiểm tra username đã tồn tại chưa
-        cursor.execute("SELECT id FROM app_users WHERE username = %s", (username,))
-        if cursor.fetchone():
-            return None, "Tên tài khoản đã tồn tại"
+        # Đã bỏ qua kiểm tra username trùng lặp để cho phép nhiều người cùng 1 căn hộ (Tên tài khoản trùng).
 
         # Kiểm tra email đã tồn tại chưa (nếu có)
         if email:
@@ -1828,7 +1825,7 @@ def get_all_users_list():
         nv_phone = "nv.SoDienThoai" if "SoDienThoai" in nv_cols else ("nv.SDT" if "SDT" in nv_cols else "NULL")
 
         cursor.execute(f"""
-            SELECT u.id, u.username, u.full_name, u.email, u.role, u.is_active, u.created_at,
+            SELECT u.id, u.username, u.full_name, u.email, u.phone, u.role, u.is_active, u.created_at,
                    c.MaCanHo AS apartment, {cd_phone} AS resident_phone,
                    nv.CaTruc AS shift, {nv_phone} AS guard_phone, nv.VaiTro AS guard_role,
                    CASE 
@@ -1838,8 +1835,8 @@ def get_all_users_list():
                        ELSE 0 
                    END AS resident_count_in_apartment
             FROM app_users u
-            LEFT JOIN cu_dan c ON u.username = c.TaiKhoan
-            LEFT JOIN nhan_vien nv ON u.username = nv.TaiKhoan
+            LEFT JOIN cu_dan c ON u.phone = c.SoDienThoai
+            LEFT JOIN nhan_vien nv ON u.phone = nv.SoDienThoai
             ORDER BY u.created_at DESC
         """)
         users = cursor.fetchall()
@@ -1856,7 +1853,7 @@ def get_all_users_list():
             cursor.close()
             conn.close()
 
-def admin_reset_user_password(username, new_password):
+def admin_reset_user_password(phone, new_password):
     """Cấp lại / đổi mật khẩu cho người dùng từ trang Admin."""
     conn = None
     try:
@@ -1866,9 +1863,9 @@ def admin_reset_user_password(username, new_password):
         cursor = conn.cursor(dictionary=True)
         
         pw_hash = generate_password_hash(new_password)
-        cursor.execute("UPDATE app_users SET password_hash = %s WHERE username = %s", (pw_hash, username))
-        cursor.execute("UPDATE cu_dan SET MatKhau = %s WHERE TaiKhoan = %s", (pw_hash, username))
-        cursor.execute("UPDATE nhan_vien SET MatKhau = %s WHERE TaiKhoan = %s", (pw_hash, username))
+        cursor.execute("UPDATE app_users SET password_hash = %s WHERE phone = %s", (pw_hash, phone))
+        cursor.execute("UPDATE cu_dan SET MatKhau = %s WHERE SoDienThoai = %s", (pw_hash, phone))
+        cursor.execute("UPDATE nhan_vien SET MatKhau = %s WHERE SoDienThoai = %s", (pw_hash, phone))
         conn.commit()
         return True, "Cấp lại mật khẩu thành công!"
     except Error as e:
@@ -1878,7 +1875,7 @@ def admin_reset_user_password(username, new_password):
             cursor.close()
             conn.close()
 
-def admin_toggle_user_status(username):
+def admin_toggle_user_status(phone):
     """Khóa hoặc Mở khóa tài khoản."""
     conn = None
     try:
@@ -1887,7 +1884,7 @@ def admin_toggle_user_status(username):
             return False, "Không thể kết nối CSDL"
         cursor = conn.cursor(dictionary=True)
         
-        cursor.execute("SELECT is_active, role FROM app_users WHERE username = %s", (username,))
+        cursor.execute("SELECT is_active, role, username FROM app_users WHERE phone = %s", (phone,))
         u = cursor.fetchone()
         if not u:
             return False, "Tài khoản không tồn tại"
@@ -1897,9 +1894,9 @@ def admin_toggle_user_status(username):
         new_status = not bool(u["is_active"])
         new_trang_thai = "HoatDong" if new_status else "TamKhoa"
         
-        cursor.execute("UPDATE app_users SET is_active = %s WHERE username = %s", (new_status, username))
-        cursor.execute("UPDATE cu_dan SET TrangThai = %s WHERE TaiKhoan = %s", (new_trang_thai, username))
-        cursor.execute("UPDATE nhan_vien SET TrangThai = %s WHERE TaiKhoan = %s", (new_trang_thai, username))
+        cursor.execute("UPDATE app_users SET is_active = %s WHERE phone = %s", (new_status, phone))
+        cursor.execute("UPDATE cu_dan SET TrangThai = %s WHERE SoDienThoai = %s", (new_trang_thai, phone))
+        cursor.execute("UPDATE nhan_vien SET TrangThai = %s WHERE SoDienThoai = %s", (new_trang_thai, phone))
         conn.commit()
         
         msg = "Đã mở khóa tài khoản" if new_status else "Đã tạm khóa tài khoản"
@@ -1993,7 +1990,7 @@ def admin_update_guard(username, full_name, phone, email, shift):
             cursor.close()
             conn.close()
 
-def admin_update_user_info(username, full_name, phone='', email='', role='Resident', is_active=True, apartment='', shift='', new_password=''):
+def admin_update_user_info(original_phone, username, full_name, phone='', email='', role='Resident', is_active=True, apartment='', shift='', new_password=''):
     """Quản trị viên cập nhật đầy đủ thông tin tài khoản người dùng, cư dân hoặc bảo vệ."""
     conn = None
     try:
@@ -2002,10 +1999,10 @@ def admin_update_user_info(username, full_name, phone='', email='', role='Reside
             return False, "Không thể kết nối CSDL"
         cursor = conn.cursor(dictionary=True)
 
-        cursor.execute("SELECT id, username, role FROM app_users WHERE username = %s", (username,))
+        cursor.execute("SELECT id, username, role FROM app_users WHERE phone = %s", (original_phone,))
         app_user = cursor.fetchone()
         if not app_user:
-            return False, f"Không tìm thấy tài khoản '{username}'"
+            return False, f"Không tìm thấy tài khoản (SĐT: {original_phone})"
 
         # 1. Cập nhật bảng app_users
         pw_hash = generate_password_hash(new_password) if new_password and len(new_password) >= 6 else None
@@ -2013,15 +2010,15 @@ def admin_update_user_info(username, full_name, phone='', email='', role='Reside
         if pw_hash:
             cursor.execute("""
                 UPDATE app_users 
-                SET full_name = %s, email = %s, role = %s, is_active = %s, password_hash = %s, updated_at = NOW()
-                WHERE username = %s
-            """, (full_name, email or f"{username}@system.com", role, bool(is_active), pw_hash, username))
+                SET username = %s, full_name = %s, phone = %s, email = %s, role = %s, is_active = %s, password_hash = %s, updated_at = NOW()
+                WHERE phone = %s
+            """, (username, full_name, phone, email or f"{username}@system.com", role, bool(is_active), pw_hash, original_phone))
         else:
             cursor.execute("""
                 UPDATE app_users 
-                SET full_name = %s, email = %s, role = %s, is_active = %s, updated_at = NOW()
-                WHERE username = %s
-            """, (full_name, email or f"{username}@system.com", role, bool(is_active), username))
+                SET username = %s, full_name = %s, phone = %s, email = %s, role = %s, is_active = %s, updated_at = NOW()
+                WHERE phone = %s
+            """, (username, full_name, phone, email or f"{username}@system.com", role, bool(is_active), original_phone))
 
         status_vn = "HoatDong" if is_active else "TamKhoa"
 
@@ -2030,7 +2027,7 @@ def admin_update_user_info(username, full_name, phone='', email='', role='Reside
         cd_cols = [r["Field"] if isinstance(r, dict) else r[0] for r in cursor.fetchall()]
         cd_phone_col = "SoDienThoai" if "SoDienThoai" in cd_cols else ("SDT" if "SDT" in cd_cols else None)
 
-        cursor.execute("SELECT MaCuDan FROM cu_dan WHERE TaiKhoan = %s", (username,))
+        cursor.execute("SELECT MaCuDan FROM cu_dan WHERE SoDienThoai = %s", (original_phone,))
         cd_row = cursor.fetchone()
 
         if cd_row:
@@ -2038,18 +2035,18 @@ def admin_update_user_info(username, full_name, phone='', email='', role='Reside
             if cd_phone_col:
                 cursor.execute(f"""
                     UPDATE cu_dan 
-                    SET HoTen = %s, MaCanHo = %s, {cd_phone_col} = %s, Email = %s, TrangThai = %s
-                    WHERE TaiKhoan = %s
-                """, (full_name, apartment or 'Chưa có', phone or 'Chưa có', email or f"{username}@resident.com", status_vn, username))
+                    SET HoTen = %s, MaCanHo = %s, TaiKhoan = %s, {cd_phone_col} = %s, Email = %s, TrangThai = %s
+                    WHERE SoDienThoai = %s
+                """, (full_name, apartment or 'Chưa có', username, phone or 'Chưa có', email or f"{username}@resident.com", status_vn, original_phone))
             else:
                 cursor.execute("""
                     UPDATE cu_dan 
-                    SET HoTen = %s, MaCanHo = %s, Email = %s, TrangThai = %s
-                    WHERE TaiKhoan = %s
-                """, (full_name, apartment or 'Chưa có', email or f"{username}@resident.com", status_vn, username))
+                    SET HoTen = %s, MaCanHo = %s, TaiKhoan = %s, Email = %s, TrangThai = %s
+                    WHERE SoDienThoai = %s
+                """, (full_name, apartment or 'Chưa có', username, email or f"{username}@resident.com", status_vn, original_phone))
 
             if pw_hash:
-                cursor.execute("UPDATE cu_dan SET MatKhau = %s WHERE TaiKhoan = %s", (pw_hash, username))
+                cursor.execute("UPDATE cu_dan SET MatKhau = %s WHERE SoDienThoai = %s", (pw_hash, phone))
 
             # Đồng bộ tên chủ xe trong vehicles nếu đổi họ tên
             cursor.execute("""
@@ -2074,25 +2071,25 @@ def admin_update_user_info(username, full_name, phone='', email='', role='Reside
         nv_cols = [r["Field"] if isinstance(r, dict) else r[0] for r in cursor.fetchall()]
         nv_phone_col = "SoDienThoai" if "SoDienThoai" in nv_cols else ("SDT" if "SDT" in nv_cols else None)
 
-        cursor.execute("SELECT MaNV FROM nhan_vien WHERE TaiKhoan = %s", (username,))
+        cursor.execute("SELECT MaNV FROM nhan_vien WHERE SoDienThoai = %s", (original_phone,))
         nv_row = cursor.fetchone()
 
         if nv_row:
             if nv_phone_col:
                 cursor.execute(f"""
                     UPDATE nhan_vien 
-                    SET HoTen = %s, CaTruc = %s, {nv_phone_col} = %s, Email = %s, TrangThai = %s
-                    WHERE TaiKhoan = %s
-                """, (full_name, shift or 'Ca Sáng (06:00 - 14:00)', phone or 'Chưa có', email or f"{username}@security.com", status_vn, username))
+                    SET HoTen = %s, CaTruc = %s, TaiKhoan = %s, {nv_phone_col} = %s, Email = %s, TrangThai = %s
+                    WHERE SoDienThoai = %s
+                """, (full_name, shift or 'Ca Sáng (06:00 - 14:00)', username, phone or 'Chưa có', email or f"{username}@security.com", status_vn, original_phone))
             else:
                 cursor.execute("""
                     UPDATE nhan_vien 
-                    SET HoTen = %s, CaTruc = %s, Email = %s, TrangThai = %s
-                    WHERE TaiKhoan = %s
-                """, (full_name, shift or 'Ca Sáng (06:00 - 14:00)', email or f"{username}@security.com", status_vn, username))
+                    SET HoTen = %s, CaTruc = %s, TaiKhoan = %s, Email = %s, TrangThai = %s
+                    WHERE SoDienThoai = %s
+                """, (full_name, shift or 'Ca Sáng (06:00 - 14:00)', username, email or f"{username}@security.com", status_vn, original_phone))
 
             if pw_hash:
-                cursor.execute("UPDATE nhan_vien SET MatKhau = %s WHERE TaiKhoan = %s", (pw_hash, username))
+                cursor.execute("UPDATE nhan_vien SET MatKhau = %s WHERE SoDienThoai = %s", (pw_hash, phone))
         elif role == 'Operator':
             import time
             ma_nv = "NV_" + username.upper()
@@ -2139,8 +2136,8 @@ def admin_delete_guard(username):
             cursor.close()
             conn.close()
 
-def admin_delete_user(username):
-    """Xóa tài khoản người dùng (bao gồm Cư dân, Bảo vệ). Đồng bộ xóa bảng liên kết."""
+def admin_delete_user(phone):
+    """Xóa tài khoản người dùng bằng số điện thoại. Đồng bộ xóa bảng liên kết."""
     conn = None
     try:
         conn = get_db_connection()
@@ -2148,7 +2145,7 @@ def admin_delete_user(username):
             return False, "Không thể kết nối CSDL"
         cursor = conn.cursor(dictionary=True)
         
-        cursor.execute("SELECT role FROM app_users WHERE username = %s", (username,))
+        cursor.execute("SELECT role, username FROM app_users WHERE phone = %s", (phone,))
         u = cursor.fetchone()
         if not u:
             return False, "Không tìm thấy tài khoản"
@@ -2156,16 +2153,16 @@ def admin_delete_user(username):
         if u["role"] == "Admin":
             return False, "Không thể xóa tài khoản Quản trị viên"
             
-        # Xóa dữ liệu liên kết tùy theo role
+        # Xóa dữ liệu liên kết tùy theo role bằng số điện thoại
         if u["role"] in ["Operator", "Security"]:
-            cursor.execute("DELETE FROM nhan_vien WHERE TaiKhoan = %s", (username,))
+            cursor.execute("DELETE FROM nhan_vien WHERE SoDienThoai = %s", (phone,))
         elif u["role"] == "Resident":
-            # Cập nhật các phương tiện của cư dân này thành null (hoặc không)
-            cursor.execute("UPDATE phuong_tien SET MaCuDan = NULL WHERE MaCuDan = %s", (username,))
-            cursor.execute("UPDATE vehicles SET resident_username = NULL WHERE resident_username = %s", (username,))
-            cursor.execute("DELETE FROM cu_dan WHERE TaiKhoan = %s", (username,))
+            # Gỡ liên kết phương tiện (sử dụng username vì username = MaCuDan/TaiKhoan)
+            cursor.execute("UPDATE phuong_tien SET MaCuDan = NULL WHERE MaCuDan = %s", (u["username"],))
+            cursor.execute("UPDATE vehicles SET resident_username = NULL WHERE resident_username = %s", (u["username"],))
+            cursor.execute("DELETE FROM cu_dan WHERE SoDienThoai = %s", (phone,))
             
-        cursor.execute("DELETE FROM app_users WHERE username = %s", (username,))
+        cursor.execute("DELETE FROM app_users WHERE phone = %s", (phone,))
         conn.commit()
         return True, "Đã xóa tài khoản thành công"
     except Error as e:

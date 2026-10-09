@@ -1752,7 +1752,7 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Tên Đăng Nhập</th>
+                                    <th>Tên Đăng Nhập (Căn Hộ)</th>
                                     <th>Họ Và Tên</th>
                                     <th>Vai Trò</th>
                                     <th>Căn Hộ / Ca Trực</th>
@@ -2110,6 +2110,7 @@
                 <button class="btn btn-outline btn-sm" type="button" onclick="closeEditUserModal()" style="border:none;">✕</button>
             </div>
             <form id="editUserForm" style="margin-top: 1rem;">
+                <input type="hidden" id="editOriginalPhone">
                 <div class="form-grid">
                     <div class="form-item">
                         <label class="form-label">Tên đăng nhập</label>
@@ -3119,19 +3120,19 @@
                     <td>${u.created_str || '---'}</td>
                     <td>
                         <div style="display: flex; gap: 0.35rem;">
-                            <button class="btn btn-outline btn-sm" title="Chỉnh sửa thông tin" onclick="openEditUserModal('${u.username}')" style="color: #2563eb; border-color: #93c5fd;">
+                            <button class="btn btn-outline btn-sm" title="Chỉnh sửa thông tin" onclick="openEditUserModal('${u.phone}')" style="color: #2563eb; border-color: #93c5fd;">
                                 <i class="fa-solid fa-pen"></i> Sửa
                             </button>
-                            <button class="btn btn-outline btn-sm" title="Cấp lại mật khẩu" onclick="openResetPasswordModal('${u.username}')">
+                            <button class="btn btn-outline btn-sm" title="Cấp lại mật khẩu" onclick="openResetPasswordModal('${u.phone}')">
                                 <i class="fa-solid fa-key"></i> Đổi MK
                             </button>
                             ${u.role !== 'Admin' ? `
-                                <button class="btn btn-secondary btn-sm" title="Khóa/Mở khóa" onclick="toggleUserStatus('${u.username}')">
+                                <button class="btn btn-secondary btn-sm" title="Khóa/Mở khóa" onclick="toggleUserStatus('${u.phone}')">
                                     <i class="fa-solid ${u.is_active ? 'fa-lock' : 'fa-lock-open'}"></i>
                                 </button>
                             ` : ''}
                             ${u.role !== 'Admin' ? `
-                                <button class="btn btn-destructive btn-sm" title="Xóa tài khoản" onclick="deleteUser('${u.username}')">
+                                <button class="btn btn-destructive btn-sm" title="Xóa tài khoản" onclick="deleteUser('${u.phone}')">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             ` : ''}
@@ -3142,13 +3143,13 @@
             }).join('');
         }
 
-        async function toggleUserStatus(username) {
-            if (!confirm(`Bạn có chắc chắn muốn thay đổi trạng thái hoạt động của tài khoản '${username}'?`)) return;
+        async function toggleUserStatus(phone) {
+            if (!confirm(`Bạn có chắc chắn muốn thay đổi trạng thái hoạt động của tài khoản (SĐT: '${phone}')?`)) return;
             try {
                 const res = await fetch('/api/admin/users/toggle_status', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username })
+                    body: JSON.stringify({ phone })
                 });
                 const data = await res.json();
                 if (data.success) {
@@ -3162,9 +3163,9 @@
             }
         }
 
-        function openResetPasswordModal(username) {
-            document.getElementById('resetTargetUsername').value = username;
-            document.getElementById('resetTargetDisplay').value = username;
+        function openResetPasswordModal(phone) {
+            document.getElementById('resetTargetUsername').value = phone;
+            document.getElementById('resetTargetDisplay').value = phone;
             document.getElementById('resetNewPassword').value = '';
             document.getElementById('resetPasswordModal').classList.add('open');
         }
@@ -3175,14 +3176,14 @@
 
         document.getElementById('resetPasswordForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('resetTargetUsername').value;
+            const phone = document.getElementById('resetTargetUsername').value;
             const new_password = document.getElementById('resetNewPassword').value;
 
             try {
                 const res = await fetch('/api/admin/users/reset_password', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, new_password })
+                    body: JSON.stringify({ phone, new_password })
                 });
                 const data = await res.json();
                 if (data.success) {
@@ -3260,14 +3261,15 @@
 
         // ================== CHỈNH SỬA TÀI KHOẢN (EDIT USER) ==================
 
-        function openEditUserModal(username) {
+        function openEditUserModal(phone) {
             const list = state.users || [];
-            const u = list.find(item => item.username === username);
+            const u = list.find(item => item.phone === phone);
             if (!u) {
-                alert("Không tìm thấy thông tin tài khoản: " + username);
+                alert("Không tìm thấy thông tin tài khoản!");
                 return;
             }
 
+            document.getElementById('editOriginalPhone').value = u.phone || '';
             document.getElementById('editUsername').value = u.username || '';
             document.getElementById('editFullName').value = u.full_name || '';
             document.getElementById('editPhone').value = (u.phone && u.phone !== 'Chưa có' && u.phone !== '000') ? u.phone : (u.resident_phone || u.guard_phone || '');
@@ -3335,6 +3337,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
+                        original_phone: document.getElementById('editOriginalPhone').value,
                         username, full_name, phone, email, role, apartment, shift, is_active, new_password
                     })
                 });
@@ -3397,10 +3400,10 @@
             }
         });
 
-        async function deleteUser(username) {
-            if (!confirm(`Bạn có chắc chắn muốn xóa tài khoản '${username}' (bao gồm toàn bộ dữ liệu liên quan)?`)) return;
+        async function deleteUser(phone) {
+            if (!confirm(`Bạn có chắc chắn muốn xóa tài khoản (SĐT: '${phone}') (bao gồm toàn bộ dữ liệu liên quan)?`)) return;
             try {
-                const res = await fetch(`/api/admin/users/${username}`, { method: 'DELETE' });
+                const res = await fetch(`/api/admin/users/${phone}`, { method: 'DELETE' });
                 const data = await res.json();
                 if (data.success) {
                     alert(data.message);

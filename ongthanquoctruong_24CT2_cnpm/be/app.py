@@ -1140,13 +1140,13 @@ def login():
 @app.route("/api/login", methods=["POST"])
 def api_login():
     payload = request.get_json(silent=True) or {}
-    username = (payload.get("username") or "").strip()
+    phone = (payload.get("phone") or payload.get("username") or "").strip()
     password = payload.get("password") or ""
-    if not username or not password:
-        return jsonify({"error": "Thieu thong tin dang nhap"}), 400
-    user = database.authenticate_user(username, password)
+    if not phone or not password:
+        return jsonify({"error": "Thiếu số điện thoại hoặc mật khẩu"}), 400
+    user = database.authenticate_user(phone, password)
     if not user:
-        return jsonify({"error": "Sai tai khoan hoac mat khau"}), 401
+        return jsonify({"error": "Sai số điện thoại hoặc mật khẩu"}), 401
     session["user"] = {
         "id": user["id"],
         "username": user["username"],
@@ -2368,16 +2368,16 @@ def api_admin_reset_password():
         return jsonify({"error": "Chỉ Quản trị viên mới có quyền truy cập"}), 403
 
     payload = request.get_json(silent=True) or {}
-    target_username = (payload.get("username") or "").strip()
+    target_phone = (payload.get("phone") or "").strip()
     new_password = (payload.get("new_password") or "").strip()
 
-    if not target_username or not new_password:
-        return jsonify({"error": "Vui lòng nhập tên đăng nhập và mật khẩu mới"}), 400
+    if not target_phone or not new_password:
+        return jsonify({"error": "Vui lòng nhập số điện thoại và mật khẩu mới"}), 400
 
     if len(new_password) < 6:
         return jsonify({"error": "Mật khẩu mới phải có tối thiểu 6 ký tự"}), 400
 
-    success, msg = database.admin_reset_user_password(target_username, new_password)
+    success, msg = database.admin_reset_user_password(target_phone, new_password)
     if success:
         return jsonify({"success": True, "message": msg})
     return jsonify({"error": msg}), 400
@@ -2391,11 +2391,11 @@ def api_admin_toggle_user_status():
         return jsonify({"error": "Chỉ Quản trị viên mới có quyền truy cập"}), 403
 
     payload = request.get_json(silent=True) or {}
-    target_username = (payload.get("username") or "").strip()
-    if not target_username:
-        return jsonify({"error": "Thiếu tên đăng nhập"}), 400
+    target_phone = (payload.get("phone") or "").strip()
+    if not target_phone:
+        return jsonify({"error": "Thiếu số điện thoại"}), 400
 
-    success, msg = database.admin_toggle_user_status(target_username)
+    success, msg = database.admin_toggle_user_status(target_phone)
     if success:
         return jsonify({"success": True, "message": msg})
     return jsonify({"error": msg}), 400
@@ -2409,6 +2409,7 @@ def api_admin_update_user():
         return jsonify({"error": "Chỉ Quản trị viên mới có quyền cập nhật thông tin tài khoản"}), 403
 
     payload = request.get_json(silent=True) or {}
+    original_phone = (payload.get("original_phone") or "").strip()
     username = (payload.get("username") or "").strip()
     full_name = (payload.get("full_name") or "").strip()
     phone = (payload.get("phone") or "").strip()
@@ -2419,6 +2420,9 @@ def api_admin_update_user():
     shift = (payload.get("shift") or "").strip()
     new_password = (payload.get("new_password") or "").strip()
 
+    if not original_phone:
+        return jsonify({"error": "Thiếu số điện thoại gốc để cập nhật"}), 400
+
     if not username or not full_name:
         return jsonify({"error": "Vui lòng nhập tên đăng nhập và họ tên"}), 400
 
@@ -2426,6 +2430,7 @@ def api_admin_update_user():
         return jsonify({"error": "Mật khẩu mới phải có tối thiểu 6 ký tự"}), 400
 
     success, msg = database.admin_update_user_info(
+        original_phone=original_phone,
         username=username,
         full_name=full_name,
         phone=phone,
@@ -2545,14 +2550,14 @@ def api_admin_delete_guard(username):
         return jsonify({"success": True, "message": msg})
     return jsonify({"error": msg}), 400
 
-@app.route("/api/admin/users/<username>", methods=["DELETE"])
+@app.route("/api/admin/users/<phone>", methods=["DELETE"])
 @login_required
-def api_admin_delete_user(username):
+def api_admin_delete_user(phone):
     user = session.get("user")
     if not user or user.get("role") != "Admin":
         return jsonify({"error": "Chỉ Quản trị viên mới có quyền truy cập"}), 403
 
-    success, msg = database.admin_delete_user(username)
+    success, msg = database.admin_delete_user(phone)
     if success:
         return jsonify({"success": True, "message": msg})
     return jsonify({"error": msg}), 400

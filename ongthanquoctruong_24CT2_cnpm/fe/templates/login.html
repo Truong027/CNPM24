@@ -307,10 +307,10 @@
 
         <form id="loginForm">
             <div class="form-item">
-                <label class="form-label" for="username">Tên tài khoản</label>
+                <label class="form-label" for="phone">Số điện thoại đăng nhập</label>
                 <div class="input-group">
-                    <i class="fa-regular fa-user input-icon"></i>
-                    <input class="form-input" id="username" name="username" placeholder="Nhập tài khoản" required autofocus>
+                    <i class="fa-solid fa-phone input-icon"></i>
+                    <input type="tel" class="form-input" id="phone" name="phone" placeholder="Nhập số điện thoại" required autofocus>
                 </div>
             </div>
 
@@ -355,14 +355,14 @@
             document.getElementById('tabAdmin').classList.toggle('active', role === 'admin');
             document.getElementById('tabResident').classList.toggle('active', role === 'resident');
             if (role === 'admin') {
-                document.getElementById('username').placeholder = 'Tài khoản quản trị viên / bảo vệ';
+                document.getElementById('phone').placeholder = 'Số điện thoại quản trị / bảo vệ';
             } else {
-                document.getElementById('username').placeholder = 'Tài khoản cư dân căn hộ';
+                document.getElementById('phone').placeholder = 'Số điện thoại cư dân';
             }
         }
 
         function fillAccount(u, p, role) {
-            document.getElementById('username').value = u;
+            document.getElementById('phone').value = u;
             document.getElementById('password').value = p;
             setRoleTab(role);
         }
@@ -378,7 +378,7 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang đăng nhập...';
 
             const payload = {
-                username: document.getElementById('username').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
                 password: document.getElementById('password').value
             };
 
