@@ -226,7 +226,7 @@ def init_db():
         c.execute('''
         CREATE TABLE IF NOT EXISTS app_users (
             id INT PRIMARY KEY AUTO_INCREMENT,
-            username VARCHAR(50) NOT NULL UNIQUE,
+            username VARCHAR(50) NOT NULL,
             password_hash VARCHAR(255) NOT NULL,
             full_name VARCHAR(100) NOT NULL,
             email VARCHAR(100),
@@ -236,7 +236,7 @@ def init_db():
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             INDEX idx_username (username),
-            INDEX idx_phone (phone)
+            UNIQUE INDEX idx_phone (phone)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ''')
         print("✅ Bảng 'app_users' đã được tạo.")
@@ -505,9 +505,9 @@ def seed_default_users(cursor):
             if cursor.fetchone()[0] == 0:
                 pw_hash = generate_password_hash(raw_pass)
                 cursor.execute("""
-                    INSERT INTO app_users (username, password_hash, full_name, email, role, is_active)
-                    VALUES (%s, %s, %s, %s, %s, TRUE)
-                """, (username, pw_hash, full_name, email, role))
+                    INSERT INTO app_users (username, password_hash, full_name, email, phone, role, is_active)
+                    VALUES (%s, %s, %s, %s, %s, %s, TRUE)
+                """, (username, pw_hash, full_name, email, username, role))
         except Error as e:
             print(f"⚠️ app_users seed warning: {e}")
 
