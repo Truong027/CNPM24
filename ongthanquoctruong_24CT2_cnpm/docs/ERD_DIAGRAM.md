@@ -182,16 +182,23 @@ flowchart TD
         %% Thuộc tính Nhân viên
         NV_MaNV(["<u>MaNV</u>"])
         NV_HoTen(["HoTen"])
-        NV_TaiKhoan(["TaiKhoan"])
-        NV_MatKhau(["MatKhau"])
         NV_VaiTro(["VaiTro"])
         NV_TrangThai(["TrangThai"])
         NHAN_VIEN --- NV_MaNV
         NHAN_VIEN --- NV_HoTen
-        NHAN_VIEN --- NV_TaiKhoan
-        NHAN_VIEN --- NV_MatKhau
         NHAN_VIEN --- NV_VaiTro
         NHAN_VIEN --- NV_TrangThai
+
+        %% Thực thể Tài Khoản Hệ Thống
+        APP_USERS["APP_USERS (Tài Khoản App)"]
+        AU_ID(["<u>id</u>"])
+        AU_Phone(["SoDienThoai (Login)"])
+        AU_Pass(["MatKhauHash"])
+        AU_Role(["VaiTro"])
+        APP_USERS --- AU_ID
+        APP_USERS --- AU_Phone
+        APP_USERS --- AU_Pass
+        APP_USERS --- AU_Role
 
         %% Thuộc tính Phiên đăng nhập
         DN_MaPhien(["<u>MaPhien</u>"])
