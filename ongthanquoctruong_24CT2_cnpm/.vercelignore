@@ -12,5 +12,6 @@ generate_png.py
 docs
 .vscode
 app.py
+run_local.py
 requirements.txt
 schema.dbml
