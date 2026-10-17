@@ -1,26 +1,16 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "builds": [
-    {
-      "src": "api/index.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.js" },
-    { "src": "/get_plates", "dest": "/api/index.js" },
-    { "src": "/public-dashboard", "dest": "/public/public_dashboard.html" },
-    { "src": "/login", "dest": "/public/login.html" },
-    { "src": "/register", "dest": "/public/register.html" },
-    { "src": "/forgot-password", "dest": "/public/forgot_password.html" },
-    { "src": "/reset-password", "dest": "/public/reset_password.html" },
-    { "src": "/resident-dashboard", "dest": "/public/resident_dashboard.html" },
-    { "src": "/operations-dashboard", "dest": "/public/operations_dashboard.html" },
-    { "src": "/(.*)", "dest": "/public/$1" }
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/get_plates", "destination": "/api/index.js" },
+    { "source": "/public-dashboard", "destination": "/public_dashboard.html" },
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/register", "destination": "/register.html" },
+    { "source": "/forgot-password", "destination": "/forgot_password.html" },
+    { "source": "/reset-password", "destination": "/reset_password.html" },
+    { "source": "/resident-dashboard", "destination": "/resident_dashboard.html" },
+    { "source": "/operations-dashboard", "destination": "/operations_dashboard.html" },
+    { "source": "/", "destination": "/index.html" }
   ]
 }
