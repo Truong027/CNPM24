@@ -1,0 +1,107 @@
+<mxfile host="app.diagrams.net" agent="Antigravity-CNPM24">
+  <diagram id="user-mgmt-flow" name="Luồng xử lý quản lý và phân quyền người dùng Admin">
+    <mxGraphModel dx="1776" dy="909" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=22;fontColor=#1E293B;fontStyle=1;" value="&lt;b&gt;4.3 THIẾT KẾ PHẦN MỀM - CHỨC NĂNG QUẢN LÝ VÀ PHÂN QUYỀN NGƯỜI DÙNG ADMIN&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="1050" x="350" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0EA5A8;strokeColor=#0F766E;strokeWidth=2;fontSize=16;fontColor=#FFFFFF;arcSize=12;" value="&lt;b&gt;START&lt;/b&gt;" vertex="1">
+          <mxGeometry height="70" width="145" x="40" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="web" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=13;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Mở web &amp; Đăng nhập&lt;/b&gt;&lt;br/&gt;Đăng nhập Quản trị viên&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 11px&#39;&gt;http://127.0.0.1:5000&lt;br/&gt;Tài khoản role=&#39;Admin&#39;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="210" x="225" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="users-page" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=13;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Mở trang Quản lý User&lt;/b&gt;&lt;br/&gt;Tab #users-page&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 11px&#39;&gt;GET `/api/admin/users`&lt;br/&gt;Tải danh sách tài khoản hệ thống&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="220" x="475" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="select-user" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=12;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Chọn tài khoản cần sửa&lt;/b&gt;&lt;br/&gt;Bấm nút &#39;Sửa&#39; trên bảng&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 11px&#39;&gt;Mở Modal #editUserModal&lt;br/&gt;Đổ dữ liệu tài khoản lên form&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="220" x="735" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="edit-form" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=12;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Chỉnh sửa thông tin &amp; quyền&lt;/b&gt;&lt;br/&gt;Họ tên, SĐT, Email, Mật khẩu&lt;br/&gt;Vai trò: Admin / Operator / Resident&lt;br/&gt;Trạng thái: Hoạt động / Tạm khóa&lt;br/&gt;Căn hộ / Ca trực" vertex="1">
+          <mxGeometry height="110" width="220" x="735" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="input-check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=11;fontColor=#FFFFFF;" value="&lt;b&gt;Dữ liệu nhập hợp lệ?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 10px&#39;&gt;Có username &amp; họ tên&lt;br/&gt;Mật khẩu mới ≥ 6 ký tự (nếu có)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="220" x="1000" y="475" as="geometry" />
+        </mxCell>
+        <mxCell id="form-error" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=11;fontColor=#7F1D1D;arcSize=10;" value="&lt;b&gt;Dữ liệu không hợp lệ&lt;/b&gt;&lt;br/&gt;Hiển thị Alert cảnh báo lỗi&lt;br/&gt;Giữ nguyên modal để nhập lại" vertex="1">
+          <mxGeometry height="70" width="220" x="1000" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=12;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Gửi yêu cầu cập nhật&lt;/b&gt;&lt;br/&gt;POST `/api/admin/users/update`&lt;br/&gt;&lt;font color=&#39;#64748B&#39; style=&#39;font-size: 10px&#39;&gt;api_admin_update_user()&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="220" x="1265" y="495" as="geometry" />
+        </mxCell>
+        <mxCell id="role-check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=11;fontColor=#FFFFFF;" value="&lt;b&gt;Thẩm quyền Admin hợp lệ?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 10px&#39;&gt;session[&#39;user&#39;][&#39;role&#39;] == &#39;Admin&#39;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="210" x="1530" y="475" as="geometry" />
+        </mxCell>
+        <mxCell id="user-exist-check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=2;fontSize=11;fontColor=#1E293B;" value="&lt;b&gt;Tài khoản tồn tại trong DB?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#64748B&#39; style=&#39;font-size: 10px&#39;&gt;SELECT id FROM app_users&lt;br/&gt;WHERE phone = %s (original_phone)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="220" x="1785" y="475" as="geometry" />
+        </mxCell>
+        <mxCell id="db-update" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=12;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Cập nhật CSDL đa bảng&lt;/b&gt;&lt;br/&gt;UPDATE app_users (role, status, ...)&lt;br/&gt;Đồng bộ cu_dan (nếu Resident)&lt;br/&gt;Đồng bộ nhan_vien (nếu Operator)&lt;br/&gt;Đồng bộ tên chủ xe vehicles" vertex="1">
+          <mxGeometry height="120" width="230" x="2050" y="485" as="geometry" />
+        </mxCell>
+        <mxCell id="success" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontSize=11;fontColor=#14532D;arcSize=10;" value="&lt;b&gt;Cập nhật thành công&lt;/b&gt;&lt;br/&gt;Commit Transaction CSDL&lt;br/&gt;HTTP 200, Alert thông báo thành công&lt;br/&gt;Đóng modal &amp; Tải lại danh sách&lt;br/&gt;&lt;font color=&#39;#166534&#39; style=&#39;font-size: 10px&#39;&gt;loadUsersList()&lt;/font&gt;" vertex="1">
+          <mxGeometry height="120" width="230" x="2320" y="485" as="geometry" />
+        </mxCell>
+        <mxCell id="fail" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=11;fontColor=#7F1D1D;arcSize=10;" value="&lt;b&gt;Cập nhật thất bại&lt;/b&gt;&lt;br/&gt;Không có quyền hoặc không tìm thấy SĐT&lt;br/&gt;&lt;font color=&#39;#7F1D1D&#39; style=&#39;font-size: 10px&#39;&gt;HTTP 400/403, Alert báo lỗi&lt;/font&gt;" vertex="1">
+          <mxGeometry height="70" width="230" x="1660" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="start" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="web">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="web" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="users-page">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="users-page" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="select-user">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="select-user" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="edit-form" value="Mở form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="edit-form" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="input-check" value="Bấm Lưu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="input-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=2;" target="form-error" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="form-error" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=1.5;dashed=1;" target="edit-form" value="Nhập lại">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1110" y="795" />
+              <mxPoint x="845" y="795" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="input-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="api" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="role-check">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="role-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=2;" target="fail" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="role-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="user-exist-check" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="user-exist-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=2;" target="fail" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="user-exist-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="db-update" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="db-update" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="success" value="Thành công">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="fail" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=1.5;dashed=1;" target="edit-form" value="Chỉnh sửa lại">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1775" y="820" />
+              <mxPoint x="845" y="820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

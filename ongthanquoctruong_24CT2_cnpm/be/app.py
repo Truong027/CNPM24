@@ -1133,7 +1133,10 @@ def api_reset_password():
 @app.route("/login")
 def login():
     if session.get("user"):
-        return redirect(url_for("index"))
+        user = session["user"]
+        if is_resident(user):
+            return redirect(url_for("resident_dashboard"))
+        return redirect(url_for("operations_dashboard"))
     return render_template("login.html")
 
 
@@ -1168,7 +1171,10 @@ def api_login():
 @app.route("/register")
 def register():
     if session.get("user"):
-        return redirect(url_for("index"))
+        user = session["user"]
+        if is_resident(user):
+            return redirect(url_for("resident_dashboard"))
+        return redirect(url_for("operations_dashboard"))
     return render_template("register.html")
 
 
@@ -1273,9 +1279,119 @@ def api_session():
     return jsonify({"authenticated": True, "user": user})
 
 
+def get_public_dashboard_stats():
+    """Lấy số liệu thực tế từ CSDL MySQL cho trang public_dashboard."""
+    stats = {
+        "total_slots": 0,
+        "available_slots": 0,
+        "occupied_slots": 0,
+        "occupancy_rate": 0,
+        "ham_b1": {"total": 0, "available": 0, "occupied": 0, "pct": 0},
+        "ham_b2": {"total": 0, "available": 0, "occupied": 0, "pct": 0},
+        "total_vehicles": 0,
+        "total_plates": 0,
+        "total_detections": 0,
+        "avg_confidence": 0.0,
+        "total_sessions": 0,
+        "active_parked": 0,
+        "peak_hours": [],
+        "recent_sessions": [],
+    }
+    try:
+        slots = database.get_all_parking_slots()
+        stats["total_slots"] = len(slots)
+        for s in slots:
+            st = s.get("TrangThai")
+            kv = s.get("KhuVuc")
+            if st == "Trong":
+                stats["available_slots"] += 1
+            elif st == "DaDat":
+                stats["occupied_slots"] += 1
+
+            floor_key = "ham_b1" if kv == "Ham_B1" else ("ham_b2" if kv == "Ham_B2" else None)
+            if floor_key:
+                stats[floor_key]["total"] += 1
+                if st == "Trong":
+                    stats[floor_key]["available"] += 1
+                elif st == "DaDat":
+                    stats[floor_key]["occupied"] += 1
+
+        if stats["total_slots"] > 0:
+            stats["occupancy_rate"] = round((stats["occupied_slots"] / stats["total_slots"]) * 100, 1)
+        for fk in ("ham_b1", "ham_b2"):
+            if stats[fk]["total"] > 0:
+                stats[fk]["pct"] = round((stats[fk]["occupied"] / stats[fk]["total"]) * 100, 1)
+
+        conn = database.get_db_connection()
+        if conn:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("SELECT COUNT(*) AS cnt FROM vehicles")
+            stats["total_vehicles"] = int((cursor.fetchone() or {}).get("cnt") or 0)
+
+            cursor.execute("SELECT COUNT(*) AS cnt, COALESCE(AVG(confidence), 0) AS avg_conf FROM plates")
+            p_row = cursor.fetchone() or {}
+            stats["total_plates"] = int(p_row.get("cnt") or 0)
+            stats["avg_confidence"] = round(float(p_row.get("avg_conf") or 0) * 100, 1)
+
+            cursor.execute("SELECT COUNT(*) AS cnt FROM detections")
+            stats["total_detections"] = int((cursor.fetchone() or {}).get("cnt") or 0)
+
+            cursor.execute("SELECT COUNT(*) AS total_s, SUM(CASE WHEN status = 'Parked' THEN 1 ELSE 0 END) AS parked_s FROM parking_sessions")
+            s_row = cursor.fetchone() or {}
+            stats["total_sessions"] = int(s_row.get("total_s") or 0)
+            stats["active_parked"] = int(s_row.get("parked_s") or 0)
+
+            cursor.execute("""
+                SELECT plate_text, check_in_time, check_out_time, status
+                FROM parking_sessions
+                ORDER BY check_in_time DESC
+                LIMIT 3
+            """)
+            recent = []
+            for r in cursor.fetchall():
+                t_val = r.get("check_out_time") or r.get("check_in_time")
+                t_str = t_val.strftime("%H:%M %d/%m") if hasattr(t_val, "strftime") else str(t_val or "")
+                recent.append({
+                    "plate_text": r.get("plate_text") or "---",
+                    "status": r.get("status") or "Completed",
+                    "status_label": "Đang trong bãi" if r.get("status") == "Parked" else "Đã hoàn tất",
+                    "time_str": t_str
+                })
+            stats["recent_sessions"] = recent
+            cursor.close()
+            conn.close()
+
+        raw_peaks = database.get_peak_hours_stats() or []
+        if raw_peaks:
+            # Chọn tối đa 6 khung giờ tiêu biểu trong ngày có lượt quét thực tế
+            selected = raw_peaks[-6:] if len(raw_peaks) > 6 else raw_peaks
+            max_cnt = max((int(x.get("scan_count") or 0) for x in selected), default=1) or 1
+            stats["peak_hours"] = [
+                {
+                    "hour_label": f"{int(x.get('scan_hour') or 0):02d}h",
+                    "count": int(x.get("scan_count") or 0),
+                    "height_pct": max(15, round((int(x.get("scan_count") or 0) / max_cnt) * 100))
+                }
+                for x in selected
+            ]
+    except Exception as e:
+        print(f"Lỗi lấy dữ liệu public_dashboard: {e}")
+    return stats
+
+
+@app.route("/api/public/dashboard")
+def api_public_dashboard():
+    return jsonify({"success": True, "stats": get_public_dashboard_stats()})
+
+
 @app.route("/")
-@login_required
 def index():
+    return render_template("public_dashboard.html", stats=get_public_dashboard_stats())
+
+
+@app.route("/operations-dashboard")
+@login_required
+def operations_dashboard():
     if session.get("user", {}).get("role") == "Resident":
         return redirect(url_for("resident_dashboard"))
     return render_template("index.html")

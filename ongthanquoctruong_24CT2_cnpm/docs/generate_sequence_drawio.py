@@ -1162,6 +1162,11 @@ def generate_drawio_files(out_dir):
     }
 
     for diag_id, base_name in mapping_tuan_tu.items():
+        tt_drawio_file = os.path.join(tuan_tu_dir, f"{base_name}.drawio")
+        if os.path.exists(tt_drawio_file):
+            # Đã có file sơ đồ chi tiết chuẩn hóa theo code thực tế, giữ nguyên
+            continue
+
         diag_item = next((d for d in DIAGRAMS if d["id"] == diag_id), None)
         if diag_item:
             # Sinh file .drawio trong Tuần Tự
@@ -1169,7 +1174,6 @@ def generate_drawio_files(out_dir):
             build_single_diagram_elem(mxfile_tt, diag_item)
             t_tt = ET.ElementTree(mxfile_tt)
             ET.indent(t_tt, space="  ", level=0)
-            tt_drawio_file = os.path.join(tuan_tu_dir, f"{base_name}.drawio")
             t_tt.write(tt_drawio_file, encoding="utf-8", xml_declaration=True)
 
             # Cập nhật embedded XML trong file .drawio.png tương ứng

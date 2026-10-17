@@ -6,6 +6,7 @@ Thư mục này chứa toàn bộ mã nguồn giao diện người dùng (UI/UX)
 ```text
 fe/
 ├── templates/
+│   ├── public_dashboard.html   # Dashboard giới thiệu hiển thị khi mở website
 │   ├── index.html              # Dashboard quản trị & Giám sát làn xe thời gian thực (Admin/Bảo vệ)
 │   ├── resident_dashboard.html # Dashboard quản lý xe cá nhân & lịch sử gửi xe (Cư dân/Khách)
 │   ├── login.html              # Giao diện Đăng nhập hệ thống
@@ -16,10 +17,10 @@ fe/
 ```
 
 ## Phân quyền hiển thị theo vai trò (Role-based Views)
-- **Admin / Staff (Bảo vệ)**: Truy cập trang chủ `/` (`index.html`) để giám sát camera biển số, đối soát lượt vào/ra, điều khiển barrier, xem biểu đồ lưu lượng và thống kê doanh thu.
+- **Dashboard công khai**: Truy cập `/` (`public_dashboard.html`) để xem tổng quan sản phẩm và điều hướng riêng đến đăng nhập/đăng ký.
+- **Admin / Staff (Bảo vệ)**: Sau khi đăng nhập, truy cập `/operations-dashboard` (`index.html`) để giám sát camera biển số, đối soát lượt vào/ra, điều khiển barrier, xem biểu đồ lưu lượng và thống kê doanh thu.
 - **Resident (Cư dân)**: Truy cập `/resident-dashboard` (`resident_dashboard.html`) để quản lý các phương tiện cá nhân đã đăng ký, tra cứu lịch sử ra vào và quản lý phí gửi xe.
 - **Khách vãng lai**: Màn hình đăng nhập/đăng ký với giao diện hiện đại, hỗ trợ khôi phục mật khẩu qua OTP.
 
 ## Tài liệu Khảo sát yêu cầu chuẩn CNPM
 - Chi tiết bảng khảo sát 6 cột (Mã, Tên yêu cầu, Mô tả yêu cầu, Ưu tiên, Tiêu chí nghiệm thu, Link mẫu): [KHAO_SAT_YEU_CAU.md](file:///d:/CNPM24CT2_OngThanQuocTruong/BienSoXe/KHAO_SAT_YEU_CAU.md)
-

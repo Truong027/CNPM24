@@ -1,0 +1,16 @@
+{
+  "name": "parking-ai-frontend",
+  "version": "1.0.0",
+  "description": "Smart Parking Management AI - Frontend Web Application",
+  "type": "module",
+  "scripts": {
+    "start": "serve public"
+  },
+  "keywords": [
+    "parking",
+    "ai",
+    "license-plate-recognition"
+  ],
+  "author": "Ong Than Quoc Truong",
+  "license": "MIT"
+}

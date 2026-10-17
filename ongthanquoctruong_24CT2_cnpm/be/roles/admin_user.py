@@ -9,4 +9,4 @@ def is_admin(user_session):
     return user_session and user_session.get("role") == "Admin"
 
 def get_admin_dashboard_url():
-    return "/"
+    return "/operations-dashboard"

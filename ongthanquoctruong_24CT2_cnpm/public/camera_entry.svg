@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a192f"/>
+      <stop offset="100%" stop-color="#020c1b"/>
+    </linearGradient>
+    <linearGradient id="grid" x1="0" y1="0" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e3a8a" stroke-width="0.5" opacity="0.25"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <rect width="640" height="480" fill="url(#grid)"/>
+
+  <!-- Camera HUD Corners -->
+  <path d="M 30 50 L 30 30 L 50 30" stroke="#00f5ff" stroke-width="2.5" fill="none"/>
+  <path d="M 610 50 L 610 30 L 590 30" stroke="#00f5ff" stroke-width="2.5" fill="none"/>
+  <path d="M 30 430 L 30 450 L 50 450" stroke="#00f5ff" stroke-width="2.5" fill="none"/>
+  <path d="M 610 430 L 610 450 L 590 450" stroke="#00f5ff" stroke-width="2.5" fill="none"/>
+
+  <!-- Live Tag -->
+  <circle cx="48" cy="48" r="6" fill="#ef4444">
+    <animate attributeName="opacity" values="1;0.2;1" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <text x="64" y="53" fill="#ffffff" font-family="system-ui, sans-serif" font-size="13" font-weight="700" letter-spacing="1">CAM 01: CỔNG VÀO (TẦNG B1) • LIVE</text>
+  <text x="590" y="53" fill="#00f5ff" font-family="monospace" font-size="12" text-anchor="end" font-weight="600">FPS: 30.2 | AI: YOLOv8</text>
+
+  <!-- AI Target Box -->
+  <rect x="180" y="160" width="280" height="170" fill="none" stroke="#00f5ff" stroke-width="2" stroke-dasharray="6,4"/>
+  <rect x="235" y="270" width="170" height="48" fill="#0f172a" stroke="#10b981" stroke-width="2" rx="4"/>
+  <text x="320" y="302" fill="#10b981" font-family="monospace" font-size="19" font-weight="900" text-anchor="middle" letter-spacing="2">51F - 889.99</text>
+  <text x="320" y="335" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="12" text-anchor="middle" font-weight="600">Độ tin cậy: 98.8% • Barrier: Mở</text>
+
+  <!-- Crosshair center -->
+  <line x1="320" y1="230" x2="320" y2="250" stroke="#00f5ff" stroke-width="1.5"/>
+  <line x1="310" y1="240" x2="330" y2="240" stroke="#00f5ff" stroke-width="1.5"/>
+
+  <!-- Footer HUD -->
+  <rect x="20" y="440" width="600" height="24" fill="#000000" opacity="0.4" rx="4"/>
+  <text x="35" y="457" fill="#94a3b8" font-family="monospace" font-size="11">PARKING AI VISION • BIỂN SỐ VIỆT NAM • TỰ ĐỘNG NHẬN DIỆN 0.28s</text>
+</svg>

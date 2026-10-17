@@ -1,0 +1,13 @@
+.venv
+archive
+archive.zip
+*.db
+plates.db
+runs
+be
+instance
+__pycache__
+tests
+generate_png.py
+docs
+.vscode

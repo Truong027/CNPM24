@@ -1,0 +1,84 @@
+<mxfile host="app.diagrams.net" agent="GitHub-Copilot">
+  <diagram id="auth-simple-flow" name="Luồng đăng nhập và đăng ký theo mẫu">
+    <mxGraphModel dx="1493" dy="764" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=22;fontColor=#1E293B;fontStyle=1;" value="&lt;b&gt;4.1 THIẾT KẾ PHẦN MỀM - LUỒNG ĐĂNG NHẬP VÀ ĐĂNG KÝ&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="880" x="260" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0EA5A8;strokeColor=#0F766E;strokeWidth=2;fontSize=16;fontColor=#FFFFFF;arcSize=12;" value="&lt;b&gt;START&lt;/b&gt;" vertex="1">
+          <mxGeometry height="70" width="150" x="85" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="open-app" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=14;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Mở trang web&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size: 12px&#39;&gt;GET `/login`&lt;/font&gt;&lt;br/&gt;&lt;font color=&#39;#64748B&#39; style=&#39;font-size: 11px&#39;&gt;Hiển thị giao diện xác thực&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="220" x="285" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="has-account" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=13;fontColor=#FFFFFF;" value="&lt;b&gt;Người dùng đã có tài khoản?&lt;/b&gt;" vertex="1">
+          <mxGeometry height="140" width="220" x="570" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="login" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=14;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Đăng nhập&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size: 12px&#39;&gt;Nhập số điện thoại&lt;br/&gt;và mật khẩu&lt;/font&gt;&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 10px&#39;&gt;POST `/api/login`&lt;/font&gt;" vertex="1">
+          <mxGeometry height="115" width="230" x="900" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="register" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=14;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Đăng ký&lt;/b&gt;&lt;br/&gt;&lt;font style=&#39;font-size: 12px&#39;&gt;Điền thông tin cá nhân&lt;br/&gt;và thông tin phương tiện&lt;/font&gt;&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 10px&#39;&gt;POST `/api/register`&lt;/font&gt;" vertex="1">
+          <mxGeometry height="115" width="230" x="900" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="login-check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=2;fontSize=12;fontColor=#1E293B;" value="&lt;b&gt;Xác thực thành công?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#64748B&#39; style=&#39;font-size: 11px&#39;&gt;Kiểm tra app_users&lt;/font&gt;" vertex="1">
+          <mxGeometry height="115" width="180" x="1200" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="register-check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=2;fontSize=12;fontColor=#1E293B;" value="&lt;b&gt;Thông tin hợp lệ?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#64748B&#39; style=&#39;font-size: 11px&#39;&gt;Kiểm tra trùng tài khoản&lt;/font&gt;" vertex="1">
+          <mxGeometry height="115" width="180" x="1220" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="login-success" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontSize=12;fontColor=#14532D;arcSize=10;" value="&lt;b&gt;Đăng nhập thành công&lt;/b&gt;&lt;br/&gt;Tạo session&lt;br/&gt;Chuyển đến Dashboard" vertex="1">
+          <mxGeometry height="70" width="190" x="1470" y="147.5" as="geometry" />
+        </mxCell>
+        <mxCell id="login-fail" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=11;fontColor=#7F1D1D;arcSize=10;" value="&lt;b&gt;Đăng nhập thất bại&lt;/b&gt;&lt;br/&gt;Hiển thị lỗi và nhập lại" vertex="1">
+          <mxGeometry height="65" width="190" x="1195" y="287.5" as="geometry" />
+        </mxCell>
+        <mxCell id="register-success" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontSize=12;fontColor=#14532D;arcSize=10;" value="&lt;b&gt;Đăng ký thành công&lt;/b&gt;&lt;br/&gt;Lưu tài khoản&lt;br/&gt;Chuyển đến `/login`" vertex="1">
+          <mxGeometry height="70" width="190" x="1215" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="register-fail" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=11;fontColor=#7F1D1D;arcSize=10;" value="&lt;b&gt;Đăng ký thất bại&lt;/b&gt;&lt;br/&gt;Hiển thị lỗi và nhập lại" vertex="1">
+          <mxGeometry height="65" width="190" x="1480" y="435" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;endArrow=block;html=1;strokeColor=#334155;strokeWidth=2;" target="open-app" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="open-app" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;endArrow=block;html=1;strokeColor=#334155;strokeWidth=2;" target="has-account" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="has-account" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;endArrow=block;html=1;strokeColor=#334155;strokeWidth=2;fontColor=#1E293B;fontStyle=1;" target="login" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="has-account" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;endArrow=block;html=1;strokeColor=#334155;strokeWidth=2;fontColor=#1E293B;fontStyle=1;" target="register" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800" y="465" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="login" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;endArrow=block;html=1;strokeColor=#334155;strokeWidth=2;" target="login-check" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="login-check" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;endArrow=block;html=1;strokeColor=#16A34A;strokeWidth=2;fontColor=#166534;fontStyle=1;" target="login-success" value="Đúng">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="login-check" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;endArrow=block;html=1;strokeColor=#DC2626;strokeWidth=2;fontColor=#991B1B;fontStyle=1;" target="login-fail" value="Sai">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="register" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;endArrow=block;html=1;strokeColor=#334155;strokeWidth=2;" target="register-check" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="register-check" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;endArrow=block;html=1;strokeColor=#16A34A;strokeWidth=2;fontColor=#166534;fontStyle=1;" target="register-success" value="Đúng">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="register-check" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jettySize=auto;endArrow=block;html=1;strokeColor=#DC2626;strokeWidth=2;fontColor=#991B1B;fontStyle=1;" target="register-fail" value="Sai">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

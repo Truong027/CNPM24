@@ -9,4 +9,4 @@ def is_guard(user_session):
     return user_session and user_session.get("role") in ["Operator", "Security"]
 
 def get_guard_dashboard_url():
-    return "/"
+    return "/operations-dashboard"

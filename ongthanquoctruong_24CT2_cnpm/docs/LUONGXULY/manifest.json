@@ -1,0 +1,26 @@
+{
+  "name": "Parking AI - Admin Wireframe & Prototype Generator",
+  "id": "parking-ai-admin-wireframe-generator",
+  "api": "1.0.0",
+  "main": "figma_wireframe_layout.js",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "menu": [
+    {
+      "name": "⚡ Tạo trọn bộ 8 màn hình Admin (Prototype)",
+      "command": "generate_all_admin"
+    },
+    {
+      "name": "📋 Phác thảo: Phê duyệt đơn chuyển nhượng Admin (4 Screens)",
+      "command": "generate_transfers"
+    },
+    {
+      "name": "👥 Phác thảo: Quản lý & Phân quyền người dùng Admin (4 Screens)",
+      "command": "generate_users"
+    },
+    {
+      "name": "🌐 Phác thảo: Cư dân (Dashboard, Đăng nhập, Đăng ký)",
+      "command": "generate_resident"
+    }
+  ]
+}

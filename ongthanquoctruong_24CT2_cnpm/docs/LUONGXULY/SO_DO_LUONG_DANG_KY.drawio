@@ -1,0 +1,106 @@
+<mxfile host="app.diagrams.net" agent="GitHub-Copilot">
+  <diagram id="register-flow-final" name="Luồng xử lý đăng ký">
+    <mxGraphModel dx="1776" dy="909" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=22;fontColor=#1E293B;fontStyle=1;" value="&lt;b&gt;4.1 THIẾT KẾ PHẦN MỀM - CHỨC NĂNG ĐĂNG KÝ&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="800" x="350" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0EA5A8;strokeColor=#0F766E;strokeWidth=2;fontSize=16;fontColor=#FFFFFF;arcSize=12;" value="&lt;b&gt;START&lt;/b&gt;" vertex="1">
+          <mxGeometry height="70" width="145" x="40" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="web" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=13;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Mở web&lt;/b&gt;&lt;br/&gt;Mở trình duyệt&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 11px&#39;&gt;http://127.0.0.1:5000&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="210" x="225" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="main-page" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=13;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Hiển thị màn hình chính&lt;/b&gt;&lt;br/&gt;GET `/`&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 11px&#39;&gt;Hiển thị public_dashboard.html&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="220" x="475" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="register-page" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=13;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Mở trang đăng ký&lt;/b&gt;&lt;br/&gt;GET `/register`&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 11px&#39;&gt;Hiển thị register.html&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="210" x="775" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="form" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=12;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Điền form đăng ký&lt;/b&gt;&lt;br/&gt;Họ tên, username, email&lt;br/&gt;Số điện thoại, mật khẩu&lt;br/&gt;Thông tin xe (tùy chọn)" vertex="1">
+          <mxGeometry height="100" width="210" x="775" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="phone-check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=11;fontColor=#FFFFFF;" value="&lt;b&gt;Số điện thoại hợp lệ?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 10px&#39;&gt;Bắt buộc&lt;br/&gt;Khớp `^0\d{9}$`&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="220" x="1040" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="email-check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=11;fontColor=#FFFFFF;" value="&lt;b&gt;Email có nhập?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 10px&#39;&gt;Email không bắt buộc&lt;/font&gt;" vertex="1">
+          <mxGeometry height="120" width="190" x="1055" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="email-format-check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=11;fontColor=#FFFFFF;" value="&lt;b&gt;Email đúng định dạng?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 10px&#39;&gt;HTML `type=&quot;email&quot;`&lt;/font&gt;" vertex="1">
+          <mxGeometry height="120" width="210" x="1320" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="password-check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=11;fontColor=#FFFFFF;" value="&lt;b&gt;Thông tin bắt buộc hợp lệ?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 10px&#39;&gt;Username ≥ 3, mật khẩu ≥ 6,&lt;br/&gt;xác nhận mật khẩu trùng&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="230" x="1640" y="735" as="geometry" />
+        </mxCell>
+        <mxCell id="form-error" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=11;fontColor=#7F1D1D;arcSize=10;" value="&lt;b&gt;Dữ liệu không hợp lệ&lt;/b&gt;&lt;br/&gt;Hiển thị lỗi cụ thể, nhập lại" vertex="1">
+          <mxGeometry height="70" width="220" x="1220" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=12;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Gửi yêu cầu&lt;/b&gt;&lt;br/&gt;POST `/api/register`&lt;br/&gt;&lt;font color=&#39;#64748B&#39; style=&#39;font-size: 10px&#39;&gt;api_register()&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="210" x="1900" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="result" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=2;fontSize=11;fontColor=#1E293B;" value="&lt;b&gt;Tạo tài khoản được?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#64748B&#39; style=&#39;font-size: 10px&#39;&gt;Kiểm tra trùng email, phone&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="210" x="1900" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="success" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontSize=11;fontColor=#14532D;arcSize=10;" value="&lt;b&gt;Đăng ký thành công&lt;/b&gt;&lt;br/&gt;Lưu tài khoản&lt;br/&gt;Chuyển đến `/login`" vertex="1">
+          <mxGeometry height="55" width="210" x="1900" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="fail" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=11;fontColor=#7F1D1D;arcSize=10;" value="&lt;b&gt;Đăng ký thất bại&lt;/b&gt;&lt;br/&gt;Hiển thị lỗi, nhập lại" vertex="1">
+          <mxGeometry height="60" width="210" x="2180" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="start" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="web">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="web" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="main-page">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="main-page" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="register-page" value="Bấm Đăng ký">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="register-page" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="form" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="phone-check">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="phone-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=2;" target="form-error" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="phone-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="email-check" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="email-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="password-check" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="email-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="email-format-check" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="email-format-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=2;" target="form-error" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="email-format-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="password-check" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="password-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=2;" target="form-error" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="password-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="api" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="form-error" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=2;" target="form" value="Nhập lại">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="result">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="result" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="success" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="result" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=2;" target="fail" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

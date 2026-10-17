@@ -1,0 +1,110 @@
+<mxfile host="app.diagrams.net" agent="Antigravity-CNPM24">
+  <diagram id="transfer-approval-flow" name="Luồng xử lý phê duyệt đơn chuyển nhượng Admin">
+    <mxGraphModel dx="1776" dy="909" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=22;fontColor=#1E293B;fontStyle=1;" value="&lt;b&gt;4.2 THIẾT KẾ PHẦN MỀM - CHỨC NĂNG PHÊ DUYỆT ĐƠN CHUYỂN NHƯỢNG ADMIN&lt;/b&gt;" vertex="1">
+          <mxGeometry height="50" width="950" x="350" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0EA5A8;strokeColor=#0F766E;strokeWidth=2;fontSize=16;fontColor=#FFFFFF;arcSize=12;" value="&lt;b&gt;START&lt;/b&gt;" vertex="1">
+          <mxGeometry height="70" width="145" x="40" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="web" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=13;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Mở web &amp; Đăng nhập&lt;/b&gt;&lt;br/&gt;Đăng nhập Quản trị viên&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 11px&#39;&gt;http://127.0.0.1:5000&lt;br/&gt;Tài khoản role=&#39;Admin&#39;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="210" x="225" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="transfers-page" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=13;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Mở trang Chuyển nhượng&lt;/b&gt;&lt;br/&gt;Tab #transfers-page&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 11px&#39;&gt;GET `/api/admin/transfer_requests`&lt;br/&gt;Tải danh sách đơn chuyển nhượng&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="220" x="475" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="select-request" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=12;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Xem chi tiết &amp; Chọn đơn&lt;/b&gt;&lt;br/&gt;Biển số xe, Cư dân chuyển,&lt;br/&gt;Cư dân nhận, Thời gian tạo&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 11px&#39;&gt;Trạng thái &#39;Pending&#39;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="220" x="735" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="choose-action" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=12;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Chọn hành động xử lý&lt;/b&gt;&lt;br/&gt;Bấm nút [Phê duyệt] hoặc&lt;br/&gt;Bấm nút [Từ chối]&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 11px&#39;&gt;processTransferAction(id, action)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="210" x="1000" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="prompt-note" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=11;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Nhập ghi chú quyết định&lt;/b&gt;&lt;br/&gt;Mở hộp thoại prompt ghi chú&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 10px&#39;&gt;Ghi chú chấp thuận / lý do từ chối&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="210" x="1000" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="confirm-check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=11;fontColor=#FFFFFF;" value="&lt;b&gt;Xác nhận thao tác?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 10px&#39;&gt;Admin bấm OK&lt;br/&gt;(Không bấm Cancel)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="130" width="200" x="1255" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="cancel-op" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=11;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Hủy thao tác&lt;/b&gt;&lt;br/&gt;Đóng hộp thoại&lt;br/&gt;Giữ nguyên danh sách đơn" vertex="1">
+          <mxGeometry height="70" width="200" x="1255" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=12;fontColor=#FFFFFF;arcSize=10;" value="&lt;b&gt;Gửi yêu cầu xử lý&lt;/b&gt;&lt;br/&gt;POST `/api/admin/transfer_requests/&lt;br/&gt;&lt;id&gt;/action`&lt;br/&gt;&lt;font color=&#39;#64748B&#39; style=&#39;font-size: 10px&#39;&gt;api_admin_process_transfer_request()&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="220" x="1500" y="465" as="geometry" />
+        </mxCell>
+        <mxCell id="check-pending" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=2;fontSize=11;fontColor=#1E293B;" value="&lt;b&gt;Đơn hợp lệ trong CSDL?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#64748B&#39; style=&#39;font-size: 10px&#39;&gt;Tồn tại trong chuyen_nhuong_xe&lt;br/&gt;&amp; TrangThai == &#39;Pending&#39;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="220" x="1765" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="check-action" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#27272A;strokeColor=#18181B;strokeWidth=2;fontSize=11;fontColor=#FFFFFF;" value="&lt;b&gt;Quyết định là Phê duyệt?&lt;/b&gt;&lt;br/&gt;&lt;font color=&#39;#CBD5E1&#39; style=&#39;font-size: 10px&#39;&gt;action == &#39;approve&#39;&lt;br/&gt;hay action == &#39;reject&#39;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="210" x="2030" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="success-approve" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontSize=11;fontColor=#14532D;arcSize=10;" value="&lt;b&gt;Phê duyệt thành công&lt;/b&gt;&lt;br/&gt;UPDATE phuong_tien &amp; vehicles&lt;br/&gt;UPDATE chuyen_nhuong_xe &#39;Approved&#39;&lt;br/&gt;&lt;font color=&#39;#166534&#39; style=&#39;font-size: 10px&#39;&gt;HTTP 200, Đổi huy hiệu xanh lá &#39;Approved&#39;&lt;br/&gt;loadTransferRequests()&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="240" x="2300" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="success-reject" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;fontSize=11;fontColor=#14532D;arcSize=10;" value="&lt;b&gt;Từ chối đơn thành công&lt;/b&gt;&lt;br/&gt;UPDATE chuyen_nhuong_xe &#39;Rejected&#39;&lt;br/&gt;Ghi nhận lý do từ chối&lt;br/&gt;&lt;font color=&#39;#166534&#39; style=&#39;font-size: 10px&#39;&gt;HTTP 200, Đổi huy hiệu đỏ &#39;Rejected&#39;&lt;br/&gt;loadTransferRequests()&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="240" x="2300" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="fail" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=11;fontColor=#7F1D1D;arcSize=10;" value="&lt;b&gt;Xử lý thất bại&lt;/b&gt;&lt;br/&gt;Đơn đã duyệt trước đó hoặc lỗi CSDL&lt;br/&gt;&lt;font color=&#39;#7F1D1D&#39; style=&#39;font-size: 10px&#39;&gt;HTTP 400, Hiển thị Alert báo lỗi&lt;/font&gt;" vertex="1">
+          <mxGeometry height="75" width="220" x="1765" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="start" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="web">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="web" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="transfers-page">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="transfers-page" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="select-request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="select-request" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="choose-action">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="choose-action" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="prompt-note">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="prompt-note" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="confirm-check">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="confirm-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=2;" target="cancel-op" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="cancel-op" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#64748B;fontColor=#475569;strokeWidth=1.5;dashed=1;" target="select-request">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1355" y="260" />
+              <mxPoint x="845" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="confirm-check" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="api" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#334155;strokeWidth=2;" target="check-pending">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="check-pending" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=2;" target="fail" value="Không">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="fail" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=1.5;dashed=1;" target="transfers-page">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1875" y="790" />
+              <mxPoint x="585" y="790" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="check-pending" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="check-action" value="Có">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="check-action" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#16A34A;fontColor=#166534;strokeWidth=2;" target="success-approve" value="Phê duyệt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="check-action" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;strokeColor=#DC2626;fontColor=#991B1B;strokeWidth=2;" target="success-reject" value="Từ chối">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
