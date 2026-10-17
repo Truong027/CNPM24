@@ -11,3 +11,6 @@ tests
 generate_png.py
 docs
 .vscode
+app.py
+requirements.txt
+schema.dbml
