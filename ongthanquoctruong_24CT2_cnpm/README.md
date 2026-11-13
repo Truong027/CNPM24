@@ -5,7 +5,7 @@
 - **Sinh viên thực hiện**: Ông Thân Quốc Trường
 - **Đơn vị**: Khoa Công nghệ thông tin — Trường Đại học Kiến trúc Đà Nẵng (DAU)
 
-> Xem tài liệu tổng quan cấp repository tại [`../README.md`](../README.md).
+> Xem tài liệu tổng quan cấp repository tại [`../README.md`](../README.md). Hệ thống chính sử dụng **Python Flask (`be/`) + AI (`YOLOv8s + CRNN-CTC + EasyOCR`) + CSDL duy nhất MySQL (`httt_quan_ly_bai_xe_ai`)**; không dùng Mock DB trong kiến trúc đề tài.
 
 ---
 
@@ -75,8 +75,8 @@ flowchart TB
 
 ```text
 ongthanquoctruong_24CT2_cnpm/
-├── api/                              # Vercel Serverless API (index.js, [...slug].js)
-├── public/                           # Giao diện tĩnh cho Vercel SPA deployment
+├── api/                              # Bản mô phỏng xem thử UI trên Vercel (không phải CSDL đề tài)
+├── public/                           # Giao diện tĩnh xem thử (bản chính thức dùng fe/templates/)
 ├── fe/                               # Frontend Jinja2 Templates & Static assets (Local Flask)
 ├── be/                               # Backend Flask + YOLOv8 + CRNN/EasyOCR + MySQL + roles/ + sql/ + scripts/
 ├── tests/                            # Bộ kiểm thử tự động (test_full_features.py, test_user_management.py, ...)

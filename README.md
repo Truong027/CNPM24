@@ -9,9 +9,11 @@
 
 ---
 
-## 1. Tổng Quan Đề Tài & Sơ Đồ Kiến Trúc Phân Quyền (GitDiagram Architecture)
+## 1. Tổng Quan Đề Tài & Sơ Đồ Kiến Trúc Phân Quyền (Bám Sát Đề Tài)
 
-Hệ thống giải quyết bài toán kiểm soát phương tiện ra/vào chung cư, tòa nhà và bãi đỗ xe 2 tầng hầm (**Hầm B1** & **Hầm B2**, tổng **100 vị trí ô tô con** thiết kế theo sơ đồ rạp chiếu phim — Cinema Parking Map), kết hợp **Thị giác máy tính (YOLOv8s + CRNN-CTC + EasyOCR)** để nhận diện biển số theo thời gian thực, **phân quyền chặt chẽ 3 vai trò (RBAC: Admin, Guard/Operator, Resident)** và **kiến trúc triển khai song song** (Python Flask đầy đủ AI + MySQL chạy Local, đồng thời hỗ trợ bản Static SPA + Vercel Serverless Node.js API).
+Hệ thống giải quyết bài toán kiểm soát phương tiện ra/vào chung cư, tòa nhà và bãi đỗ xe 2 tầng hầm (**Hầm B1** & **Hầm B2**, tổng **100 vị trí ô tô con** thiết kế theo sơ đồ rạp chiếu phim — Cinema Parking Map), kết hợp **Thị giác máy tính (YOLOv8s + CRNN-CTC + EasyOCR)** để nhận diện biển số theo thời gian thực, **phân quyền chặt chẽ 3 vai trò độc lập (`Admin`, `Guard / Operator`, `Resident`)** trên nền **Python Flask (`be/app.py`)** và **cơ sở dữ liệu duy nhất MySQL (`httt_quan_ly_bai_xe_ai` trong `be/database.py` & `be/sql/httt_quan_ly_bai_xe_ai.sql`)**.
+
+> **Lưu ý kiến trúc**: Toàn bộ dữ liệu thật và nghiệp vụ của đề tài lưu trữ duy nhất trong **MySQL (`httt_quan_ly_bai_xe_ai`)**. Thư mục `api/index.js` + `public/` chỉ là bản mô phỏng giao diện tĩnh phục vụ xem nhanh trên Vercel, **không thuộc tầng CSDL (Persistence) của đề tài**.
 
 ### Sơ Đồ Kiến Trúc 3 Quyền Tách Biệt Độc Lập (3 Isolated Role Lanes — Cho GitHub & GitDiagram)
 
@@ -224,7 +226,7 @@ Mã nguồn CSDL được định nghĩa trong [`ongthanquoctruong_24CT2_cnpm/be
 
 ---
 
-## 5. Danh Mục API Endpoints Đầy Đủ (Backend Flask & Vercel Serverless)
+## 5. Danh Mục API Endpoints Đầy Đủ (Backend Flask — `be/app.py`)
 
 ### A. Cổng Xác Thực Dùng Chung (Authentication & Portal)
 | Method | Endpoint | Chức năng |
@@ -291,11 +293,11 @@ CNPM24/
     ├── schema.dbml                                   # Lược đồ quan hệ DBML phục vụ trực quan hóa ERD & 3 Role
     ├── .env.example                                  # Mẫu biến môi trường kết nối MySQL & APP_SECRET_KEY
     │
-    ├── api/                                          # TẦNG SERVERLESS API TRÊN VERCEL (NODE.JS)
-    │   ├── index.js                                  # Serverless API handler (Auth, Admin, Guard, Resident, Map, Analytics)
-    │   └── [...slug].js                              # Catch-all dynamic route chuyển tiếp về api/index.js
+    ├── api/                                          # Bản giả lập xem thử UI trên Vercel (không thuộc CSDL thật của đề tài)
+    │   ├── index.js                                  # Dữ liệu mô phỏng xem nhanh giao diện tĩnh
+    │   └── [...slug].js                              # Catch-all route trỏ về index.js
     │
-    ├── public/                                       # FRONTEND STATIC SPA (VERCEL DEPLOYMENT)
+    ├── public/                                       # Bản tĩnh xem thử UI trên Vercel (bản chính thức chạy từ fe/templates/)
     │   ├── index.html                                # Giao diện Vận hành chính / Guard Station
     │   ├── public-dashboard.html / public_dashboard.html
     │   ├── operations-dashboard.html / operations_dashboard.html
@@ -391,9 +393,9 @@ cd ongthanquoctruong_24CT2_cnpm
 python -m unittest discover -s tests -p "test_*.py"
 ```
 
-### C. Triển Khai Cloud Demo (Vercel)
+### C. Xem Nhanh Giao Diện Tĩnh Trên Vercel (Tùy Chọn Phụ Trợ)
 
-- Cấu hình [`ongthanquoctruong_24CT2_cnpm/vercel.json`](ongthanquoctruong_24CT2_cnpm/vercel.json) phục vụ giao diện tĩnh từ `public/` và định tuyến `/api/*` tới Serverless Function [`api/index.js`](ongthanquoctruong_24CT2_cnpm/api/index.js) (hỗ trợ đầy đủ luồng demo cho cả 3 Role: Admin, Bảo vệ/Operator, Cư dân).
+- [`ongthanquoctruong_24CT2_cnpm/vercel.json`](ongthanquoctruong_24CT2_cnpm/vercel.json) và [`api/index.js`](ongthanquoctruong_24CT2_cnpm/api/index.js) chỉ phục vụ xem thử giao diện tĩnh từ `public/` bằng dữ liệu mẫu; hệ thống chính thức của đề tài chạy bằng **Python Flask (`be/app.py`) + AI + MySQL (`httt_quan_ly_bai_xe_ai`)**.
 
 ---
 
@@ -402,14 +404,16 @@ python -m unittest discover -s tests -p "test_*.py"
 Mặc định `gitdiagram.com` thường tóm tắt theo tên file (`Admin role [admin_user.py] -- uses role checks`) nên chưa bung hết từng quyền cụ thể. Để hiển thị đầy đủ quyền hạn 3 Role ngay trên [GitDiagram (Truong027/CNPM24)](https://gitdiagram.com/Truong027/CNPM24), bấm **Regenerate** (xóa cache cũ) hoặc bấm **Modify** và dán đoạn hướng dẫn sau:
 
 ```text
-CRITICAL LAYOUT RULE: Create 3 COMPLETELY SEPARATE, DISCONNECTED subgraphs / vertical swimlanes — ONE for Admin, ONE for Guard, ONE for Resident — with ZERO shared arrows or edges connecting them together!
-- Do NOT merge the 3 roles into a single circle like "Residents, guards, admins". Create 3 SEPARATE Actor circles: "Admin", "Guard (Operator)", and "Resident".
-- Do NOT route all 3 roles through one giant shared "Flask API [app.py]" hub or "Role dashboards" box! Put each role's role-check file, specific permission boxes, endpoints, UI, and MySQL tables INSIDE ITS OWN ISOLATED SUBGRAPH so the 3 subgraphs DO NOT TOUCH EACH OTHER AT ALL:
+CRITICAL THESIS ARCHITECTURE & LAYOUT RULES:
+1. EXCLUDE Vercel/static mock files completely! Do NOT include "Mock State [index.js]", "Serverless API [index.js]", "Static web client", or any mock persistence cylinder. The ONLY Database / Persistence in this project is MySQL ("httt_quan_ly_bai_xe_ai" via be/database.py & be/sql/httt_quan_ly_bai_xe_ai.sql).
+2. Create 3 COMPLETELY SEPARATE, DISCONNECTED subgraphs / vertical swimlanes — ONE for Admin, ONE for Guard, ONE for Resident — with ZERO shared arrows or edges connecting them together!
+- Do NOT include any 4th actor ("Public visitor", "Guest", etc.) and do NOT merge the 3 roles into a single circle like "Residents, guards, admins". Create 3 SEPARATE Actor circles: "Admin", "Guard (Operator)", and "Resident".
+- Do NOT route all 3 roles through one giant shared "Flask API [app.py]" hub! Put each role's role-check file, specific permission boxes, endpoints, UI, and MySQL tables INSIDE ITS OWN ISOLATED SUBGRAPH:
   1) Subgraph 1 — "Role 1: Admin (be/roles/admin_user.py)" (Red):
-     Actor circle "Admin" -> Permissions inside Admin lane ONLY: "User & Role RBAC Management (/api/admin/users/*, /guards/create, /residents/create, toggle_status, reset_password)", "Approve/Reject Vehicle Transfers (/api/admin/transfer_requests/* -> chuyen_nhuong_xe)", "Vehicle CRUD & Blacklist/Whitelist Assignment (/api/vehicles/save, /delete)", "Full Cinema Map B1/B2 100 Slots", "Revenue/Peak-Hour Analytics & CSV Export (/api/analytics/*, /api/report_export)" -> DB tables "(quyen_admin, phan_quyen_admin, app_users, nhan_vien, vehicles, chuyen_nhuong_xe, statistics)".
+     Actor circle "Admin" -> Permissions inside Admin lane ONLY: "User & Role RBAC Management (/api/admin/users/*, /guards/create, /residents/create, toggle_status, reset_password)", "Approve/Reject Vehicle Transfers (/api/admin/transfer_requests/* -> chuyen_nhuong_xe)", "Vehicle CRUD & Blacklist/Whitelist Assignment (/api/vehicles/save, /delete)", "Full Cinema Map B1/B2 100 Slots", "Revenue/Peak-Hour Analytics & CSV Export (/api/analytics/*, /api/report_export)" -> MySQL DB "(quyen_admin, phan_quyen_admin, app_users, nhan_vien, vehicles, chuyen_nhuong_xe, statistics)".
   2) Subgraph 2 — "Role 2: Guard / Operator (be/roles/guard_user.py)" (Blue):
-     Actor circle "Guard" -> Permissions inside Guard lane ONLY: "Live IN/OUT MJPEG Camera Streams & Auto/In/Out Mode (/video_feed_*, /api/guard/camera_mode)", "AI Gate Pipeline (YOLOv8s + CRNN-CTC + EasyOCR + IOU Tracker)", "Entry/Exit Verification & Read-Only Vehicle Lookup (/api/guard/verification/{plate}, /api/vehicles)", "Blacklist Alert & Gate Block", "Manual Entry & Check-in/Check-out (/api/guard/manual_entry, /api/parking/checkin|checkout)", "Fee Billing & Receipt (/api/guard/collect_fee)", "Barrier Open/Close Trigger (/api/guard/barrier/trigger)" -> DB tables "(quyen_baove, phan_quyen_bao_ve, plates, detections, parking_sessions, lich_su_ra_vao, bang_gia, hoa_don)". Admin-only tabs (Users, Transfers, Analytics) are hidden/forbidden here.
+     Actor circle "Guard" -> Permissions inside Guard lane ONLY: "Live IN/OUT MJPEG Camera Streams & Auto/In/Out Mode (/video_feed_*, /api/guard/camera_mode)", "AI Gate Pipeline (YOLOv8s + CRNN-CTC + EasyOCR + IOU Tracker)", "Entry/Exit Verification & Read-Only Vehicle Lookup (/api/guard/verification/{plate}, /api/vehicles)", "Blacklist Alert & Gate Block", "Manual Entry & Check-in/Check-out (/api/guard/manual_entry, /api/parking/checkin|checkout)", "Fee Billing & Receipt (/api/guard/collect_fee)", "Barrier Open/Close Trigger (/api/guard/barrier/trigger)" -> MySQL DB "(quyen_baove, phan_quyen_bao_ve, plates, detections, parking_sessions, lich_su_ra_vao, bang_gia, hoa_don)". Admin-only tabs (Users, Transfers, Analytics) are hidden/forbidden here.
   3) Subgraph 3 — "Role 3: Resident (be/roles/resident_user.py)" (Green):
-     Actor circle "Resident" -> Permissions inside Resident lane ONLY: "Registration & OTP Password Reset (/register, /forgot-password)", "Profile & Password Management (/resident-dashboard -> /api/resident/profile|update_profile|change_password)", "Apartment Vehicle CRUD (/api/resident/vehicles, /add_vehicle)", "Cinema B1/B2 Slot Selection with masked neighbor plates (/api/resident/change_slot)", "Monthly Ticket Renewal (/api/resident/renew_ticket)", "Submit Transfer Request (/api/resident/transfer_vehicle)", "Personal Entry/Exit History (/api/resident/history)" -> DB tables "(quyen_user, cu_dan, quan_ly_otp_token, phuong_tien, bai_do)".
-- Do NOT include any 4th actor ("Public visitor", "Guest", etc.). Keep zero cross-links between Subgraph 1, Subgraph 2, and Subgraph 3.
+     Actor circle "Resident" -> Permissions inside Resident lane ONLY: "Registration & OTP Password Reset (/register, /forgot-password)", "Profile & Password Management (/resident-dashboard -> /api/resident/profile|update_profile|change_password)", "Apartment Vehicle CRUD (/api/resident/vehicles, /add_vehicle)", "Cinema B1/B2 Slot Selection with masked neighbor plates (/api/resident/change_slot)", "Monthly Ticket Renewal (/api/resident/renew_ticket)", "Submit Transfer Request (/api/resident/transfer_vehicle)", "Personal Entry/Exit History (/api/resident/history)" -> MySQL DB "(quyen_user, cu_dan, quan_ly_otp_token, phuong_tien, bai_do)".
+- Keep ZERO cross-links between Subgraph 1, Subgraph 2, and Subgraph 3.
 ```
