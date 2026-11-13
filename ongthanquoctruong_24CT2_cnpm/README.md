@@ -9,62 +9,40 @@
 
 ---
 
-## 🏛️ Kiến Trúc Hệ Thống & Phân Quyền Chi Tiết 3 Vai Trò (Detailed 3-Role RBAC)
+## 🏛️ Kiến Trúc 3 Quyền Tách Biệt Độc Lập (3 Isolated Roles — Không Dính Dáng Nhau)
 
 ```mermaid
 flowchart TB
-    subgraph Users["1. Đúng 3 Tác Nhân & Vai Trò Chính (be/roles/*.py)"]
-        direction LR
-        Admin["Role 1: Quản Trị Viên (Admin)<br/>be/roles/admin_user.py"]
-        Guard["Role 2: Bảo Vệ (Operator / Security)<br/>be/roles/guard_user.py"]
-        Resident["Role 3: Cư Dân (Resident / User)<br/>be/roles/resident_user.py"]
+    subgraph Lane1["PHÂN HỆ 1: ADMIN (be/roles/admin_user.py — Độc lập)"]
+        direction TB
+        A1(["Role 1: Quản Trị Viên (Admin)"])
+        A2["Quyền Admin (quyen_admin):<br/>• Tạo/Sửa/Khóa/Xóa User & Đổi Role<br/>• Duyệt/Từ chối đơn chuyển nhượng xe<br/>• Thêm/Sửa/Xóa xe & Gán Blacklist/Whitelist<br/>• Xem chi tiết 100 ô đỗ B1/B2<br/>• Thống kê doanh thu, Xuất CSV & Test AI"]
+        A3["UI & API Riêng:<br/>/operations-dashboard (Full Admin)<br/>/api/admin/*, /api/vehicles/save, /delete, /api/analytics/*"]
+        A4[("DB Admin:<br/>quyen_admin, phan_quyen_admin<br/>app_users, nhan_vien, vehicles<br/>chuyen_nhuong_xe, statistics")]
+        A1 --> A2 --> A3 --> A4
     end
 
-    subgraph Perms["2. Chi Tiết Quyền Được Làm Của Từng Role"]
-        direction LR
-        P_Adm["Admin (quyen_admin):<br/>• Tạo/Sửa/Khóa/Xóa User & Đổi Role<br/>• Duyệt/Từ chối đơn chuyển nhượng<br/>• Thêm/Sửa/Xóa xe & Gán Blacklist<br/>• Xem đủ 100 ô đỗ B1/B2<br/>• Thống kê doanh thu, Xuất CSV & Test AI"]
-        P_Grd["Bảo Vệ (quyen_baove):<br/>• Xem 2 Camera Live & AI Auto/In/Out<br/>• Check-in/out & Nhập biển số tay<br/>• Đối chiếu ảnh & Tra cứu xe (Chỉ xem)<br/>• Cảnh báo chặn xe Blacklist<br/>• Thu phí, Xuất hóa đơn & Mở Barrier"]
-        P_Res["Cư Dân (quyen_user):<br/>• Đăng ký & Khôi phục MK OTP<br/>• Sửa hồ sơ & Đổi mật khẩu<br/>• Thêm/Sửa/Xóa xe căn hộ<br/>• Chọn/Đổi ô đỗ Cinema B1/B2<br/>• Gia hạn vé tháng<br/>• Lập đơn chuyển nhượng & Xem lịch sử"]
+    subgraph Lane2["PHÂN HỆ 2: GUARD / OPERATOR (be/roles/guard_user.py — Độc lập)"]
+        direction TB
+        G1(["Role 2: Bảo Vệ (Operator / Security)"])
+        G2["Quyền Bảo Vệ (quyen_baove):<br/>• Xem 2 Camera Live & Đổi AI Auto/In/Out<br/>• Check-in/Check-out & Nhập biển số tay<br/>• Đối chiếu ảnh Vào-Ra & Tra cứu xe (Chỉ xem)<br/>• Cảnh báo chặn xe Blacklist<br/>• Thu phí, Xuất hóa đơn & Mở/Đóng Barrier"]
+        G3["Trạm Trực, AI & API Riêng:<br/>Bàn trực Cổng (ẩn tab User/Duyệt đơn/Báo cáo)<br/>YOLOv8s + CRNN-CTC + EasyOCR<br/>/video_feed_*, /api/guard/*, /api/parking/checkin, checkout"]
+        G4[("DB Bảo Vệ & Cổng:<br/>quyen_baove, phan_quyen_bao_ve<br/>plates, detections, bang_gia<br/>parking_sessions, lich_su_ra_vao, hoa_don")]
+        G1 --> G2 --> G3 --> G4
     end
 
-    subgraph Frontend["3. Giao Diện Người Dùng (Client Layer)"]
-        FE_Auth["Cổng Xác Thực Dùng Chung (Auth UI)<br/>fe/templates/login.html, register.html, public_dashboard.html<br/>public/login.html, register.html, public-dashboard.html"]
-        FE_Ops["Bàn Trực & Quản Trị (/operations-dashboard)<br/>fe/templates/index.html | public/operations-dashboard.html<br/>(Tự ẩn tab User/Duyệt đơn/Báo cáo nếu là Bảo vệ)"]
-        FE_Res["Cổng Cư Dân (/resident-dashboard)<br/>fe/templates/resident_dashboard.html | public/resident-dashboard.html"]
+    subgraph Lane3["PHÂN HỆ 3: RESIDENT (be/roles/resident_user.py — Độc lập)"]
+        direction TB
+        R1(["Role 3: Cư Dân (Resident / User)"])
+        R2["Quyền Cư Dân (quyen_user):<br/>• Đăng ký & Khôi phục MK OTP<br/>• Sửa hồ sơ & Đổi mật khẩu<br/>• Thêm/Sửa/Xóa xe căn hộ mình<br/>• Chọn/Đổi ô đỗ Cinema B1/B2<br/>• Gia hạn vé tháng<br/>• Lập đơn chuyển nhượng & Xem lịch sử cá nhân"]
+        R3["Cổng Cư Dân & API Riêng:<br/>/resident-dashboard, /register, /forgot-password<br/>/api/resident/*, /api/parking/map"]
+        R4[("DB Cư Dân:<br/>quyen_user, cu_dan, quan_ly_otp_token<br/>phuong_tien, bai_do, chuyen_nhuong_xe")]
+        R1 --> R2 --> R3 --> R4
     end
 
-    subgraph Backend["4. Tầng Ứng Dụng & API"]
-        Flask["Python Flask Backend<br/>be/app.py (@login_required + role check)"]
-        Vercel["Vercel Node.js Serverless API<br/>vercel.json + api/[...slug].js + api/index.js"]
-    end
-
-    subgraph AI["5. AI Core & Thiết Bị Cổng"]
-        YOLO["YOLOv8s Detector<br/>be/yolov8s.pt"]
-        OCR["CRNN-CTC + EasyOCR Fallback<br/>be/plate_ocr_integration.py, artifacts/plate_ocr/"]
-        Barrier["Barrier Cổng Vào / Ra"]
-    end
-
-    subgraph DB["6. Cơ Sở Dữ Liệu MySQL (Dual-Sync)"]
-        DBCore["be/database.py & be/sql/httt_quan_ly_bai_xe_ai.sql<br/>Auth/RBAC: app_users, cu_dan, nhan_vien, quyen_admin, quyen_baove, quyen_user<br/>AI/Telemetry: plates, detections, parking_sessions, vehicles, statistics<br/>Nghiệp vụ: bai_do (100 ô B1/B2), phuong_tien, chuyen_nhuong_xe, hoa_don, bang_gia"]
-    end
-
-    Admin -->|"Đăng nhập"| FE_Auth
-    Guard -->|"Đăng nhập"| FE_Auth
-    Resident -->|"Đăng ký / Đăng nhập / OTP"| FE_Auth
-
-    Admin --> P_Adm --> FE_Ops
-    Guard --> P_Grd --> FE_Ops
-    Resident --> P_Res --> FE_Res
-
-    FE_Auth <--> Flask
-    FE_Ops <--> Flask
-    FE_Res <--> Flask
-    FE_Ops -.-> Vercel
-    FE_Res -.-> Vercel
-
-    Flask <--> YOLO --> OCR
-    Flask --> Barrier
-    Flask <--> DBCore
+    style Lane1 fill:#fff1f2,stroke:#dc2626,stroke-width:2px
+    style Lane2 fill:#eff6ff,stroke:#2563eb,stroke-width:2px
+    style Lane3 fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
 ```
 
 ---
