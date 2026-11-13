@@ -1940,6 +1940,26 @@
                     </small>
                 </div>
 
+                <div class="form-item" style="margin-top: 1rem;">
+                    <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span><i class="fa-solid fa-camera" style="color: #ef4444;"></i> Ảnh Đơn Xác Nhận Từ Phường / Thành Phố</span>
+                        <span style="font-size: 0.75rem; color: #0284c7; font-weight: 600;">Chụp &amp; đưa lên</span>
+                    </label>
+                    <input type="file" id="transferDocFileInput" class="form-input" accept="image/*" capture="environment" style="padding: 0.4rem; cursor: pointer;">
+                    <div id="transferDocPreviewWrap" style="display: none; margin-top: 0.5rem; text-align: center; border: 1px dashed var(--border); padding: 0.5rem; border-radius: 0.5rem; background: rgba(255,255,255,0.02);">
+                        <img id="transferDocPreviewImg" src="" alt="Xem trước ảnh đơn" style="max-height: 180px; max-width: 100%; border-radius: 4px; object-fit: contain; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.35rem; padding-top: 0.3rem; border-top: 1px dashed var(--border);">
+                            <span style="font-size: 0.75rem; color: #22c55e; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Đã chụp/tải ảnh đơn xác nhận</span>
+                            <button type="button" onclick="clearResidentTransferDocPhoto()" style="background: none; border: none; color: #ef4444; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                <i class="fa-solid fa-trash"></i> Xóa ảnh
+                            </button>
+                        </div>
+                    </div>
+                    <small style="color: var(--muted-foreground); font-size: 0.75rem; margin-top: 4px; display: block;">
+                        <i class="fa-solid fa-circle-info"></i> Cư dân chụp ảnh trực tiếp văn bản, đơn xác nhận đã được UBND Phường / Công An TP chấp thuận chuyển xe cho người mới để Ban Quản Trị đối chiếu phê duyệt.
+                    </small>
+                </div>
+
                 <div class="alert-box" id="transferAlert"></div>
 
                 <div class="modal-footer">
@@ -1949,6 +1969,27 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL XEM ẢNH ĐƠN CHUYỂN NHƯỢNG ĐÃ NỘP (RESIDENT LIGHTBOX) -->
+    <div class="modal" id="residentDocModal">
+        <div class="modal-content" style="max-width: 760px; width: 95%;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.4rem;">
+                    <i class="fa-solid fa-camera" style="color: #38bdf8;"></i> Ảnh Đơn Chuyển Xe Cư Dân Đã Chụp &amp; Đưa Lên
+                </h3>
+                <button class="btn btn-outline btn-sm" onclick="closeResidentDocModal()" style="border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+            </div>
+            <div style="text-align: center; padding: 0.75rem; background: #000000; border-radius: var(--radius); border: 1px solid var(--border); overflow: auto; max-height: 70vh;">
+                <img id="residentDocModalImg" src="" alt="Ảnh văn bản chuyển xe do cư dân chụp" style="max-width: 100%; height: auto; object-fit: contain; border-radius: 4px;">
+            </div>
+            <div class="modal-footer" style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 0.8rem; color: var(--muted-foreground);">
+                    <i class="fa-solid fa-shield-halved" style="color: #22c55e;"></i> Ảnh chụp thực tế lưu trữ trên hồ sơ chuyển nhượng
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="closeResidentDocModal()">Đóng</button>
+            </div>
         </div>
     </div>
 
@@ -2317,11 +2358,14 @@
             }).join('');
         }
 
+        let residentTransferList = [];
+
         async function loadResidentTransferRequests() {
             const tbody = document.getElementById('residentTransferRequestsTableBody');
             try {
                 const res = await fetch('/api/resident/transfer_requests');
                 const data = await res.json();
+                residentTransferList = Array.isArray(data) ? data : [];
 
                 if (!Array.isArray(data) || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 1.5rem; color: var(--muted-foreground);">Chưa có đơn chuyển nhượng nào</td></tr>';
@@ -2333,10 +2377,24 @@
                     if (r.TrangThai === 'Approved') stBadge = '<span class="badge badge-active"><i class="fa-solid fa-check"></i> Đã duyệt</span>';
                     if (r.TrangThai === 'Rejected') stBadge = '<span class="badge badge-danger"><i class="fa-solid fa-xmark"></i> Từ chối</span>';
 
+                    let docBadge = '';
+                    if (r.HinhAnhDon && r.HinhAnhDon.trim().length > 10) {
+                        docBadge = `
+                        <div style="margin-top: 0.25rem;">
+                            <button type="button" class="btn btn-outline btn-sm" style="padding: 0.12rem 0.45rem; font-size: 0.72rem; border-color: #38bdf8; color: #38bdf8; display: inline-flex; align-items: center; gap: 0.25rem;" onclick="openResidentDocModal('${r.id}')">
+                                <i class="fa-solid fa-camera"></i> Xem ảnh đã nộp
+                            </button>
+                        </div>
+                        `;
+                    }
+
                     return `
                     <tr>
                         <td><strong>${r.MaDon}</strong></td>
-                        <td><strong class="plate-box" style="font-size: 0.85rem; padding: 0.15rem 0.45rem; display: inline-block;">${r.BienSoXe}</strong></td>
+                        <td>
+                            <strong class="plate-box" style="font-size: 0.85rem; padding: 0.15rem 0.45rem; display: inline-block;">${r.BienSoXe}</strong>
+                            ${docBadge}
+                        </td>
                         <td>${r.TenCuDanChuyen} (${r.CanHoChuyen})</td>
                         <td>${r.TenCuDanNhan} (${r.CanHoNhan})</td>
                         <td>${r.created_str || '---'}</td>
@@ -2546,12 +2604,63 @@
         }
 
         // ================= MODAL CHUYỂN NHƯỢNG XE =================
+        let residentTransferDocBase64 = null;
+
+        document.getElementById('transferDocFileInput')?.addEventListener('change', (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    residentTransferDocBase64 = ev.target.result;
+                    const wrap = document.getElementById('transferDocPreviewWrap');
+                    const img = document.getElementById('transferDocPreviewImg');
+                    if (wrap && img) {
+                        img.src = residentTransferDocBase64;
+                        wrap.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                residentTransferDocBase64 = null;
+                const wrap = document.getElementById('transferDocPreviewWrap');
+                if (wrap) wrap.style.display = 'none';
+            }
+        });
+
         function openTransferModal(plate) {
+            residentTransferDocBase64 = null;
+            const fileInp = document.getElementById('transferDocFileInput');
+            if (fileInp) fileInp.value = '';
+            const wrap = document.getElementById('transferDocPreviewWrap');
+            if (wrap) wrap.style.display = 'none';
+
             document.getElementById('transferPlateHidden').value = plate;
             document.getElementById('transferPlateDisplay').textContent = plate;
             document.getElementById('recipientIdentifier').value = '';
             document.getElementById('transferAlert').style.display = 'none';
             document.getElementById('transferModal').classList.add('active');
+        }
+
+        function clearResidentTransferDocPhoto() {
+            residentTransferDocBase64 = null;
+            const fileInp = document.getElementById('transferDocFileInput');
+            if (fileInp) fileInp.value = '';
+            const wrap = document.getElementById('transferDocPreviewWrap');
+            if (wrap) wrap.style.display = 'none';
+        }
+
+        function openResidentDocModal(reqId) {
+            const r = (residentTransferList || []).find(item => item.id == reqId || item.MaDon == reqId);
+            if (!r || !r.HinhAnhDon) {
+                alert("Đơn này chưa có ảnh chụp văn bản");
+                return;
+            }
+            document.getElementById('residentDocModalImg').src = r.HinhAnhDon;
+            document.getElementById('residentDocModal').classList.add('active');
+        }
+
+        function closeResidentDocModal() {
+            document.getElementById('residentDocModal').classList.remove('active');
         }
 
         function closeTransferModal() {
@@ -2576,7 +2685,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         plate_text: plate,
-                        recipient_identifier: recipient
+                        recipient_identifier: recipient,
+                        document_image: residentTransferDocBase64
                     })
                 });
                 const data = await res.json();

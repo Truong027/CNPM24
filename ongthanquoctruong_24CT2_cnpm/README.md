@@ -1,170 +1,142 @@
-# HỆ THỐNG QUẢN LÝ BÃI ĐỖ XE THÔNG MINH ỨNG DỤNG AI (SMART PARKING)
+# Hệ Thống Quản Lý Bãi Đỗ Xe Thông Minh Ứng Dụng AI Nhận Diện Biển Số Xe (Smart Parking AI)
 
-- **Môn học**: Công nghệ phần mềm (CNPM24)
-- **Lớp**: 24CT2
+- **Đề tài**: Hệ thống Nhận diện Biển số xe & Quản lý Bãi đỗ xe Thông minh ứng dụng AI
+- **Môn học**: Công nghệ phần mềm (CNPM24) — **Lớp**: `24CT2`
 - **Sinh viên thực hiện**: Ông Thân Quốc Trường
-- **Trường**: Đại học Kiến trúc Đà Nẵng (DAU) - Khoa Công nghệ thông tin
+- **Đơn vị**: Khoa Công nghệ thông tin — Trường Đại học Kiến trúc Đà Nẵng (DAU)
+
+> Xem tài liệu tổng quan cấp repository tại [`../README.md`](../README.md).
 
 ---
 
-## 🏛️ Kiến Trúc Hệ Thống (System Architecture)
+## 🏛️ Kiến Trúc Hệ Thống & Phân Quyền 3 Vai Trò (System Architecture & 3-Role RBAC)
 
 ```mermaid
-graph TD
-    subgraph Users [Các tác nhân người dùng]
-        Admin[Quản trị viên / Admin]
-        Guard[Bảo vệ / Guard]
-        Resident[Cư dân / Resident]
+flowchart TB
+    subgraph Users["Các Tác Nhân & 3 Vai Trò Chính"]
+        direction LR
+        Public["Khách Vãng Lai (Public)"]
+        Admin["Role 1: Quản Trị Viên (Admin)<br/>be/roles/admin_user.py"]
+        Guard["Role 2: Bảo Vệ (Operator / Security)<br/>be/roles/guard_user.py"]
+        Resident["Role 3: Cư Dân (Resident / User)<br/>be/roles/resident_user.py"]
     end
 
-    subgraph Frontend [Giao diện - Frontend]
-        UI[Web Interface HTML/CSS/JS]
+    subgraph Frontend["Giao Diện Người Dùng (Client Layer)"]
+        FE_Public["Public & Auth<br/>fe/templates/public_dashboard.html, login.html, register.html<br/>public/public-dashboard.html, login.html, register.html"]
+        FE_Ops["Bàn Trực & Quản Trị (/operations-dashboard)<br/>fe/templates/index.html | public/index.html, operations-dashboard.html"]
+        FE_Res["Cổng Cư Dân (/resident-dashboard)<br/>fe/templates/resident_dashboard.html | public/resident-dashboard.html"]
     end
 
-    subgraph Backend [Xử lý - Backend Flask]
-        API[RESTful API & Core Logic]
-        AI[AI Core - YOLOv8 & OCR]
+    subgraph Backend["Tầng Ứng Dụng & API"]
+        Flask["Python Flask Backend<br/>be/app.py"]
+        Vercel["Vercel Node.js Serverless API<br/>vercel.json + api/[...slug].js + api/index.js"]
     end
 
-    subgraph Database [Cơ sở dữ liệu - MySQL]
-        DB[(MySQL Database)]
+    subgraph AI["AI Core & Thiết Bị Cổng"]
+        YOLO["YOLOv8s Detector<br/>be/yolov8s.pt"]
+        OCR["CRNN-CTC + EasyOCR Fallback<br/>be/plate_ocr_integration.py, artifacts/plate_ocr/"]
+        Barrier["Barrier Cổng Vào / Ra"]
     end
 
-    Admin -->|Quản lý hệ thống, Xem thống kê| UI
-    Guard -->|Kiểm soát xe ra/vào, Giám sát| UI
-    Resident -->|Quản lý xe, Sơ đồ bãi đỗ| UI
+    subgraph DB["Cơ Sở Dữ Liệu MySQL (Dual-Sync)"]
+        DBCore["be/database.py & be/sql/httt_quan_ly_bai_xe_ai.sql<br/>Auth/RBAC: app_users, cu_dan, nhan_vien, quyen_*, phan_quyen_*<br/>AI/Telemetry: plates, detections, parking_sessions, vehicles, statistics<br/>Nghiệp vụ: bai_do (100 ô B1/B2), phuong_tien, chuyen_nhuong_xe, hoa_don, bang_gia"]
+    end
 
-    UI <-->|HTTP/REST| API
-    API <-->|Xử lý ảnh biển số| AI
-    API <-->|SQL Queries| DB
+    Public --> FE_Public
+    Admin --> FE_Ops
+    Guard --> FE_Ops
+    Resident --> FE_Res
+
+    FE_Public <--> Flask
+    FE_Ops <--> Flask
+    FE_Res <--> Flask
+    FE_Ops -.-> Vercel
+    FE_Res -.-> Vercel
+
+    Flask <--> YOLO --> OCR
+    Flask --> Barrier
+    Flask <--> DBCore
 ```
 
 ---
 
-## 🏗️ Cấu Trúc Dự Án (Project Structure)
+## 👥 Chi Tiết 3 Vai Trò Trong Đề Tài
 
-Dự án được tái cấu trúc phân tầng rõ ràng giữa **Frontend**, **Backend**, **Kiểm thử (Tests)** và **Tài liệu (Docs)**:
+1. **Role 1 — Quản trị viên (`Admin` | `be/roles/admin_user.py` -> `/operations-dashboard`)**:
+   - Quản lý tài khoản & phân quyền (`app_users`, `nhan_vien`, `cu_dan`, `quyen_admin`, `phan_quyen_admin`): tạo Bảo vệ (`/api/admin/guards/create`), tạo Cư dân (`/api/admin/residents/create`), sửa thông tin & đổi vai trò (`/api/admin/users/update`), khóa/mở tài khoản (`/api/admin/users/toggle_status`), đặt lại mật khẩu (`/api/admin/users/reset_password`), xóa người dùng.
+   - Phê duyệt đơn chuyển nhượng xe (`/api/admin/transfer_requests`, `/api/admin/transfer_requests/<id>/action`, `/update_doc` -> `chuyen_nhuong_xe`).
+   - Quản lý danh mục phương tiện & phân nhóm `Normal / Whitelist / Blacklist` (`/api/vehicles`, `/api/vehicles/save`, `/api/vehicles/delete/<plate>` -> `vehicles`, `plates`).
+   - Quản lý sơ đồ 100 ô đỗ Cinema (`Ham_B1`, `Ham_B2`: `/api/parking/map` -> `bai_do`).
+   - Xem thống kê KPI, doanh thu, giờ cao điểm, xuất CSV & test AI ảnh tĩnh (`/get_dashboard_summary`, `/api/analytics/revenue`, `/api/analytics/peak-hours`, `/api/report_export`, `/api/recognize_image`).
+
+2. **Role 2 — Nhân viên Bảo vệ (`Operator` / `Security` | `be/roles/guard_user.py` -> `/operations-dashboard`)**:
+   - Giám sát Camera Live Stream (`/video_feed_webcam`, `/video_feed_phone`) & chuyển đổi chế độ camera (`/api/guard/camera_mode`, `/api/guard/latest_event`).
+   - Kiểm soát xe vào/ra, đối chiếu ảnh chụp lúc vào và lúc ra (`/api/guard/verification/<plate>`, `/api/guard/manual_entry`, `/api/parking/checkin`, `/api/parking/checkout/<id>`).
+   - Tiếp nhận cảnh báo đỏ xe `Blacklist`, từ chối mở cổng.
+   - Tra cứu cước phí gửi xe, thu tiền & kích hoạt mở/đóng Barrier (`/api/guard/collect_fee`, `/api/guard/barrier/trigger` -> `bang_gia`, `hoa_don`, `lich_su_ra_vao`, `quyen_baove`, `phan_quyen_bao_ve`).
+
+3. **Role 3 — Cư dân (`Resident` / `User` | `be/roles/resident_user.py` -> `/resident-dashboard`)**:
+   - Đăng ký tài khoản cư dân (`/register`, `/api/register`), Đăng nhập (`/login`, `/api/login`), Quên & Đặt lại mật khẩu qua OTP (`/forgot-password`, `/reset-password` -> `quan_ly_otp_token`).
+   - Cập nhật hồ sơ & đổi mật khẩu (`/api/resident/profile`, `/api/resident/update_profile`, `/api/resident/change_password`).
+   - Quản lý xe căn hộ (`/api/resident/vehicles`, `/api/resident/add_vehicle`, `PUT/DELETE /api/resident/vehicles/<plate>` -> `phuong_tien`, `vehicles`).
+   - Xem sơ đồ bãi đỗ xe Cinema `Ham_B1` & `Ham_B2`, chọn / đổi vị trí đỗ (`/api/parking/map`, `/api/resident/change_slot` -> `bai_do`).
+   - Gia hạn vé tháng, lập/theo dõi đơn chuyển nhượng xe & xem lịch sử ra/vào cá nhân (`/api/resident/renew_ticket`, `/api/resident/transfer_vehicle`, `/api/resident/transfer_requests`, `/api/resident/history`).
+
+---
+
+## 🏗️ Cấu Trúc Dự Án
 
 ```text
 ongthanquoctruong_24CT2_cnpm/
-├── fe/                               # PHÂN HỆ FRONTEND (Giao diện người dùng)
-│   ├── templates/                    # Các mẫu giao diện Jinja2 (HTML5 / Bootstrap 5 / Modern CSS)
-│   │   ├── index.html                # Bàn trực bảo vệ & Bảng điều khiển quản trị (Admin/Guard)
-│   │   ├── login.html                # Giao diện Đăng nhập phân quyền
-│   │   ├── register.html             # Đăng ký tài khoản Cư dân trực tuyến
-│   │   ├── forgot_password.html      # Yêu cầu đặt lại mật khẩu
-│   │   ├── reset_password.html       # Đặt lại mật khẩu mới
-│   │   └── resident_dashboard.html   # Cổng dịch vụ Cư dân & Sơ đồ bãi xe Cinema Seat Style
-│   ├── static/                       # Tài nguyên tĩnh (CSS, JS, Icons, Images)
-│   └── README.md                     # Hướng dẫn chi tiết phân hệ Frontend
-│
-├── be/                               # PHÂN HỆ BACKEND (Python Flask + AI Core + MySQL)
-│   ├── app.py                        # Web Server chính, RESTful APIs, Video Streaming & Auth
-│   ├── database.py                   # Module kết nối và truy vấn CSDL MySQL
-│   ├── setup_bai_do.py               # Script tự động khởi tạo 100 vị trí đỗ ô tô 2 tầng hầm
-│   ├── crnn_ocr_wrapper.py           # Wrapper tương thích EasyOCR / CRNN OCR
-│   ├── plate_ocr_inference.py        # Suy luận nhận diện ký tự quang học biển số xe
-│   ├── plate_ocr_integration.py      # Cầu nối tích hợp giữa mô hình YOLOv8 và OCR
-│   ├── yolov8s.pt                    # Checkpoint YOLOv8 nhận diện biển số
-│   ├── artifacts/                    # Mô hình học sâu đã huấn luyện
-│   │   └── plate_ocr/
-│   │       ├── model.pt              # Trọng số mô hình CRNN-CTC
-│   │       └── vocab.json            # Bảng từ điển ký tự biển số Việt Nam
-│   ├── sql/                          # Cấu trúc CSDL và Dữ liệu mẫu
-│   │   ├── httt_quan_ly_bai_xe_ai.sql# Lược đồ bảng cơ sở dữ liệu hoàn chỉnh
-│   │   └── bien_so_xe_sample.sql     # Bộ dữ liệu mẫu biển số & tỉnh thành
-│   ├── scripts/                      # Các tiện ích quản trị & huấn luyện AI
-│   │   ├── create_database.py        # Khởi tạo CSDL MySQL
-│   │   ├── import_data.py            # Nạp dữ liệu ban đầu
-│   │   ├── check_database.py         # Kiểm tra tính toàn vẹn CSDL
-│   │   ├── check_db.py               # Kiểm tra kết nối nhanh
-│   │   ├── generate_ocr_dataset.py   # Sinh tập dữ liệu huấn luyện OCR
-│   │   ├── label_ocr_dataset.py      # Gán nhãn dataset
-│   │   ├── ocr_train_plate_recognizer.py    # Huấn luyện mô hình CRNN
-│   │   ├── ocr_train_plate_recognizer_v2.py # Huấn luyện tối ưu 50 epochs
-│   │   ├── ocr_train_quick.py        # Huấn luyện nhanh 3 epochs
-│   │   └── prepare_archive_dataset.py# Chuẩn bị dữ liệu từ kho lưu trữ
-│   ├── requirements.txt              # Thư viện phụ thuộc Backend
-│   ├── .env.example                  # Mẫu biến môi trường CSDL & Secret Key
-│   └── README.md                     # Hướng dẫn phân hệ Backend
-│
-├── tests/                            # BỘ KIỂM THỬ TỰ ĐỘNG (Test Suite)
-│   ├── test_cinema_parking.py        # Test Unit & Integration luồng bãi đỗ Cinema (100 ô B1/B2)
-│   ├── test_save_plate.py            # Test ghi nhận biển số và lưu trữ CSDL
-│   ├── test_get_plates_func.py       # Test truy vấn danh sách xe và trạng thái
-│   ├── test_api_simple.py            # Test endpoint REST API
-│   ├── test_detection.py             # Test suy luận mô hình AI YOLOv8
-│   ├── test_http_request.py          # Test luồng phát video streaming
-│   ├── test_30f.jpg                  # Ảnh mẫu biển số ô tô phục vụ test
-│   └── README.md                     # Hướng dẫn chạy các kịch bản kiểm thử
-│
-├── docs/                             # TÀI LIỆU DỰ ÁN & THIẾT KẾ PHẦN MỀM
-│   ├── KHAO_SAT_YEU_CAU.md           # Bảng khảo sát yêu cầu chức năng (FR) & phi chức năng (NFR)
-│   ├── KHAO_SAT_YEU_CAU_CNPM24.xlsx  # Bảng tính Excel khảo sát chi tiết
-│   ├── HE_THONG_VA_LUONG_XU_LY.md    # Đặc tả luồng xử lý toàn diện hệ thống
-│   ├── ERD_DIAGRAM.md                # Thiết kế thực thể liên kết CSDL (ERD)
-│   ├── USE_CASE_DIAGRAMS.puml        # Biểu đồ Use Case hệ thống (PlantUML)
-│   ├── USE_CASE_ACTORS_DETAILED.puml # Phân rã quyền hạn chi tiết từng tác nhân
-│   └── export_requirements_excel.py  # Script xuất báo cáo khảo sát ra Excel
-│
-├── app.py                            # Entrypoint chuyển tiếp khởi chạy toàn hệ thống
-├── requirements.txt                  # Danh mục thư viện Python dùng chung
-└── .env.example                      # Template cấu hình môi trường
+├── api/                              # Vercel Serverless API (index.js, [...slug].js)
+├── public/                           # Giao diện tĩnh cho Vercel SPA deployment
+├── fe/                               # Frontend Jinja2 Templates & Static assets (Local Flask)
+├── be/                               # Backend Flask + YOLOv8 + CRNN/EasyOCR + MySQL + roles/ + sql/ + scripts/
+├── tests/                            # Bộ kiểm thử tự động (test_full_features.py, test_user_management.py, ...)
+├── docs/                             # Tuần Tự/, LUONGXULY/, PERT/, Wireframe/, Word báo cáo/, drawio/
+├── doc_images/                       # Ảnh sơ đồ & UI demo dùng cho báo cáo
+├── schema.dbml                       # Lược đồ quan hệ DBML phục vụ GitDiagram
+├── vercel.json                       # Cấu hình định tuyến Vercel
+├── package.json                      # Thông tin package phục vụ Vercel/static serve
+├── requirements.txt                  # Thư viện Python cho Backend & AI
+└── .env.example                      # Mẫu biến môi trường MySQL & SECRET_KEY
 ```
 
 ---
 
-## 🚀 Hướng Dẫn Cài Đặt & Khởi Chạy
+## 🚀 Hướng Dẫn Cài Đặt & Khởi Chạy Local
 
-### 1. Kích hoạt Môi trường ảo (Virtual Environment)
-```powershell
-.venv\Scripts\activate
-```
-
-### 2. Cài đặt các thư viện cần thiết
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Cấu hình Cơ sở dữ liệu MySQL
-1. Khởi động dịch vụ MySQL (XAMPP / MySQL Community Server).
-2. Tạo file `.env` từ `.env.example` và điều chỉnh thông tin:
-   ```env
-   DB_HOST=localhost
-   DB_USER=root
-   DB_PASSWORD=your_password
-   DB_NAME=HTTT_QuanLyBaiXe_AI
-   DB_PORT=3306
-   APP_SECRET_KEY=cnpm24-smart-parking-secret-key
+1. **Kích hoạt môi trường ảo:**
+   ```powershell
+   .venv\Scripts\activate
    ```
-3. Khởi tạo dữ liệu bãi đỗ xe kiểu Cinema:
+2. **Cài đặt các thư viện cần thiết:**
    ```bash
+   pip install -r requirements.txt
+   ```
+3. **Cấu hình MySQL (tạo `.env` từ `.env.example`):**
+   ```env
+   MYSQL_HOST=localhost
+   MYSQL_USER=root
+   MYSQL_PASSWORD=your_mysql_password
+   MYSQL_DATABASE=HTTT_QuanLyBaiXe_AI
+   MYSQL_PORT=3306
+   APP_SECRET_KEY=dev-secret-change-me
+   ```
+   Khởi tạo bảng và dữ liệu 100 chỗ đỗ:
+   ```powershell
    python be/setup_bai_do.py
    ```
-
-### 4. Khởi chạy Ứng dụng Web
-Bạn có thể khởi chạy server bằng một trong hai cách:
-```powershell
-# Cách 1: Khởi chạy từ thư mục gốc
-python app.py
-
-# Cách 2: Khởi chạy trực tiếp Backend
-python be/app.py
-```
-👉 Truy cập giao diện tại: **http://127.0.0.1:5000**
+4. **Khởi chạy Server Flask:**
+   ```powershell
+   python be/app.py
+   ```
+   Truy cập: **http://127.0.0.1:5000**
 
 ---
 
 ## 🧪 Chạy Kiểm Thử (Run Tests)
 
-Toàn bộ các file kiểm thử được tập trung trong thư mục [`tests/`](file:///d:/CNPM24CT2_OngThanQuocTruong/ongthanquoctruong_24CT2_cnpm/tests):
-
 ```powershell
-# Chạy toàn bộ test suite
 python -m unittest discover -s tests -p "test_*.py"
-
-# Hoặc chạy kiểm thử tính năng cụ thể
-python tests/test_cinema_parking.py
-python tests/test_save_plate.py
-python tests/test_get_plates_func.py
 ```

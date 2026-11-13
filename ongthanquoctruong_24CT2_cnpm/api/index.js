@@ -25,99 +25,143 @@ let mockStats = {
     { hour_label: "19h", count: 22, height_pct: 50 }
   ],
   recent_sessions: [
-    { plate_text: "51F-889.99", status: "Parked", status_label: "Đang trong bãi", time_str: "09:30 15/10" },
-    { plate_text: "29A-678.90", status: "Completed", status_label: "Đã hoàn tất", time_str: "14:15 14/10" }
+    { plate_text: "30F-123.45", status: "Parked", status_label: "Đang trong bãi", time_str: "09:30 05/11" },
+    { plate_text: "29A-678.90", status: "Completed", status_label: "Đã hoàn tất", time_str: "14:15 04/11" }
   ]
 };
 
 let mockTransfers = [
   {
-    id: "TRF-089",
-    plate_text: "51F-889.99",
-    vehicle_type: "Ô tô 4 chỗ (Mercedes C200)",
-    from_owner: "Nguyễn Văn A",
+    id: 1,
+    MaDon: "DON_1793845989451",
+    BienSo: "30F-123.45",
+    plate_text: "30F-123.45",
+    vehicle_type: "Ô tô con",
+    from_owner: "Lê Văn Cư Dân",
+    HoTenNguoiChuyen: "Lê Văn Cư Dân",
+    from_apartment: "A-1205",
+    MaCanHoChuyen: "A-1205",
     from_phone: "0901234567",
-    from_apartment: "12.04",
-    to_owner: "Trần Thị B",
-    to_phone: "0912345678",
-    to_apartment: "08.02",
-    created_at: "15/10/2026 09:30",
-    status: "Pending",
-    status_label: "Chờ BQT Duyệt",
-    note: "Bàn giao căn hộ chuyển quyền gửi ô tô"
-  },
-  {
-    id: "TRF-088",
-    plate_text: "29A-678.90",
-    vehicle_type: "Xe máy (Honda SH 150i)",
-    from_owner: "Lê Hoàng C",
-    from_phone: "0934567890",
-    from_apartment: "05.11",
-    to_owner: "Phạm Minh D",
-    to_phone: "0945678901",
-    to_apartment: "05.11",
-    created_at: "14/10/2026 14:15",
-    status: "Pending",
-    status_label: "Chờ BQT Duyệt",
-    note: "Chuyển nhượng trong cùng căn hộ"
-  },
-  {
-    id: "TRF-085",
-    plate_text: "30E-123.45",
-    vehicle_type: "Ô tô 5 chỗ (Mazda CX-5)",
-    from_owner: "Hoàng Văn E",
-    from_phone: "0966778899",
-    from_apartment: "03.01",
-    to_owner: "Đỗ Thị G",
-    to_phone: "0977889900",
-    to_apartment: "09.05",
-    created_at: "12/10/2026 16:00",
+    to_owner: "Trần Thị Cư Dân",
+    HoTenNguoiNhan: "Trần Thị Cư Dân",
+    to_apartment: "A-1206",
+    MaCanHoNhan: "A-1206",
+    to_phone: "0907654321",
+    created_at: "05/11/2026 09:33",
+    NgayGui: "05/11/2026 09:33",
     status: "Approved",
-    status_label: "Đã Duyệt",
-    note: "Đã xác thực hợp đồng chuyển nhượng"
+    TrangThai: "Approved",
+    status_label: "Đã duyệt",
+    NguoiDuyet: "admin",
+    note: "Ban Quản Trị đã duyệt chuyển nhượng theo quy định",
+    GhiChu: "Ban Quản Trị đã duyệt chuyển nhượng theo quy định",
+    HinhAnhDon: ""
+  },
+  {
+    id: 2,
+    MaDon: "DON_1793845989867",
+    BienSo: "30F-123.45",
+    plate_text: "30F-123.45",
+    vehicle_type: "Ô tô con",
+    from_owner: "Trần Thị Cư Dân",
+    HoTenNguoiChuyen: "Trần Thị Cư Dân",
+    from_apartment: "A-1206",
+    MaCanHoChuyen: "A-1206",
+    from_phone: "0907654321",
+    to_owner: "Lê Văn Cư Dân",
+    HoTenNguoiNhan: "Lê Văn Cư Dân",
+    to_apartment: "A-1205",
+    MaCanHoNhan: "A-1205",
+    to_phone: "0901234567",
+    created_at: "05/11/2026 09:33",
+    NgayGui: "05/11/2026 09:33",
+    status: "Pending",
+    TrangThai: "Pending",
+    status_label: "Chờ duyệt",
+    NguoiDuyet: "---",
+    note: "Hồ sơ chuyển giao quyền sở hữu xe",
+    GhiChu: "Hồ sơ chuyển giao quyền sở hữu xe",
+    HinhAnhDon: ""
   }
 ];
 
 let mockUsers = [
   {
-    phone: "0901234567",
-    username: "cudan_1204",
-    full_name: "Nguyễn Văn A",
-    email: "nguyenvana@gmail.com",
-    role: "Resident",
-    status: "Active",
-    apartment: "12.04",
-    shift: "",
-    created_at: "10/01/2026"
-  },
-  {
-    phone: "0987654321",
-    username: "bv_truongca",
-    full_name: "Trần Bảo Vệ",
-    email: "tranbaove@parking.vn",
-    role: "Operator",
-    status: "Active",
-    apartment: "",
-    shift: "Ca 1 (06h - 14h) - Cổng chính",
-    created_at: "15/12/2025"
-  },
-  {
-    phone: "0988888888",
-    username: "admin_bqt",
-    full_name: "Ban Quản Trị Tòa Nhà",
-    email: "bqt@building.com",
+    id: 1,
+    phone: "0900000001",
+    username: "admin",
+    full_name: "Ban Quản Trị / Admin",
+    email: "admin@system.com",
     role: "Admin",
     status: "Active",
+    is_active: 1,
     apartment: "",
     shift: "Văn phòng BQT Tầng 1",
-    created_at: "01/10/2025"
+    created_at: "01/10/2026"
+  },
+  {
+    id: 7,
+    phone: "0912345678",
+    username: "baove1",
+    full_name: "Nguyễn Văn An (Bảo vệ)",
+    email: "an.nguyen@security.com",
+    role: "Operator",
+    status: "Active",
+    is_active: 1,
+    apartment: "",
+    shift: "Ca Sáng (06:00 - 14:00)",
+    created_at: "28/08/2026"
+  },
+  {
+    id: 8,
+    phone: "0923456789",
+    username: "baove2",
+    full_name: "Trần Văn Bình (Bảo vệ)",
+    email: "binh.tran@security.com",
+    role: "Operator",
+    status: "Active",
+    is_active: 1,
+    apartment: "",
+    shift: "Ca Chiều (14:00 - 22:00)",
+    created_at: "28/08/2026"
+  },
+  {
+    id: 27,
+    phone: "0901234567",
+    username: "cudan1",
+    full_name: "Lê Văn Cư Dân",
+    email: "cudan1@resident.com",
+    role: "Resident",
+    status: "Active",
+    is_active: 1,
+    apartment: "A-1205",
+    shift: "",
+    created_at: "05/11/2026"
+  },
+  {
+    id: 28,
+    phone: "0907654321",
+    username: "cudan2",
+    full_name: "Trần Thị Cư Dân",
+    email: "cudan2@resident.com",
+    role: "Resident",
+    status: "Active",
+    is_active: 1,
+    apartment: "A-1206",
+    shift: "",
+    created_at: "05/11/2026"
   }
 ];
 
 let mockVehicles = [
-  { id: 1, plate_text: "51F-889.99", vehicle_type: "Ô tô 4 chỗ", owner_name: "Nguyễn Văn A", apartment: "12.04", slot_code: "B1-05", status: "Active", expiry: "31/12/2026" },
-  { id: 2, plate_text: "29A-678.90", vehicle_type: "Xe máy", owner_name: "Lê Hoàng C", apartment: "05.11", slot_code: "B2-12", status: "Active", expiry: "15/11/2026" },
-  { id: 3, plate_text: "30E-123.45", vehicle_type: "Ô tô 5 chỗ", owner_name: "Đỗ Thị G", apartment: "09.05", slot_code: "B1-18", status: "Active", expiry: "28/02/2027" }
+  { id: 1, plate_text: "30F-123.45", vehicle_type: "Ô tô con", owner_name: "Lê Văn Cư Dân", apartment: "A-1205", slot_code: "B1-A01", status: "Hoạt động", color: "Trắng" },
+  { id: 2, plate_text: "29A-678.90", vehicle_type: "Ô tô con", owner_name: "Trần Thị Cư Dân", apartment: "A-1206", slot_code: "B1-A02", status: "Hoạt động", color: "Đen" },
+  { id: 3, plate_text: "51F-889.99", vehicle_type: "Ô tô con", owner_name: "Nguyễn Văn An", apartment: "A-1207", slot_code: "B1-A03", status: "Hoạt động", color: "Xám" }
+];
+
+let mockSessions = [
+  { id: 1, plate_text: "30F-123.45", vehicle_type: "Ô tô con", owner_name: "Lê Văn Cư Dân", apartment: "A-1205", slot_code: "B1-A01", check_in: "05/11/2026 08:30", check_out: null, status: "Parked", fee: "0 đ (Vé tháng)" },
+  { id: 2, plate_text: "29A-678.90", vehicle_type: "Ô tô con", owner_name: "Trần Thị Cư Dân", apartment: "A-1206", slot_code: "B1-A02", check_in: "04/11/2026 14:15", check_out: "04/11/2026 18:20", status: "Completed", fee: "0 đ (Vé tháng)" }
 ];
 
 async function getRequestBody(req) {
@@ -144,9 +188,18 @@ export default async function handler(req, res) {
     return;
   }
 
-  const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
-  let pathname = url.pathname;
-  if (!pathname.startsWith("/api")) pathname = "/api" + pathname;
+  let pathname = "";
+  if (req.query && req.query.path) {
+    pathname = "/api/" + req.query.path;
+  } else if (req.query && req.query.slug) {
+    const slugParts = Array.isArray(req.query.slug) ? req.query.slug : [req.query.slug];
+    pathname = "/api/" + slugParts.join("/");
+  } else {
+    const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
+    pathname = url.pathname;
+    if (!pathname.startsWith("/api")) pathname = "/api" + pathname;
+  }
+  pathname = pathname.split("?")[0].replace(/\/+$/, "");
 
   // 1. PUBLIC DASHBOARD
   if (pathname === "/api/public/dashboard" || pathname === "/api/public/stats") {
@@ -164,26 +217,39 @@ export default async function handler(req, res) {
     }
 
     let role = "Admin";
-    let fullName = "Ban Quản Trị Admin";
-    let redirectUrl = "/operations-dashboard";
+    let fullName = "Ban Quản Trị / Admin";
+    let redirectUrl = "/";
+    let username = "admin";
 
-    if (phone.toLowerCase().includes("cudan") || phone === "0901234567") {
+    if (phone === "0901234567" || phone === "cudan1") {
       role = "Resident";
-      fullName = "Cư Dân Nguyễn Văn A";
+      fullName = "Lê Văn Cư Dân";
+      username = "cudan1";
       redirectUrl = "/resident-dashboard";
-    } else if (phone.toLowerCase().includes("bv") || phone === "0987654321") {
+    } else if (phone === "0907654321" || phone === "cudan2") {
+      role = "Resident";
+      fullName = "Trần Thị Cư Dân";
+      username = "cudan2";
+      redirectUrl = "/resident-dashboard";
+    } else if (phone === "0912345678" || phone === "baove1") {
       role = "Operator";
-      fullName = "Trần Bảo Vệ (Ca 1)";
+      fullName = "Nguyễn Văn An (Bảo vệ)";
+      username = "baove1";
+      redirectUrl = "/operations-dashboard";
+    } else if (phone === "0923456789" || phone === "baove2") {
+      role = "Operator";
+      fullName = "Trần Văn Bình (Bảo vệ)";
+      username = "baove2";
       redirectUrl = "/operations-dashboard";
     }
 
     const userObj = {
       id: 1,
-      username: phone,
+      username: username,
       full_name: fullName,
       phone: phone,
       role: role,
-      email: `${phone}@parking.vn`
+      email: `${username}@parking.vn`
     };
 
     res.setHeader("Set-Cookie", `auth_user=${encodeURIComponent(JSON.stringify(userObj))}; Path=/; HttpOnly; SameSite=Lax`);
@@ -195,10 +261,10 @@ export default async function handler(req, res) {
       authenticated: true,
       user: {
         id: 1,
-        username: "admin_bqt",
-        full_name: "Ban Quản Trị Tòa Nhà",
+        username: "admin",
+        full_name: "Ban Quản Trị / Admin",
         role: "Admin",
-        email: "admin@parking.vn"
+        email: "admin@system.com"
       }
     });
   }
@@ -221,12 +287,12 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       user: {
-        id: 1,
-        username: "cudan_1204",
-        full_name: "Nguyễn Văn A",
+        id: 27,
+        username: "cudan1",
+        full_name: "Lê Văn Cư Dân",
         phone: "0901234567",
-        email: "nguyenvana@gmail.com",
-        apartment: "12.04",
+        email: "cudan1@resident.com",
+        apartment: "A-1205",
         role: "Resident"
       }
     });
@@ -235,127 +301,231 @@ export default async function handler(req, res) {
   if (pathname === "/api/resident/vehicles") {
     return res.status(200).json({
       success: true,
-      vehicles: mockVehicles.filter(v => v.apartment === "12.04")
+      vehicles: mockVehicles.filter(v => v.apartment === "A-1205")
     });
   }
 
-  if (pathname === "/api/resident/transfer_requests" || pathname === "/api/resident/transfer-request") {
+  if (pathname === "/api/resident/transfer_requests" || pathname === "/api/resident/transfer-request" || pathname === "/api/resident/transfer_vehicle") {
     if (req.method === "POST") {
       const body = await getRequestBody(req);
-      const newId = `TRF-${Math.floor(100 + Math.random() * 900)}`;
+      const newId = `DON_${Date.now()}`;
       const newTransfer = {
-        id: newId,
-        plate_text: body.plate_text || "51F-889.99",
-        vehicle_type: "Ô tô 4 chỗ",
-        from_owner: "Nguyễn Văn A",
+        id: mockTransfers.length + 1,
+        MaDon: newId,
+        plate_text: body.plate_text || "30F-123.45",
+        BienSo: body.plate_text || "30F-123.45",
+        vehicle_type: "Ô tô con",
+        from_owner: "Lê Văn Cư Dân",
+        HoTenNguoiChuyen: "Lê Văn Cư Dân",
         from_phone: "0901234567",
-        from_apartment: "12.04",
-        to_owner: body.to_owner || "Trần Thị B",
-        to_phone: body.to_phone || "0912345678",
-        to_apartment: body.to_apartment || "08.02",
+        from_apartment: "A-1205",
+        MaCanHoChuyen: "A-1205",
+        to_owner: body.to_owner || "Trần Thị Cư Dân",
+        HoTenNguoiNhan: body.to_owner || "Trần Thị Cư Dân",
+        to_phone: body.to_phone || "0907654321",
+        to_apartment: body.to_apartment || "A-1206",
+        MaCanHoNhan: body.to_apartment || "A-1206",
         created_at: new Date().toLocaleString("vi-VN"),
+        NgayGui: new Date().toLocaleString("vi-VN"),
         status: "Pending",
-        status_label: "Chờ BQT Duyệt",
-        note: body.note || "Đơn chuyển nhượng căn hộ"
+        TrangThai: "Pending",
+        status_label: "Chờ duyệt",
+        NguoiDuyet: "---",
+        note: body.note || "Đơn chuyển nhượng quyền sử dụng xe",
+        GhiChu: body.note || "Đơn chuyển nhượng quyền sử dụng xe",
+        HinhAnhDon: body.document_image || body.hinh_anh_don || ""
       };
       mockTransfers.unshift(newTransfer);
-      return res.status(200).json({ success: true, message: "Đã gửi đơn chuyển nhượng!", transfer: newTransfer });
+      return res.status(200).json({ success: true, message: "Đã gửi đơn chuyển nhượng thành công!", transfer: newTransfer, request: newTransfer });
     }
-    return res.status(200).json({ success: true, requests: mockTransfers });
+    return res.status(200).json(mockTransfers);
   }
 
   if (pathname === "/api/resident/history") {
     return res.status(200).json({
       success: true,
       history: [
-        { plate_text: "51F-889.99", check_in: "08:15 17/10", check_out: "Đang đỗ", gate: "Cổng Vào #1", status: "Parked", fee: "0 đ (Vé tháng)" },
-        { plate_text: "51F-889.99", check_in: "07:30 16/10", check_out: "18:45 16/10", gate: "Cổng Ra #1", status: "Completed", fee: "0 đ (Vé tháng)" },
-        { plate_text: "51F-889.99", check_in: "08:00 15/10", check_out: "17:30 15/10", gate: "Cổng Ra #1", status: "Completed", fee: "0 đ (Vé tháng)" }
+        { plate_text: "30F-123.45", check_in: "08:15 05/11", check_out: "Đang đỗ", gate: "Cổng Vào #1", status: "Parked", fee: "0 đ (Vé tháng)" },
+        { plate_text: "30F-123.45", check_in: "07:30 04/11", check_out: "18:45 04/11", gate: "Cổng Ra #1", status: "Completed", fee: "0 đ (Vé tháng)" }
       ]
     });
   }
 
   // 4. ADMIN TRANSFERS & USERS
   if (pathname === "/api/admin/transfers" || pathname === "/api/admin/transfer_requests" || pathname === "/api/admin/transfer-requests") {
-    return res.status(200).json({ success: true, transfers: mockTransfers, requests: mockTransfers });
+    return res.status(200).json(mockTransfers);
+  }
+
+  if (pathname.includes("/update_doc")) {
+    const body = await getRequestBody(req);
+    const urlParts = pathname.split('/');
+    const docIdx = urlParts.indexOf('update_doc');
+    const pathId = docIdx > 0 ? urlParts[docIdx - 1] : null;
+    const target = mockTransfers.find(t => t.id == pathId || t.MaDon == pathId);
+    if (target) {
+      target.HinhAnhDon = body.document_image || "";
+    }
+    return res.status(200).json({ success: true, message: "Đã cập nhật ảnh đơn thành công!" });
   }
 
   if (pathname.includes("/action") || pathname === "/api/admin/transfers/approve" || pathname === "/api/admin/transfers/reject") {
     const body = await getRequestBody(req);
-    const id = body.id || body.request_id || "TRF-089";
+    const urlParts = pathname.split('/');
+    const actionIdx = urlParts.indexOf('action');
+    const pathId = actionIdx > 0 ? urlParts[actionIdx - 1] : null;
+    const id = body.id || body.request_id || pathId;
     const action = body.action || (pathname.includes("approve") ? "approve" : "reject");
-    const target = mockTransfers.find(t => t.id === id);
+    const target = mockTransfers.find(t => t.id == id || t.MaDon == id);
     if (target) {
+      target.note = body.note || target.note;
+      target.GhiChu = body.note || target.GhiChu;
+      target.NguoiDuyet = "admin";
       if (action === "approve") {
         target.status = "Approved";
-        target.status_label = "Đã Duyệt";
+        target.TrangThai = "Approved";
+        target.status_label = "Đã duyệt";
       } else {
         target.status = "Rejected";
-        target.status_label = "Đã Từ Chối";
-        target.reject_reason = body.reason || "Lý do: Hồ sơ không khớp";
+        target.TrangThai = "Rejected";
+        target.status_label = "Đã từ chối";
       }
     }
     return res.status(200).json({ success: true, message: `Thao tác thành công trên đơn #${id}!`, transfer: target });
   }
 
   if (pathname === "/api/admin/users") {
-    if (req.method === "POST" || req.method === "PUT") {
-      const body = await getRequestBody(req);
-      const phone = body.phone || body.so_dien_thoai;
-      const user = mockUsers.find(u => u.phone === phone);
-      if (user) {
-        if (body.role) user.role = body.role;
-        if (body.status) user.status = body.status;
-        if (body.full_name) user.full_name = body.full_name;
-        if (body.shift) user.shift = body.shift;
-        if (body.apartment) user.apartment = body.apartment;
-      }
-      return res.status(200).json({ success: true, message: "Cập nhật tài khoản & phân quyền thành công!", user });
-    }
-    return res.status(200).json({ success: true, users: mockUsers });
+    return res.status(200).json(mockUsers);
+  }
+
+  if (pathname === "/api/admin/residents/create" && req.method === "POST") {
+    const body = await getRequestBody(req);
+    const newUser = {
+      id: mockUsers.length + 10,
+      username: body.username || `cudan_${Date.now()}`,
+      phone: body.phone || body.so_dien_thoai || "0900000000",
+      full_name: body.full_name || body.ho_ten || "Cư Dân Mới",
+      email: body.email || "",
+      apartment: body.apartment || body.ma_can_ho || "A-0000",
+      role: "Resident",
+      status: "Active",
+      is_active: 1,
+      created_at: new Date().toLocaleDateString("vi-VN")
+    };
+    mockUsers.push(newUser);
+    return res.status(200).json({ success: true, message: "Tạo tài khoản cư dân thành công!", user: newUser });
+  }
+
+  if (pathname === "/api/admin/guards/create" && req.method === "POST") {
+    const body = await getRequestBody(req);
+    const newUser = {
+      id: mockUsers.length + 10,
+      username: body.username || `baove_${Date.now()}`,
+      phone: body.phone || body.so_dien_thoai || "0900000000",
+      full_name: body.full_name || body.ho_ten || "Bảo Vệ Mới",
+      email: body.email || "",
+      shift: body.shift || body.ca_truc || "Ca Sáng",
+      role: "Operator",
+      status: "Active",
+      is_active: 1,
+      created_at: new Date().toLocaleDateString("vi-VN")
+    };
+    mockUsers.push(newUser);
+    return res.status(200).json({ success: true, message: "Thêm tài khoản bảo vệ thành công!", user: newUser });
   }
 
   if (pathname === "/api/admin/users/update") {
     const body = await getRequestBody(req);
     const phone = body.phone || body.so_dien_thoai;
-    const user = mockUsers.find(u => u.phone === phone);
-    if (user && body.role) user.role = body.role;
-    return res.status(200).json({ success: true, message: "Cập nhật thành công!", user });
+    const user = mockUsers.find(u => u.phone === phone || u.username === body.username || u.id == body.id);
+    if (user) {
+      if (body.role) user.role = body.role;
+      if (body.full_name) user.full_name = body.full_name;
+      if (body.email) user.email = body.email;
+    }
+    return res.status(200).json({ success: true, message: "Cập nhật thông tin thành công!", user });
+  }
+
+  if (pathname === "/api/admin/users/reset_password") {
+    return res.status(200).json({ success: true, message: "Cấp lại mật khẩu thành công! Mật khẩu mới là 123456" });
+  }
+
+  if (pathname === "/api/admin/users/toggle_status") {
+    const body = await getRequestBody(req);
+    const user = mockUsers.find(u => u.id == body.user_id || u.phone === body.phone);
+    if (user) {
+      user.is_active = user.is_active ? 0 : 1;
+      user.status = user.is_active ? "Active" : "Locked";
+    }
+    return res.status(200).json({ success: true, message: "Đã đổi trạng thái tài khoản thành công!", user });
+  }
+
+  if (pathname.startsWith("/api/admin/users/") && req.method === "DELETE") {
+    const parts = pathname.split('/');
+    const deleteId = parts[parts.length - 1];
+    mockUsers = mockUsers.filter(u => u.id != deleteId && u.phone != deleteId && u.username != deleteId);
+    return res.status(200).json({ success: true, message: "Đã xóa tài khoản thành công!" });
   }
 
   // 5. PARKING MAP (CINEMA SLOTS)
   if (pathname === "/api/parking/map") {
     const slots = [];
-    for (let i = 1; i <= 20; i++) {
-      const code = `B1-${i < 10 ? '0' + i : i}`;
+    // Hầm B1
+    for (let i = 1; i <= 50; i++) {
+      const dayLetter = String.fromCharCode(65 + Math.floor((i - 1) / 10)); // A, B, C, D, E
+      const numInRow = ((i - 1) % 10) + 1;
+      const code = `B1-${dayLetter}${numInRow < 10 ? '0' + numInRow : numInRow}`;
+      const isOccupied = (i === 1 || i === 2 || i === 3);
       slots.push({
         ma_cho_do: code,
-        ten_cho_do: code,
+        ten_cho_do: `Vị trí ${dayLetter}-${numInRow} (Hầm B1)`,
         khu_vuc: "Ham_B1",
-        loai_cho_do: "Ô tô",
-        trang_thai: (i === 5 || i === 8) ? "DaDat" : ((i === 13) ? "BaoTri" : "Trong"),
-        full_plate: (i === 5) ? "51F-889.99" : ((i === 8) ? "30E-123.45" : null),
-        ten_chu_xe: (i === 5) ? "Nguyễn Văn A" : ((i === 8) ? "Đỗ Thị G" : null),
-        ma_can_ho: (i === 5) ? "12.04" : ((i === 8) ? "09.05" : null)
+        day: dayLetter,
+        so_thu_tu: numInRow,
+        loai_cho_do: "Ô tô con",
+        trang_thai: isOccupied ? "DaDat" : "Trong",
+        bien_so_xe: (i === 1) ? "30F-123.45" : ((i === 2) ? "29A-678.90" : ((i === 3) ? "51F-889.99" : null)),
+        ten_chu_xe: (i === 1) ? "Lê Văn Cư Dân" : ((i === 2) ? "Trần Thị Cư Dân" : ((i === 3) ? "Nguyễn Văn An" : null)),
+        ma_can_ho: (i === 1) ? "A-1205" : ((i === 2) ? "A-1206" : ((i === 3) ? "A-1207" : null))
       });
     }
-    for (let i = 1; i <= 20; i++) {
-      const code = `B2-${i < 10 ? '0' + i : i}`;
+    // Hầm B2
+    for (let i = 1; i <= 50; i++) {
+      const dayLetter = String.fromCharCode(65 + Math.floor((i - 1) / 10));
+      const numInRow = ((i - 1) % 10) + 1;
+      const code = `B2-${dayLetter}${numInRow < 10 ? '0' + numInRow : numInRow}`;
       slots.push({
         ma_cho_do: code,
-        ten_cho_do: code,
+        ten_cho_do: `Vị trí ${dayLetter}-${numInRow} (Hầm B2)`,
         khu_vuc: "Ham_B2",
-        loai_cho_do: "Xe máy",
-        trang_thai: (i === 12) ? "DaDat" : "Trong",
-        full_plate: (i === 12) ? "29A-678.90" : null,
-        ten_chu_xe: (i === 12) ? "Lê Hoàng C" : null,
-        ma_can_ho: (i === 12) ? "05.11" : null
+        day: dayLetter,
+        so_thu_tu: numInRow,
+        loai_cho_do: "Ô tô con",
+        trang_thai: "Trong",
+        bien_so_xe: null,
+        ten_chu_xe: null,
+        ma_can_ho: null
       });
     }
-    return res.status(200).json({ success: true, slots: slots, total: 40 });
+    return res.status(200).json({ success: true, slots: slots, total: 100 });
   }
 
-  // 6. GENERAL & ANALYTICS
+  // 6. SESSIONS & VEHICLES
+  if (pathname === "/api/parking/sessions") {
+    return res.status(200).json(mockSessions);
+  }
+
+  if (pathname === "/api/vehicles") {
+    return res.status(200).json(mockVehicles);
+  }
+
+  if (pathname === "/get_plates" || pathname === "/api/get_plates") {
+    return res.status(200).json([
+      { id: 1, plate_text: "30F-123.45", vehicle_type: "Ô tô con", confidence: 0.988, timestamp: new Date().toISOString(), gate: "Cổng Vào #1" },
+      { id: 2, plate_text: "29A-678.90", vehicle_type: "Ô tô con", confidence: 0.975, timestamp: new Date().toISOString(), gate: "Cổng Ra #1" }
+    ]);
+  }
+
+  // 7. ANALYTICS
   if (pathname === "/api/summary") {
     return res.status(200).json({
       total_vehicles: 116,
@@ -366,31 +536,17 @@ export default async function handler(req, res) {
     });
   }
 
-  if (pathname === "/api/vehicles") {
-    return res.status(200).json(mockVehicles);
-  }
-
-  if (pathname === "/get_plates" || pathname === "/api/get_plates") {
-    return res.status(200).json([
-      { id: 1, plate_text: "51F-889.99", vehicle_type: "Ô tô", confidence: 0.988, timestamp: new Date().toISOString(), gate: "In" },
-      { id: 2, plate_text: "29A-678.90", vehicle_type: "Xe máy", confidence: 0.975, timestamp: new Date().toISOString(), gate: "Out" },
-      { id: 3, plate_text: "30E-123.45", vehicle_type: "Ô tô", confidence: 0.992, timestamp: new Date().toISOString(), gate: "In" }
-    ]);
-  }
-
   if (pathname === "/api/analytics/revenue") {
     return res.status(200).json([
-      { date_revenue: "11/10", total_fee: 1200000 },
-      { date_revenue: "12/10", total_fee: 1450000 },
-      { date_revenue: "13/10", total_fee: 1300000 },
-      { date_revenue: "14/10", total_fee: 1600000 },
-      { date_revenue: "15/10", total_fee: 1850000 },
-      { date_revenue: "16/10", total_fee: 1400000 },
-      { date_revenue: "17/10", total_fee: 1550000 }
+      { date_revenue: "01/11", total_fee: 1200000 },
+      { date_revenue: "02/11", total_fee: 1450000 },
+      { date_revenue: "03/11", total_fee: 1300000 },
+      { date_revenue: "04/11", total_fee: 1600000 },
+      { date_revenue: "05/11", total_fee: 1850000 }
     ]);
   }
 
-  if (pathname === "/api/analytics/peak-hours") {
+  if (pathname === "/api/analytics/peak" || pathname === "/api/analytics/peak-hours") {
     return res.status(200).json([
       { scan_hour: 7, scan_count: 24 },
       { scan_hour: 8, scan_count: 52 },
@@ -405,8 +561,8 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       mode: "AI_AUTO",
-      plate: "51F-889.99",
-      event: { plate_text: "51F-889.99", gate: "In", time: new Date().toLocaleTimeString() }
+      plate: "30F-123.45",
+      event: { plate_text: "30F-123.45", gate: "Cổng Vào #1", time: new Date().toLocaleTimeString("vi-VN") }
     });
   }
 

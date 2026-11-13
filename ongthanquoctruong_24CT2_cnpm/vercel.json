@@ -2,15 +2,8 @@
   "version": 2,
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/get_plates", "destination": "/api/index.js" },
-    { "source": "/public-dashboard", "destination": "/public_dashboard.html" },
-    { "source": "/login", "destination": "/login.html" },
-    { "source": "/register", "destination": "/register.html" },
-    { "source": "/forgot-password", "destination": "/forgot_password.html" },
-    { "source": "/reset-password", "destination": "/reset_password.html" },
-    { "source": "/resident-dashboard", "destination": "/resident_dashboard.html" },
-    { "source": "/operations-dashboard", "destination": "/operations_dashboard.html" },
+    { "source": "/api/:path*", "destination": "/api?path=:path*" },
+    { "source": "/get_plates", "destination": "/api?path=get_plates" },
     { "source": "/", "destination": "/index.html" }
   ]
 }

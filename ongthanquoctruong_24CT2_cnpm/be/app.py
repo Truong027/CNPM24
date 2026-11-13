@@ -1256,6 +1256,12 @@ def api_register():
                         conn.commit()
                         if vi_tri_do:
                             database.assign_parking_slot(vi_tri_do, plate, cd["MaCuDan"])
+
+                        # Cập nhật số căn hộ nếu cư dân nhập mã căn hộ riêng
+                        apt_num = (payload.get("apartment_number") or "").strip()
+                        if apt_num:
+                            cur.execute("UPDATE cu_dan SET MaCanHo = %s WHERE MaCuDan = %s", (apt_num, cd["MaCuDan"]))
+                            conn.commit()
                     conn.close()
             except Exception as e_reg_veh:
                 print(f"Lỗi đăng ký xe kèm theo khi tạo tài khoản: {e_reg_veh}")
@@ -2447,7 +2453,8 @@ def api_resident_transfer_vehicle():
         return jsonify({"error": "Vui lòng nhập biển số xe và thông tin cư dân nhận"}), 400
 
     username = user["username"]
-    success, msg = database.create_vehicle_transfer_request(plate_text, username, recipient_ident, note)
+    hinh_anh_don = payload.get("document_image") or payload.get("hinh_anh_don") or payload.get("document_url") or None
+    success, msg = database.create_vehicle_transfer_request(plate_text, username, recipient_ident, note, hinh_anh_don)
     if success:
         return jsonify({"success": True, "message": msg})
     return jsonify({"error": msg}), 400
@@ -2684,6 +2691,9 @@ def api_admin_delete_user(phone):
 @app.route("/api/admin/transfer_requests", methods=["GET"])
 @login_required
 def api_admin_get_transfer_requests():
+    user = session.get("user")
+    if not user or user.get("role") != "Admin":
+        return jsonify({"error": "Chỉ Quản trị viên mới có quyền truy cập"}), 403
     status = request.args.get("status") or None
     requests_list = database.get_all_transfer_requests(status)
     return jsonify(requests_list)
@@ -2703,6 +2713,24 @@ def api_admin_process_transfer_request(request_id):
     success, msg = database.process_transfer_request_action(request_id, action, user["username"], note)
     if success:
         return jsonify({"success": True, "message": msg})
+    return jsonify({"error": msg}), 400
+
+
+@app.route("/api/admin/transfer_requests/<int:request_id>/update_doc", methods=["POST"])
+@login_required
+def api_admin_update_transfer_doc(request_id):
+    user = session.get("user")
+    if not user or user.get("role") != "Admin":
+        return jsonify({"error": "Chỉ Quản trị viên mới có quyền cập nhật ảnh đơn"}), 403
+
+    payload = request.get_json(silent=True) or {}
+    doc_url = payload.get("document_url") or payload.get("document_image") or ""
+    if not doc_url:
+        return jsonify({"error": "Vui lòng đính kèm ảnh hợp lệ"}), 400
+
+    success, msg = database.update_transfer_request_doc(request_id, doc_url)
+    if success:
+        return jsonify({"success": True, "message": msg, "document_url": doc_url})
     return jsonify({"error": msg}), 400
 
 

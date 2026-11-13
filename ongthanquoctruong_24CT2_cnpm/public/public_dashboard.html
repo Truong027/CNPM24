@@ -71,7 +71,7 @@
         .trust { display: flex; align-items: center; gap: .6rem; margin-top: 1.5rem; color: var(--muted); font-size: .8rem; }
         .trust i { color: #1ca676; }
 
-        /* Giao diện Dashboard Preview */
+        /* Giao diện Dashboard Preview (Dữ liệu thực tế từ CSDL MySQL) */
         .preview {
             position: relative;
             padding: .95rem;
@@ -170,7 +170,7 @@
             font-weight: 500;
         }
 
-        /* Tình trạng 2 tầng hầm */
+        /* Tình trạng 2 tầng hầm thực tế (bai_do) */
         .floor-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -209,7 +209,7 @@
             transition: width .3s ease;
         }
 
-        /* Biểu đồ lưu lượng quét */
+        /* Biểu đồ lưu lượng quét thực tế theo giờ (detections) */
         .chart {
             padding: .75rem .85rem;
             border-radius: 10px;
@@ -265,7 +265,7 @@
             padding-top: .2rem;
         }
 
-        /* Danh sách phiên đỗ xe gần đây */
+        /* Danh sách phiên đỗ xe gần đây từ bảng parking_sessions */
         .recent-box {
             display: flex;
             flex-direction: column;
@@ -381,93 +381,99 @@
                             <span class="live"><i class="fa-solid fa-circle"></i> Đang hoạt động</span>
                         </div>
                         <div class="preview-body">
-                            <!-- 3 chỉ số thực tế -->
+                            <!-- 3 chỉ số thực tế từ CSDL MySQL -->
                             <div class="metric-grid">
                                 <div class="metric">
                                     <div class="metric-head">
                                         <span>Ô đỗ trống</span>
                                         <i class="fa-solid fa-square-parking"></i>
                                     </div>
-                                    <strong id="statAvailableSlots">94/100</strong>
-                                    <span id="statOccupiedNote">Đã đặt: 6 ô (6.0%)</span>
+                                    <strong id="statAvailableSlots">{{ stats.available_slots if stats else 0 }}/{{ stats.total_slots if stats else 0 }}</strong>
+                                    <span id="statOccupiedNote">Đã đặt: {{ stats.occupied_slots if stats else 0 }} ô ({{ stats.occupancy_rate if stats else 0 }}%)</span>
                                 </div>
                                 <div class="metric">
                                     <div class="metric-head">
                                         <span>Phương tiện</span>
                                         <i class="fa-solid fa-car-side"></i>
                                     </div>
-                                    <strong id="statTotalVehicles">116</strong>
-                                    <span id="statTotalSessions">363 phiên giao dịch</span>
+                                    <strong id="statTotalVehicles">{{ stats.total_vehicles if stats else 0 }}</strong>
+                                    <span id="statTotalSessions">{{ stats.total_sessions if stats else 0 }} phiên giao dịch</span>
                                 </div>
                                 <div class="metric">
                                     <div class="metric-head">
                                         <span>Nhận diện AI</span>
                                         <i class="fa-solid fa-camera"></i>
                                     </div>
-                                    <strong id="statTotalDetections">363</strong>
-                                    <span id="statAvgConfidence">Độ tin cậy TB: 98.5%</span>
+                                    <strong id="statTotalDetections">{{ stats.total_detections if stats else 0 }}</strong>
+                                    <span id="statAvgConfidence">Độ tin cậy TB: {{ stats.avg_confidence if stats else 0 }}%</span>
                                 </div>
                             </div>
 
-                            <!-- Trạng thái thực tế 2 tầng hầm -->
+                            <!-- Trạng thái thực tế 2 tầng hầm từ bảng bai_do -->
                             <div class="floor-grid">
                                 <div class="floor-card">
                                     <div class="floor-row">
                                         <span>Tầng Hầm B1</span>
-                                        <small id="statFloorB1">46 trống / 50 ô</small>
+                                        <small id="statFloorB1">{{ stats.ham_b1.available if stats else 0 }} trống / {{ stats.ham_b1.total if stats else 0 }} ô</small>
                                     </div>
                                     <div class="floor-bar">
-                                        <div class="floor-fill" id="barFloorB1" style="width: 8%;"></div>
+                                        <div class="floor-fill" id="barFloorB1" style="width: {{ stats.ham_b1.pct if stats else 0 }}%;"></div>
                                     </div>
                                 </div>
                                 <div class="floor-card">
                                     <div class="floor-row">
                                         <span>Tầng Hầm B2</span>
-                                        <small id="statFloorB2">48 trống / 50 ô</small>
+                                        <small id="statFloorB2">{{ stats.ham_b2.available if stats else 0 }} trống / {{ stats.ham_b2.total if stats else 0 }} ô</small>
                                     </div>
                                     <div class="floor-bar">
-                                        <div class="floor-fill" id="barFloorB2" style="width: 4%;"></div>
+                                        <div class="floor-fill" id="barFloorB2" style="width: {{ stats.ham_b2.pct if stats else 0 }}%;"></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Biểu đồ lưu lượng quét theo giờ -->
+                            <!-- Biểu đồ lưu lượng quét theo giờ từ bảng detections -->
                             <div class="chart">
                                 <div class="chart-top">
                                     <span>Lưu lượng nhận diện theo khung giờ</span>
-                                    <small id="statTotalPlates">42 biển số độc lập</small>
+                                    <small id="statTotalPlates">{{ stats.total_plates if stats else 0 }} biển số độc lập</small>
                                 </div>
                                 <div class="chart-bars" id="chartPeakHours">
-                                    <div class="chart-col"><span class="chart-val">18</span><div class="chart-bar" style="height: 45%;"></div><span class="chart-hour">07h</span></div>
-                                    <div class="chart-col"><span class="chart-val">42</span><div class="chart-bar" style="height: 95%;"></div><span class="chart-hour">08h</span></div>
-                                    <div class="chart-col"><span class="chart-val">26</span><div class="chart-bar" style="height: 60%;"></div><span class="chart-hour">11h</span></div>
-                                    <div class="chart-col"><span class="chart-val">38</span><div class="chart-bar" style="height: 85%;"></div><span class="chart-hour">14h</span></div>
-                                    <div class="chart-col"><span class="chart-val">45</span><div class="chart-bar" style="height: 100%;"></div><span class="chart-hour">17h</span></div>
-                                    <div class="chart-col"><span class="chart-val">22</span><div class="chart-bar" style="height: 50%;"></div><span class="chart-hour">19h</span></div>
+                                    {% if stats and stats.peak_hours %}
+                                        {% for item in stats.peak_hours %}
+                                        <div class="chart-col">
+                                            <span class="chart-val">{{ item.count }}</span>
+                                            <div class="chart-bar" style="height: {{ item.height_pct }}%;"></div>
+                                            <span class="chart-hour">{{ item.hour_label }}</span>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="chart-col"><span class="chart-val">0</span><div class="chart-bar" style="height: 15%;"></div><span class="chart-hour">--</span></div>
+                                    {% endif %}
                                 </div>
                             </div>
 
-                            <!-- Lượt xe ghi nhận gần nhất -->
+                            <!-- Lượt xe thực tế gần nhất từ bảng parking_sessions -->
                             <div class="recent-box">
                                 <div class="recent-head">
                                     <span>Lượt xe ghi nhận gần nhất</span>
-                                    <span id="statActiveParked">Đang đỗ: 6 xe</span>
+                                    <span id="statActiveParked">Đang đỗ: {{ stats.active_parked if stats else 0 }} xe</span>
                                 </div>
                                 <div id="recentSessionsList" class="recent-box">
-                                    <div class="recent-item">
-                                        <div class="recent-left">
-                                            <span class="plate-pill">51F-889.99</span>
-                                            <span class="recent-time">09:30 15/10</span>
+                                    {% if stats and stats.recent_sessions %}
+                                        {% for s in stats.recent_sessions[:2] %}
+                                        <div class="recent-item">
+                                            <div class="recent-left">
+                                                <span class="plate-pill">{{ s.plate_text }}</span>
+                                                <span class="recent-time">{{ s.time_str }}</span>
+                                            </div>
+                                            <span class="recent-status {{ 'parked' if s.status == 'Parked' else '' }}">{{ s.status_label }}</span>
                                         </div>
-                                        <span class="recent-status parked">Đang trong bãi</span>
-                                    </div>
-                                    <div class="recent-item">
-                                        <div class="recent-left">
-                                            <span class="plate-pill">29A-678.90</span>
-                                            <span class="recent-time">14:15 14/10</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="recent-item">
+                                            <span class="recent-time">Chưa có phiên giao dịch nào trong CSDL</span>
                                         </div>
-                                        <span class="recent-status">Đã hoàn tất</span>
-                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -543,7 +549,6 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', refreshPublicDashboard);
         setInterval(refreshPublicDashboard, 10000);
     </script>
 </body>

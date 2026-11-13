@@ -1,10 +1,11 @@
 # =======================================================
-# CHỈ THEO DÕI VÀ ĐẨY FOLDER ongthanquoctruong_24CT2_cnpm
+# CHỈ THEO DÕI VÀ ĐẨY FOLDER ongthanquoctruong_24CT2_cnpm + README.md
 # Bỏ qua toàn bộ các file và thư mục khác ở cấp root
 # =======================================================
 /*
 !/ongthanquoctruong_24CT2_cnpm/
 !/.gitignore
+!/README.md
 
 # =======================================================
 # BẢO MẬT: BIẾN MÔI TRƯỜNG & MẬT KHẨU
@@ -71,9 +72,17 @@ Thumbs.db
 desktop.ini
 
 # =======================================================
-# IDE / EDITOR CONFIGS
+# IDE / EDITOR CONFIGS / VERCEL / AGENT / RENDER TEMP
 # =======================================================
 .vscode/
 ongthanquoctruong_24CT2_cnpm/.vscode/
 **/.vscode/
 .idea/
+.vercel/
+**/.vercel/
+.agents/
+**/.agents/
+node_modules/
+**/node_modules/
+ongthanquoctruong_24CT2_cnpm/docs/LUONGXULY/temp_*.html
+ongthanquoctruong_24CT2_cnpm/docs/LUONGXULY/shot_*.png

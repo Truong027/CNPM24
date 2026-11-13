@@ -337,11 +337,21 @@
 
         <div class="quick-accounts">
             <div class="quick-accounts-title">
-                <i class="fa-solid fa-bolt"></i> Tài khoản mẫu thử nghiệm (Click để điền):
+                <i class="fa-solid fa-bolt"></i> Tài khoản mẫu chuẩn SĐT (Bấm để điền nhanh):
             </div>
             <div class="account-pills">
-                <span class="account-pill" onclick="fillAccount('admin', 'admin123', 'admin')">🛡️ Admin: admin / admin123</span>
-                <span class="account-pill" onclick="fillAccount('cudan1', '123456', 'resident')">🚗 Cư dân: cudan1 / 123456</span>
+                <span class="account-pill" onclick="fillAccount('0900000001', 'admin123', 'admin')" title="Quản trị viên / Admin">
+                    🛡️ Admin: <strong>0900000001</strong> (admin123)
+                </span>
+                <span class="account-pill" onclick="fillAccount('0912345678', '123456', 'admin')" title="Nhân viên Bảo vệ">
+                    👮 Bảo vệ: <strong>0912345678</strong> (123456)
+                </span>
+                <span class="account-pill" onclick="fillAccount('0901234567', '123456', 'resident')" title="Cư dân Lê Văn Cư Dân (Căn hộ A-1205)">
+                    🚗 Cư dân 1: <strong>0901234567</strong> (123456)
+                </span>
+                <span class="account-pill" onclick="fillAccount('0907654321', '123456', 'resident')" title="Cư dân Trần Thị Cư Dân (Căn hộ A-1206)">
+                    🚙 Cư dân 2: <strong>0907654321</strong> (123456)
+                </span>
             </div>
         </div>
 
@@ -355,14 +365,14 @@
             document.getElementById('tabAdmin').classList.toggle('active', role === 'admin');
             document.getElementById('tabResident').classList.toggle('active', role === 'resident');
             if (role === 'admin') {
-                document.getElementById('phone').placeholder = 'Số điện thoại quản trị / bảo vệ';
+                document.getElementById('phone').placeholder = 'Ví dụ: 0900000001 (Admin) hoặc 0912345678 (Bảo vệ)';
             } else {
-                document.getElementById('phone').placeholder = 'Số điện thoại cư dân';
+                document.getElementById('phone').placeholder = 'Ví dụ: 0901234567 hoặc 0907654321 (Cư dân)';
             }
         }
 
-        function fillAccount(u, p, role) {
-            document.getElementById('phone').value = u;
+        function fillAccount(phone, p, role) {
+            document.getElementById('phone').value = phone;
             document.getElementById('password').value = p;
             setRoleTab(role);
         }

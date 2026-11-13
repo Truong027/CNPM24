@@ -147,8 +147,9 @@ body {{ margin: 0; padding: 25px; background: white; }}
         print(f"Done rendering {png_file}!\n")
 
 if __name__ == "__main__":
-    for name in [
+    targets = sys.argv[1:] if len(sys.argv) > 1 else [
         "SO_DO_LUONG_PHE_DUYET_CHUYEN_NHUONG_ADMIN",
         "SO_DO_LUONG_QUAN_LY_PHAN_QUYEN_ADMIN"
-    ]:
+    ]
+    for name in targets:
         render_diagram(name)
