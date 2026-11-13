@@ -11,47 +11,53 @@
 
 ## 1. Tổng Quan Đề Tài & Sơ Đồ Kiến Trúc Phân Quyền (Bám Sát Đề Tài)
 
-Hệ thống giải quyết bài toán kiểm soát phương tiện ra/vào chung cư, tòa nhà và bãi đỗ xe 2 tầng hầm (**Hầm B1** & **Hầm B2**, tổng **100 vị trí ô tô con** thiết kế theo sơ đồ rạp chiếu phim — Cinema Parking Map), kết hợp **Thị giác máy tính (YOLOv8s + CRNN-CTC + EasyOCR)** để nhận diện biển số theo thời gian thực, **phân quyền chặt chẽ 3 vai trò độc lập (`Admin`, `Guard / Operator`, `Resident`)** trên nền **Python Flask (`be/app.py`)** và **cơ sở dữ liệu duy nhất MySQL (`httt_quan_ly_bai_xe_ai` trong `be/database.py` & `be/sql/httt_quan_ly_bai_xe_ai.sql`)**.
+Hệ thống giải quyết bài toán kiểm soát phương tiện ra/vào chung cư, tòa nhà với bãi đỗ xe 2 tầng hầm (**Hầm B1** & **Hầm B2**, tổng **100 vị trí ô tô con** đánh số dãy `A..E` và `VIP`), kết hợp **Thị giác máy tính (YOLOv8s + CRNN-CTC + EasyOCR)** để nhận diện biển số theo thời gian thực, **phân quyền chặt chẽ 3 vai trò độc lập (`Admin`, `Guard`, `Resident`)** trên nền **Python Flask (`be/app.py`)** và **cơ sở dữ liệu duy nhất MySQL (`be/database.py` & `be/sql/httt_quan_ly_bai_xe_ai.sql`)**.
 
-> **Lưu ý kiến trúc**: Toàn bộ dữ liệu thật và nghiệp vụ của đề tài lưu trữ duy nhất trong **MySQL (`httt_quan_ly_bai_xe_ai`)**. Thư mục `api/index.js` + `public/` chỉ là bản mô phỏng giao diện tĩnh phục vụ xem nhanh trên Vercel, **không thuộc tầng CSDL (Persistence) của đề tài**.
+> **Lưu ý kiến trúc quan trọng (cho GitHub & GitDiagram)**:
+> - Toàn bộ dữ liệu thật và nghiệp vụ của đề tài lưu trữ duy nhất trong **MySQL** (`be/database.py` & `be/sql/httt_quan_ly_bai_xe_ai.sql`). Thư mục `api/index.js` + `public/` chỉ là bản mô phỏng giao diện tĩnh xem thử trên Vercel, **không thuộc tầng CSDL (Persistence) của đề tài**.
+> - Hệ thống chỉ có **3 vai trò độc lập (`Admin`, `Guard`, `Resident`)** nằm trên **3 phân hệ tách biệt hoàn toàn**:
+>   - **Admin** chỉ thực hiện nghiệp vụ quản trị (`Quản lý User & RBAC`, `Phê duyệt đơn chuyển nhượng xe`, `Quản lý danh mục xe & Blacklist/Whitelist`, `Xem bản đồ 100 ô đỗ B1/B2`, `Thống kê doanh thu & Xuất báo cáo CSV`). **Admin KHÔNG sử dụng Bàn trực Bảo vệ ("guard view")**.
+>   - **Guard (Bảo vệ / Operator)** chỉ thực hiện nghiệp vụ cổng (`Giám sát Camera AI Live`, `Đối chiếu ảnh Vào-Ra & Cảnh báo Blacklist`, `Ghi lượt Check-in/Check-out & Nhập biển số tay`, `Thu phí & Xuất hóa đơn`, `Mở/Đóng Barrier`).
+>   - **Resident (Cư dân)** chỉ thực hiện nghiệp vụ cá nhân (`Đăng ký/OTP & Hồ sơ căn hộ`, `Thêm/Sửa/Xóa xe căn hộ`, `Chọn/Đổi ô đỗ B1/B2`, `Gia hạn vé tháng & Xem lịch sử cá nhân`, `Nộp đơn chuyển nhượng xe`).
+> - Trên mọi sơ đồ kiến trúc, **mỗi mũi tên xuất phát từ `Admin`, `Guard`, `Resident` phải ghi rõ động từ nghiệp vụ cụ thể** (không vẽ mũi tên `"uses"` / `"user"` / `"uses guard view"`, không gộp `"Resident and admin services"` hay nút chung `Operations dashboard [index.html]`).
 
-### Sơ Đồ Kiến Trúc 3 Quyền Tách Biệt Độc Lập (3 Isolated Role Lanes — Cho GitHub & GitDiagram)
+### Sơ Đồ Kiến Trúc 3 Quyền Tách Biệt Độc Lập (3 Isolated Role Lanes)
 
-> **Nguyên tắc tách biệt**: Mỗi vai trò (`Admin`, `Guard / Operator`, `Resident`) được tách thành **1 luồng độc lập hoàn toàn** (Actor riêng -> Module kiểm tra quyền riêng -> Danh sách quyền riêng -> Màn hình/API riêng -> Nhóm bảng dữ liệu riêng), **không gộp chung một vòng tròn** và **không nối chéo giữa 3 phân hệ**.
+> **Nguyên tắc tách biệt**: Mỗi vai trò (`Admin`, `Guard`, `Resident`) là **1 luồng độc lập hoàn toàn** (Actor riêng -> Quyền hạn cụ thể -> API & Giao diện riêng -> Nhóm bảng MySQL riêng), **không nối chung một hộp trung tâm** và **không nối chéo giữa 3 phân hệ**.
 
 ```mermaid
 flowchart TB
     %% ==================== LUỒNG 1: ADMIN (ĐỘC LẬP) ====================
     subgraph Lane_Admin["PHÂN HỆ 1: QUẢN TRỊ VIÊN — ADMIN (Hoàn toàn tách biệt)"]
         direction TB
-        A_Actor(["Actor 1: Quản Trị Viên (Admin)<br/>be/roles/admin_user.py :: is_admin()"])
-        A_Perms["Quyền Hạn Độc Lập Của Admin (quyen_admin / phan_quyen_admin):<br/>1. Quản lý User & RBAC: Tạo Bảo vệ/Cư dân, Đổi Role, Khóa/Mở, Reset MK, Xóa<br/>2. Duyệt Đơn Chuyển Nhượng Xe: Xem, Duyệt/Từ chối, Cập nhật ảnh hồ sơ<br/>3. Quản lý Danh mục Xe: Thêm/Sửa/Xóa xe, Gán Normal / Whitelist / Blacklist<br/>4. Quản lý Bãi Đỗ Cinema B1/B2: Xem chi tiết 100 ô đỗ (đủ biển số & chủ)<br/>5. Thống Kê & AI Test: Báo cáo doanh thu, Giờ cao điểm, Xuất CSV, Test AI"]
-        A_API["Giao Diện & API Riêng Của Admin:<br/>fe/templates/index.html (/operations-dashboard — Full Admin)<br/>/api/admin/users/*, /api/admin/guards/*, /api/admin/residents/*<br/>/api/admin/transfer_requests/*, /api/vehicles/save, /delete<br/>/api/analytics/*, /api/report_export"]
-        A_DB[("Dữ Liệu Admin Quản Lý:<br/>app_users, nhan_vien<br/>quyen_admin, phan_quyen_admin<br/>chuyen_nhuong_xe, vehicles, statistics")]
+        A_Actor(["Actor 1: Admin (Quản Trị Viên)<br/>be/roles/admin_user.py :: is_admin()"])
+        A_Perms["Quyền Hạn Độc Lập Của Admin (quyen_admin / phan_quyen_admin):<br/>1. Quản lý User & RBAC: Tạo Bảo vệ/Cư dân, Đổi Role, Khóa/Mở, Reset MK, Xóa<br/>2. Duyệt Đơn Chuyển Nhượng Xe: Xem, Duyệt/Từ chối, Cập nhật ảnh hồ sơ<br/>3. Quản lý Danh mục Xe: Thêm/Sửa/Xóa xe, Gán Normal / Whitelist / Blacklist<br/>4. Quản lý Bãi Đỗ 2 Tầng Hầm B1/B2: Xem đủ 100 ô đỗ (biển số & chủ xe)<br/>5. Thống Kê & Báo Cáo: Doanh thu, Giờ cao điểm, Xuất CSV, Test AI ảnh tĩnh"]
+        A_API["Giao Diện Admin Panel & API Riêng:<br/>Admin Management Panel (/operations-dashboard)<br/>/api/admin/users/*, /api/admin/guards/*, /api/admin/residents/*<br/>/api/admin/transfer_requests/*, /api/vehicles/save, /delete<br/>/api/analytics/*, /api/report_export"]
+        A_DB[("Dữ Liệu Admin Quản Lý (MySQL):<br/>app_users, nhan_vien<br/>quyen_admin, phan_quyen_admin<br/>chuyen_nhuong_xe, vehicles, statistics")]
 
-        A_Actor -->|"Kiểm tra quyền Admin"| A_Perms -->|"Gọi Admin Endpoints"| A_API -->|"Ghi / Đọc phân hệ Admin"| A_DB
+        A_Actor -->|"Quản trị RBAC, duyệt đơn, danh mục xe & thống kê"| A_Perms -->|"Gọi Admin Endpoints"| A_API -->|"Ghi / Đọc phân hệ Admin"| A_DB
     end
 
     %% ==================== LUỒNG 2: GUARD (ĐỘC LẬP) ====================
-    subgraph Lane_Guard["PHÂN HỆ 2: NHÂN VIÊN BẢO VỆ — GUARD / OPERATOR (Hoàn toàn tách biệt)"]
+    subgraph Lane_Guard["PHÂN HỆ 2: NHÂN VIÊN BẢO VỆ — GUARD (Hoàn toàn tách biệt)"]
         direction TB
-        G_Actor(["Actor 2: Bảo Vệ Ca Trực (Operator / Security)<br/>be/roles/guard_user.py :: is_guard()"])
+        G_Actor(["Actor 2: Guard (Bảo Vệ Ca Trực)<br/>be/roles/guard_user.py :: is_guard()"])
         G_Perms["Quyền Hạn Độc Lập Của Bảo Vệ (quyen_baove / phan_quyen_bao_ve):<br/>1. Giám Sát Camera Live Vào/Ra & Đổi chế độ AI (Auto / In / Out)<br/>2. Kiểm Soát Ra/Vào & Ngoại Lệ: Check-in/Check-out, Nhập biển số tay<br/>3. Đối Chiếu Ảnh Vào-Ra & Tra Cứu Xe (Chỉ xem, ẩn nút Thêm/Sửa/Xóa)<br/>4. An Ninh Cổng: Phát hiện cảnh báo đỏ Blacklist & Chặn mở cổng<br/>5. Thu Phí & Xuất Hóa Đơn: Tính cước tự động, Miễn phí vé tháng/Whitelist<br/>6. Điều Khiển Barrier: Kích hoạt Mở/Đóng cổng Vào #1 & Ra #1"]
-        G_API["Trạm Trực AI, Barrier & API Riêng Của Bảo Vệ:<br/>Bàn trực Cổng (ẩn tab User, Duyệt đơn, Báo cáo)<br/>YOLOv8s + CRNN-CTC + EasyOCR + IOU Tracker<br/>/video_feed_webcam, /video_feed_phone, /api/guard/*<br/>/api/parking/checkin, /api/parking/checkout"]
-        G_DB[("Dữ Liệu Vận Hành Cổng & Thu Phí:<br/>quyen_baove, phan_quyen_bao_ve<br/>plates, detections, parking_sessions<br/>lich_su_ra_vao, bang_gia, hoa_don")]
+        G_API["Trạm Trực Cổng AI, Barrier & API Riêng:<br/>Guard Gate Station (ẩn tab User, Duyệt đơn, Báo cáo)<br/>YOLOv8s + CRNN-CTC + EasyOCR + IOU Tracker<br/>/video_feed_webcam, /video_feed_phone, /api/guard/*<br/>/api/parking/checkin, /api/parking/checkout"]
+        G_DB[("Dữ Liệu Vận Hành Cổng & Thu Phí (MySQL):<br/>quyen_baove, phan_quyen_bao_ve<br/>plates, detections, parking_sessions<br/>lich_su_ra_vao, bang_gia, hoa_don")]
 
-        G_Actor -->|"Kiểm tra quyền Bảo vệ"| G_Perms -->|"Vận hành AI & API Bảo vệ"| G_API -->|"Ghi / Đọc phiên xe & hóa đơn"| G_DB
+        G_Actor -->|"Giám sát AI, kiểm soát cổng, thu phí & mở Barrier"| G_Perms -->|"Vận hành AI & API Bảo vệ"| G_API -->|"Ghi / Đọc phiên xe & hóa đơn"| G_DB
     end
 
     %% ==================== LUỒNG 3: RESIDENT (ĐỘC LẬP) ====================
     subgraph Lane_Resident["PHÂN HỆ 3: CƯ DÂN TÒA NHÀ — RESIDENT (Hoàn toàn tách biệt)"]
         direction TB
-        R_Actor(["Actor 3: Cư Dân Căn Hộ (Resident / User)<br/>be/roles/resident_user.py :: is_resident()"])
-        R_Perms["Quyền Hạn Độc Lập Của Cư Dân (quyen_user):<br/>1. Đăng Ký & Bảo Mật: Tự đăng ký tài khoản, Quên MK qua OTP, Đổi MK<br/>2. Hồ Sơ Cá Nhân: Xem & Cập nhật thông tin căn hộ của mình<br/>3. Phương Tiện Căn Hộ: Thêm / Sửa / Xóa xe thuộc căn hộ mình<br/>4. Sơ Đồ Cinema B1/B2: Xem chỗ trống (che biển số hộ khác) & Chọn/Đổi ô đỗ<br/>5. Vé Tháng & Lịch Sử: Gia hạn vé tháng & Tra cứu lịch sử ra/vào cá nhân<br/>6. Chuyển Nhượng Xe: Lập đơn chuyển nhượng (kèm ảnh) & Theo dõi duyệt"]
-        R_API["Cổng Cư Dân & API Riêng Của Cư Dân:<br/>fe/templates/resident_dashboard.html (/resident-dashboard)<br/>/register, /forgot-password, /reset-password<br/>/api/resident/profile, /vehicles, /change_slot<br/>/api/resident/renew_ticket, /transfer_vehicle, /history"]
-        R_DB[("Dữ Liệu Cư Dân & Căn Hộ:<br/>quyen_user, cu_dan, quan_ly_otp_token<br/>phuong_tien, bai_do (ô căn hộ)<br/>chuyen_nhuong_xe (đơn đã gửi)")]
+        R_Actor(["Actor 3: Resident (Cư Dân Căn Hộ)<br/>be/roles/resident_user.py :: is_resident()"])
+        R_Perms["Quyền Hạn Độc Lập Của Cư Dân (quyen_user):<br/>1. Đăng Ký & Bảo Mật: Tự đăng ký tài khoản, Quên MK qua OTP, Đổi MK<br/>2. Hồ Sơ Cá Nhân: Xem & Cập nhật thông tin căn hộ của mình<br/>3. Phương Tiện Căn Hộ: Thêm / Sửa / Xóa xe thuộc căn hộ mình<br/>4. Bãi Đỗ B1/B2 (100 chỗ): Xem chỗ trống (che biển số hộ khác) & Chọn/Đổi ô<br/>5. Vé Tháng & Lịch Sử: Gia hạn vé tháng & Tra cứu lịch sử ra/vào cá nhân<br/>6. Chuyển Nhượng Xe: Lập đơn chuyển nhượng (kèm ảnh) & Theo dõi duyệt"]
+        R_API["Cổng Cư Dân & API Riêng:<br/>fe/templates/resident_dashboard.html (/resident-dashboard)<br/>/register, /forgot-password, /reset-password<br/>/api/resident/profile, /vehicles, /change_slot<br/>/api/resident/renew_ticket, /transfer_vehicle, /history"]
+        R_DB[("Dữ Liệu Cư Dân & Căn Hộ (MySQL):<br/>quyen_user, cu_dan, quan_ly_otp_token<br/>phuong_tien, bai_do (ô căn hộ)<br/>chuyen_nhuong_xe (đơn đã gửi)")]
 
-        R_Actor -->|"Kiểm tra quyền Cư dân"| R_Perms -->|"Gọi Resident Endpoints"| R_API -->|"Ghi / Đọc dữ liệu căn hộ"| R_DB
+        R_Actor -->|"Tự phục vụ hồ sơ, xe, chọn ô đỗ, vé tháng & chuyển nhượng"| R_Perms -->|"Gọi Resident Endpoints"| R_API -->|"Ghi / Đọc dữ liệu căn hộ"| R_DB
     end
 
     style Lane_Admin fill:#fff1f2,stroke:#dc2626,stroke-width:2px
@@ -61,11 +67,14 @@ flowchart TB
 
 ---
 
-## 2. Phân Rã Chi Tiết Quyền Hạn 3 Vai Trò (Detailed 3-Role RBAC Permissions)
+## 2. Phân Rã Chi Tiết Quyền Hạn 3 Vai Trò Độc Lập (Strict 3-Role RBAC)
 
-Hệ thống kiểm soát quyền truy cập đồng thời tại **3 lớp** để đảm bảo bảo mật và đúng nghiệp vụ:
-1. **Tầng Backend Route Guard**: Hàm `is_admin()`, `is_guard()`, `is_resident()` (`be/roles/*.py`) + kiểm tra `session["user"]["role"]` tại các `@app.route` trong `be/app.py` (trả HTTP `403` hoặc điều hướng nếu sai quyền).
-2. **Tầng Giao diện (`fe/templates/index.html` -> `initAuthAndRole()`)**: Khi tài khoản **Bảo vệ** (`Operator` / `Security`) đăng nhập `/operations-dashboard`, hệ thống tự chuyển thẳng tới tab **Bàn Trực Bảo Vệ**, **ẩn hoàn toàn** 3 menu chỉ dành cho Admin (`transfer-requests-page`, `users-page`, `reports-page`), ẩn nút thêm/sửa/xóa xe (`addVehicleBtn`) và chuyển danh mục xe sang **chế độ Chỉ xem**. Khi **Cư dân** (`Resident`) truy cập `/operations-dashboard`, backend ép điều hướng về `/resident-dashboard`.
+Hệ thống kiểm soát quyền truy cập đồng thời tại **3 lớp** để phân tách rạch ròi nghiệp vụ giữa **Quản trị viên (`Admin`)**, **Bảo vệ (`Guard / Operator`)** và **Cư dân (`Resident`)**:
+1. **Tầng Backend Route Guard**: Hàm `is_admin()`, `is_guard()`, `is_resident()` (`be/roles/*.py`) + kiểm tra `session["user"]["role"]` tại các `@app.route` trong `be/app.py` (trả HTTP `403` hoặc điều hướng nếu truy cập sai vai trò).
+2. **Tầng Giao diện Phân Khu Độc Lập (`fe/templates/index.html` -> `initAuthAndRole()`)**:
+   - **Phân hệ Quản trị (`Admin Panel`)**: Khi tài khoản `Admin` đăng nhập `/operations-dashboard`, hệ thống hiển thị các phân hệ quản trị (`Quản lý User & RBAC`, `Phê duyệt đơn chuyển nhượng`, `Danh mục xe & Blacklist`, `Bản đồ 100 ô đỗ B1/B2`, `Thống kê doanh thu & Xuất CSV`), tách biệt khỏi nghiệp vụ trực cổng của Bảo vệ.
+   - **Phân hệ Bảo vệ (`Guard Gate Station`)**: Khi tài khoản `Operator` / `Security` đăng nhập `/operations-dashboard`, hệ thống tự chuyển thẳng tới **Bàn Trực Bảo Vệ**, **ẩn hoàn toàn** các tab của Admin (`transfer-requests-page`, `users-page`, `reports-page`), ẩn nút thêm/sửa/xóa xe (`addVehicleBtn`) và khóa chỉnh sửa danh mục xe.
+   - **Phân hệ Cư dân (`Resident Portal`)**: Tài khoản `Resident` truy cập riêng `/resident-dashboard` (`fe/templates/resident_dashboard.html`) và bị chặn hoàn toàn khỏi `/operations-dashboard`.
 3. **Tầng Cơ sở dữ liệu MySQL**: Lưu cấu hình chi tiết quyền hạn tại các bảng `quyen_admin`, `quyen_baove`, `quyen_user` (`be/sql/httt_quan_ly_bai_xe_ai.sql`), `phan_quyen_admin`, `phan_quyen_bao_ve` (`be/database.py`) và mô tả trực quan trong `schema.dbml`.
 
 ### Sơ Đồ Chi Tiết Quyền Hạn -> API Endpoint -> Bảng Dữ Liệu Từng Role (Tách Rời 3 Làn Độc Lập)
@@ -75,10 +84,10 @@ flowchart TB
     %% ================= ROLE 1: ADMIN (TÁCH BIỆT) =================
     subgraph Role1["ROLE 1: ADMIN (Quản Trị Viên — Cô lập khỏi Guard & Resident)"]
         direction LR
-        A_Users["1. Tài Khoản & RBAC<br/>Tạo Bảo vệ/Cư dân, Đổi Role,<br/>Khóa/Mở, Reset MK, Xóa User<br/>/api/admin/users/*"]
+        A_Users["1. Tài Khoản & RBAC<br/>Tạo Bảo vệ/Cư dân, Đổi Role,<br/>Khóa/Mở, Reset MK, Xóa<br/>/api/admin/users/*"]
         A_Transfer["2. Duyệt Chuyển Nhượng<br/>Xem đơn, Duyệt/Từ chối,<br/>Cập nhật ảnh, Sang tên chủ xe<br/>/api/admin/transfer_requests/*"]
         A_Veh["3. Danh Mục Xe & Blacklist<br/>Thêm/Sửa/Xóa xe, Vé tháng,<br/>Normal / Whitelist / Blacklist<br/>/api/vehicles/save, /delete"]
-        A_Map["4. Sơ Đồ Cinema (Full)<br/>Xem 100 ô Hầm B1 & B2<br/>đủ biển số, chủ xe, căn hộ<br/>/api/parking/map"]
+        A_Map["4. Bản Đồ 100 Ô Đỗ B1/B2<br/>Xem đầy đủ 100 ô Hầm B1 & B2<br/>(biển số gốc, chủ xe, căn hộ)<br/>/api/parking/map"]
         A_Stat["5. Doanh Thu, CSV & AI Test<br/>Báo cáo doanh thu, Giờ cao điểm,<br/>Xuất CSV, Test AI ảnh tĩnh<br/>/api/analytics/*, /report_export"]
         A_DB[("DB Admin:<br/>quyen_admin, phan_quyen_admin<br/>app_users, nhan_vien, vehicles<br/>chuyen_nhuong_xe, statistics")]
 
@@ -89,7 +98,7 @@ flowchart TB
         A_Stat --> A_DB
     end
 
-    %% ================= ROLE 2: GUARD / OPERATOR (TÁCH BIỆT) =================
+    %% ================= ROLE 2: GUARD (TÁCH BIỆT) =================
     subgraph Role2["ROLE 2: GUARD / OPERATOR (Bảo Vệ Ca Trực — Cô lập khỏi Admin & Resident)"]
         direction LR
         G_Cam["1. Camera Live & AI Mode<br/>Webcam / Phone MJPEG Stream<br/>Đổi Auto / Cổng Vào / Cổng Ra<br/>/video_feed_*, /camera_mode"]
@@ -128,46 +137,45 @@ flowchart TB
     style Role3 fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
 ```
 
-### Ma Trận Phân Quyền Chi Tiết (RBAC Permission Matrix)
+### Ma Trận Phân Quyền Chi Tiết (RBAC Permission Matrix — Không Chồng Chéo)
 
-> Chú giải: `✅ Toàn quyền` | `🔹 Chỉ phạm vi cá nhân / căn hộ` | `👁️ Chỉ xem` | `❌ Bị chặn (ẩn UI / HTTP 403)`
+> Chú giải: `✅ Toàn quyền thuộc vai trò` | `🔹 Chỉ phạm vi cá nhân / căn hộ` | `👁️ Chỉ xem` | `❌ Không thuộc phạm vi vai trò / Bị chặn`
 
-| Nhóm Chức Năng | Chức Năng / Hành Động Cụ Thể | Role 1: `Admin` | Role 2: `Guard` (`Operator` / `Security`) | Role 3: `Resident` (`User`) |
+| Nhóm Chức Năng | Chức Năng / Hành Động Cụ Thể | Role 1: `Admin` | Role 2: `Guard` (`Operator` / `Security`) | Role 3: `Resident` |
 | :--- | :--- | :---: | :---: | :---: |
-| **Xác thực & Hồ sơ** | Xem trang tổng quan trạng thái bãi B1/B2 (`/`) & Đăng nhập (`/login`) | ✅ | ✅ | ✅ |
-| | Đăng ký tài khoản Cư dân (`/register`) & Quên MK OTP (`/forgot-password`) | ❌ *(Admin tự cấp)* | ❌ *(Admin cấp)* | ✅ |
-| | Cập nhật hồ sơ căn hộ & Đổi mật khẩu (`/resident-dashboard`) | ❌ *(dùng Admin)* | ❌ *(chỉ Bảo vệ)* | 🔹 |
-| **Quản lý Tài khoản (RBAC)** | Xem danh sách tất cả User (Admin, Bảo vệ, Cư dân) | ✅ | ❌ | ❌ |
+| **Xác thực & Hồ sơ** | Đăng ký tài khoản Cư dân (`/register`) & Quên MK OTP (`/forgot-password`) | ❌ | ❌ | ✅ |
+| | Cập nhật hồ sơ căn hộ & Đổi mật khẩu (`/resident-dashboard`) | ❌ | ❌ | 🔹 |
+| **Quản lý Tài khoản (RBAC)** | Xem danh sách tất cả tài khoản (Admin, Bảo vệ, Cư dân) | ✅ | ❌ | ❌ |
 | | Tạo mới tài khoản Bảo vệ / Cư dân | ✅ | ❌ | ❌ |
-| | Sửa thông tin, gán/đổi `role`, Khóa/Mở tài khoản, Reset MK, Xóa User | ✅ | ❌ | ❌ |
+| | Sửa thông tin, gán/đổi `role`, Khóa/Mở tài khoản, Reset MK, Xóa tài khoản | ✅ | ❌ | ❌ |
 | **Chuyển nhượng xe** | Lập đơn chuyển nhượng xe + Upload ảnh giấy xác nhận | ❌ | ❌ | 🔹 |
-| | Theo dõi trạng thái đơn chuyển nhượng của căn hộ | ❌ | ❌ | 🔹 |
+| | Theo dõi trạng thái đơn chuyển nhượng của căn hộ mình | ❌ | ❌ | 🔹 |
 | | Xem tất cả đơn, **Phê duyệt (`Approved`) / Từ chối (`Rejected`)**, sang tên xe & ô đỗ | ✅ | ❌ | ❌ |
-| **Phương tiện & An ninh** | Thêm / Sửa / Xóa xe & Gán nhóm `Normal / Whitelist / Blacklist` | ✅ | ❌ *(ẩn nút, HTTP 403)* | ❌ |
+| **Phương tiện & An ninh** | Thêm / Sửa / Xóa xe toàn bãi & Gán nhóm `Normal / Whitelist / Blacklist` | ✅ | ❌ *(ẩn nút, HTTP 403)* | ❌ |
 | | Tra cứu danh mục phương tiện toàn bãi (`/api/vehicles`) | ✅ | 👁️ | ❌ |
-| | Thêm / Sửa / Xóa xe thuộc căn hộ mình & Gia hạn vé tháng | ✅ *(qua tab Xe)* | ❌ | 🔹 |
-| **Sơ đồ Bãi đỗ Cinema** | Xem 100 ô đỗ `Ham_B1` / `Ham_B2` kèm **đủ biển số gốc & tên chủ xe** | ✅ | ✅ | ❌ *(bị che biển số hộ khác)* |
-| | Chọn mới hoặc đổi ô đỗ xe của căn hộ mình (`/api/resident/change_slot`) | ❌ *(gán qua CRUD xe)* | ❌ | 🔹 |
-| **Trạm Bảo Vệ & Barrier** | Xem 2 Camera Live Vào/Ra & chuyển chế độ AI (`auto`/`in`/`out`) | ✅ | ✅ | ❌ |
-| | Đối chiếu ảnh Vào – Ra, nhận cảnh báo `Blacklist` & nhập biển số thủ công | ✅ | ✅ | ❌ |
-| | Check-in / Check-out, tính cước `bang_gia`, thu phí `hoa_don` & **Mở Barrier** | ✅ | ✅ | ❌ |
+| | Thêm / Sửa / Xóa xe thuộc căn hộ mình & Gia hạn vé tháng cá nhân | ❌ | ❌ | 🔹 |
+| **Bãi đỗ 2 tầng hầm B1/B2** | Xem 100 ô đỗ `Ham_B1` / `Ham_B2` kèm **đủ biển số gốc & tên chủ xe** | ✅ | 👁️ | ❌ *(che biển số hộ khác)* |
+| | Chọn mới hoặc đổi ô đỗ xe của căn hộ mình (`/api/resident/change_slot`) | ❌ | ❌ | 🔹 |
+| **Trạm Bảo Vệ & Barrier** | Xem 2 Camera Live Vào/Ra & chuyển chế độ AI (`auto`/`in`/`out`) | ❌ | ✅ | ❌ |
+| | Đối chiếu ảnh Vào – Ra, nhận cảnh báo `Blacklist` & nhập biển số thủ công | ❌ | ✅ | ❌ |
+| | Check-in / Check-out, tính cước `bang_gia`, thu phí `hoa_don` & **Mở Barrier** | ❌ | ✅ | ❌ |
 | **Lịch sử & Báo cáo** | Xem lịch sử ra/vào cá nhân của các xe thuộc căn hộ | ❌ | ❌ | 🔹 |
 | | Báo cáo doanh thu, giờ cao điểm, biểu đồ tỉnh/loại xe & xuất CSV | ✅ | ❌ *(ẩn menu Reports)* | ❌ |
-| | Upload ảnh tĩnh kiểm thử nhận diện AI (`/api/recognize_image`) | ✅ | ✅ | ❌ |
+| | Upload ảnh tĩnh kiểm thử nhận diện AI (`/api/recognize_image`) | ✅ | ❌ | ❌ |
 
 ### Chi Tiết Module Kiểm Tra Quyền Trong Mã Nguồn
 
-| Role | Giá trị `app_users.role` | Module kiểm tra quyền | Màn hình chính | Bảng Phân Quyền DB |
+| Role | Giá trị `app_users.role` | Module kiểm tra quyền | Phân khu giao diện riêng | Bảng Phân Quyền DB |
 | :--- | :--- | :--- | :--- | :--- |
-| **1. Quản trị viên (`Admin`)** | `Admin` | `be/roles/admin_user.py` (`is_admin`) | `/operations-dashboard` (`fe/templates/index.html`, `public/operations-dashboard.html`) | `quyen_admin`, `phan_quyen_admin` |
-| **2. Bảo vệ (`Guard / Operator`)** | `Operator`, `Security` | `be/roles/guard_user.py` (`is_guard`) | `/operations-dashboard` (tự khóa menu Admin, mở thẳng Bàn trực) | `quyen_baove`, `phan_quyen_bao_ve` |
-| **3. Cư dân (`Resident`)** | `Resident` (hoặc `User` khi tự đăng ký) | `be/roles/resident_user.py` (`is_resident`) | `/resident-dashboard` (`fe/templates/resident_dashboard.html`, `public/resident-dashboard.html`) | `quyen_user` |
+| **1. Quản trị viên (`Admin`)** | `Admin` | `be/roles/admin_user.py` (`is_admin`) | Admin Management Panel (`/operations-dashboard`) | `quyen_admin`, `phan_quyen_admin` |
+| **2. Bảo vệ (`Guard`)** | `Operator`, `Security` | `be/roles/guard_user.py` (`is_guard`) | Guard Gate & AI Station (`/operations-dashboard`, khóa menu Admin) | `quyen_baove`, `phan_quyen_bao_ve` |
+| **3. Cư dân (`Resident`)** | `Resident` | `be/roles/resident_user.py` (`is_resident`) | Resident Portal (`/resident-dashboard`) | `quyen_user` |
 
-### Luồng Nghiệp Vụ Liên Thông Giữa 3 Vai Trò (Cross-Role Workflow)
+### Nhiệm Vụ Riêng Biệt Của Từng Vai Trò (Isolated Workflows)
 
-1. **Cư dân (`Resident`)** đăng ký tài khoản trực tuyến tại `/register` (có thể chọn ngay biển số & ô đỗ tại Hầm B1/B2), hoặc đăng nhập tại `/login` để vào `/resident-dashboard`: thêm/sửa xe, đổi chỗ đỗ kiểu rạp phim, gia hạn vé tháng, hoặc **lập đơn chuyển nhượng quyền sử dụng xe** kèm ảnh giấy xác nhận gửi lên bảng `chuyen_nhuong_xe` (`TrangThai = 'Pending'`).
-2. **Quản trị viên (`Admin`)** đăng nhập `/operations-dashboard` để quản lý toàn bộ người dùng (tạo tài khoản Bảo vệ/Cư dân, đổi role, khóa/mở tài khoản, reset mật khẩu), **xem và phê duyệt/từ chối đơn chuyển nhượng** (`/api/admin/transfer_requests/<id>/action` — khi duyệt sẽ tự động cập nhật chủ sở hữu mới ở `phuong_tien` & `bai_do`), phân loại xe `Normal / Whitelist / Blacklist`, theo dõi doanh thu và giờ cao điểm.
-3. **Nhân viên Bảo vệ (`Operator / Security`)** trực ca tại `/operations-dashboard`: quan sát 2 luồng Camera Live Cổng Vào/Ra, tiếp nhận kết quả nhận diện tự động từ AI (`YOLOv8 + CRNN-CTC + EasyOCR`), xử lý cảnh báo xe `Blacklist`, đối chiếu ảnh chụp Vào – Ra, nhập biển số thủ công khi cần, thu phí theo `bang_gia` -> xuất `hoa_don` và kích hoạt mở Barrier.
+1. **Role 1 — Quản trị viên (`Admin`)**: Quản lý toàn bộ tài khoản và phân quyền (`app_users`, `nhan_vien`, `quyen_admin`, `phan_quyen_admin`), phê duyệt/từ chối đơn chuyển nhượng xe (`chuyen_nhuong_xe`), quản lý danh mục xe `Normal / Whitelist / Blacklist` (`vehicles`), theo dõi tổng quan 100 ô đỗ B1/B2 (`bai_do`), phân tích doanh thu/giờ cao điểm và xuất báo cáo CSV (`statistics`).
+2. **Role 2 — Nhân viên Bảo vệ (`Guard` / `Operator`)**: Trực trạm kiểm soát cổng vào/ra, giám sát 2 luồng Camera Live AI (`YOLOv8s + CRNN-CTC + EasyOCR`), đối chiếu ảnh Vào – Ra, tiếp nhận cảnh báo đỏ xe `Blacklist`, nhập biển số thủ công khi ngoại lệ, thu phí theo `bang_gia` -> xuất `hoa_don` và điều khiển đóng/mở Barrier.
+3. **Role 3 — Cư dân (`Resident`)**: Tự đăng ký (`/register`), khôi phục/đổi mật khẩu OTP, cập nhật hồ sơ căn hộ, tự thêm/sửa/xóa phương tiện cá nhân, chọn/đổi ô đỗ trong 100 chỗ Hầm B1/B2 (ẩn biển số căn hộ khác), gia hạn vé tháng, xem lịch sử ra/vào cá nhân và gửi đơn chuyển nhượng xe (`chuyen_nhuong_xe`).
 
 ---
 
@@ -275,7 +283,7 @@ Mã nguồn CSDL được định nghĩa trong [`ongthanquoctruong_24CT2_cnpm/be
 - **Sơ đồ Mạng PERT / CPM** — `docs/PERT/` ([`BANG_THONG_SO_PERT.md`](ongthanquoctruong_24CT2_cnpm/docs/PERT/BANG_THONG_SO_PERT.md), [`SO_DO_PERT_DE_1.drawio`](ongthanquoctruong_24CT2_cnpm/docs/PERT/SO_DO_PERT_DE_1.drawio)):
   - Tính toán theo phương pháp $t_s(i)$, $t_m(i)$ và $t_{df}(cv)$ với đỉnh tách `7` (`4 → 7: t_G = 15`, hai cung giả `t'_G` tới `5` và `8`): **Đường găng `A → D → G → J`** (`[0] → (1) → (4) → (7) --t'G--> (8) → [9]`), tổng thời gian hoàn thành dự án **$T_{max} = 38$ ngày**.
 - **Báo cáo Tổng hợp Word / PDF** — `docs/Word báo cáo/BAOCAOBANNOP.docx` & `BAOCAOBANNOP.pdf`:
-  - Đầy đủ Chương 1 & Chương 2 (41 trang): Lý thuyết, Tuần tự, PERT/CPM, Demo 3 bước thiết kế UI/UX, truy vấn SQL thống kê tổng/từng hầm (`Ham_B1`, `Ham_B2`) & thống kê vai trò (`app_users`), ERD & Data Dictionary.
+  - Đầy đủ Chương 1 & Chương 2 (46 trang): Lý thuyết, Tuần tự, PERT/CPM, Demo 3 bước thiết kế UI/UX, truy vấn SQL thống kê tổng/từng hầm (`Ham_B1`, `Ham_B2`) & thống kê vai trò (`app_users`), ERD, Data Dictionary & dữ liệu thực nghiệm MySQL `httt_quanlybaixe_ai`.
 
 ---
 
@@ -309,9 +317,9 @@ CNPM24/
     │
     ├── fe/                                           # PHÂN HỆ FRONTEND LOCAL (JINJA2 TEMPLATES)
     │   ├── templates/
-    │   │   ├── public_dashboard.html                 # Trang chủ công khai (/)
-    │   │   ├── index.html                            # Bàn trực Bảo vệ & Bảng điều khiển Admin (/operations-dashboard)
-    │   │   ├── resident_dashboard.html               # Cổng dịch vụ Cư dân & Sơ đồ bãi xe Cinema (/resident-dashboard)
+    │   │   ├── public_dashboard.html                 # Trang tổng quan chung (/)
+    │   │   ├── index.html                            # Phân khu Admin Panel & phân khu Guard Gate Station (/operations-dashboard, tách quyền qua initAuthAndRole)
+    │   │   ├── resident_dashboard.html               # Cổng dịch vụ Cư dân & Bản đồ 100 ô đỗ B1/B2 (/resident-dashboard)
     │   │   ├── login.html, register.html
     │   │   └── forgot_password.html, reset_password.html
     │   └── README.md
@@ -373,7 +381,7 @@ CNPM24/
    ```
 3. **Cấu hình MySQL:**
    - Khởi động MySQL (`localhost:3306`), sao chép `.env.example` thành `.env` và điền `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`, `APP_SECRET_KEY`.
-   - Khởi tạo bảng và dữ liệu 100 chỗ đỗ Cinema:
+   - Khởi tạo bảng và dữ liệu 100 ô đỗ 2 tầng hầm (`Ham_B1`, `Ham_B2`):
      ```powershell
      python be/setup_bai_do.py
      ```
@@ -395,42 +403,45 @@ python -m unittest discover -s tests -p "test_*.py"
 
 ### C. Xem Nhanh Giao Diện Tĩnh Trên Vercel (Tùy Chọn Phụ Trợ)
 
-- [`ongthanquoctruong_24CT2_cnpm/vercel.json`](ongthanquoctruong_24CT2_cnpm/vercel.json) và [`api/index.js`](ongthanquoctruong_24CT2_cnpm/api/index.js) chỉ phục vụ xem thử giao diện tĩnh từ `public/` bằng dữ liệu mẫu; hệ thống chính thức của đề tài chạy bằng **Python Flask (`be/app.py`) + AI + MySQL (`httt_quan_ly_bai_xe_ai`)**.
+- [`ongthanquoctruong_24CT2_cnpm/vercel.json`](ongthanquoctruong_24CT2_cnpm/vercel.json) và [`api/index.js`](ongthanquoctruong_24CT2_cnpm/api/index.js) chỉ phục vụ xem thử giao diện tĩnh từ `public/` bằng dữ liệu mẫu; hệ thống chính thức của đề tài chạy bằng **Python Flask (`be/app.py`) + AI + MySQL (`be/database.py`)**.
 
 ---
 
 ## 9. Tùy Biến Sơ Đồ Chi Tiết Trên GitDiagram (`gitdiagram.com`)
 
-Mặc định `gitdiagram.com` thường tóm tắt theo tên file (`Admin role [admin_user.py] -- uses role checks`) nên chưa bung hết từng quyền cụ thể. Để hiển thị đầy đủ quyền hạn 3 Role ngay trên [GitDiagram (Truong027/CNPM24)](https://gitdiagram.com/Truong027/CNPM24), bấm **Regenerate** (xóa cache cũ) hoặc bấm **Modify** và dán đoạn hướng dẫn sau:
+Mặc định `gitdiagram.com` sử dụng AI quét cây thư mục file (`index.html`, `app.py`, `database.py`), nên khi bấm **Regenerate** đơn thuần có thể vẫn gom chung giao diện hoặc sinh các nhãn chung chung kiểu `"uses"` / `"uses guard view"`. Để hiển thị chính xác tuyệt đối **3 vai trò tách biệt, không mũi tên `"uses"` ở Admin / Guard / Resident** trên [GitDiagram (Truong027/CNPM24)](https://gitdiagram.com/Truong027/CNPM24), bấm nút **`Modify`** ngay trên trang GitDiagram và dán đoạn hướng dẫn sau:
 
 ```text
 CRITICAL THESIS ARCHITECTURE & LAYOUT RULES:
-1. EXCLUDE Vercel/static mock files completely! Do NOT include "Mock State [index.js]", "Serverless API [index.js]", "Static web client", or any mock persistence cylinder. The ONLY Database / Persistence in this project is MySQL ("httt_quan_ly_bai_xe_ai" via be/database.py & be/sql/httt_quan_ly_bai_xe_ai.sql).
-2. FORBIDDEN GENERIC NODES & ARROWS:
-   - NEVER draw a generic arrow labeled "uses", "operates", or "checks role"! Every edge from an Actor MUST describe the exact real permission/action.
-   - NEVER connect Guard, Admin, and Resident together into a shared "Web Dashboards", "Access and Roles", "Flask Routes [app.py]", or "Resident and Admin Services" hub!
-3. Create 3 COMPLETELY SEPARATE, DISCONNECTED subgraphs / vertical swimlanes — ONE for Admin, ONE for Guard, ONE for Resident — with ZERO shared arrows connecting them:
+1. EXCLUDE Vercel/static mock files completely! Do NOT include "Mock State [index.js]", "Serverless API [index.js]", "Static web client", or any mock persistence cylinder. The ONLY Database / Persistence in this project is MySQL ("httt_quanlybaixe_ai" via be/database.py & be/sql/httt_quan_ly_bai_xe_ai.sql).
+2. FORBIDDEN LABELS, MERGED BOXES & ARROWS (MUST OBEY FOR ALL 3 ACTORS):
+   - NEVER output the arrow label "uses", "user", "uses guard view", "operates", or "checks role" from ANY actor (NOT from Admin/Administrator, NOT from Guard, NOT from Resident)!
+   - Admin MUST NOT have "uses" or "uses guard view" arrows! Admin does NOT operate Guard Gate Station and MUST NOT point to a shared "Operations dashboard [index.html]".
+   - Resident MUST NOT have a "uses" arrow!
+   - NEVER create shared hubs named "Resident and admin services", "Users and access", "Access and Roles", "Web Dashboards", or "Operations dashboard [index.html]".
+   - Do NOT label parking slots as "Cinema parking slots"; call it "B1/B2 100-Slot Parking Layout [setup_bai_do.py]".
+3. Create 3 COMPLETELY SEPARATE, DISCONNECTED subgraphs / vertical swimlanes — ONE for Admin, ONE for Guard, ONE for Resident — with ZERO crossing edges between them:
   1) Subgraph 1 — "Role 1: Admin (be/roles/admin_user.py)" (Red):
-     Actor circle "Admin" MUST have distinct action arrows into Admin-only boxes:
-     - -- "manages users & roles" --> User & RBAC Management (/api/admin/users/*, /guards/create, /residents/create, toggle_status, reset_password)
-     - -- "approves/rejects transfers" --> Transfer Approval (/api/admin/transfer_requests/* -> chuyen_nhuong_xe)
-     - -- "manages vehicles & Blacklist" --> Vehicle Master & Whitelist/Blacklist (/api/vehicles/save, /delete)
-     - -- "views full 100-slot B1/B2 map" --> Cinema Map Admin View (/api/parking/map)
-     - -- "views revenue & exports CSV" --> Analytics & Reports (/api/analytics/*, /api/report_export)
+     Actor circle "Admin" draws ONLY these 5 explicit Admin action arrows (zero "uses", zero "uses guard view"):
+     - -- "manages users & RBAC" --> User & RBAC Admin (/api/admin/users/*, /guards/create, /residents/create, toggle_status, reset_password)
+     - -- "approves/rejects transfers" --> Transfer Request Approval (/api/admin/transfer_requests/* -> chuyen_nhuong_xe)
+     - -- "manages vehicles & Blacklist" --> Vehicle & Whitelist/Blacklist Master (/api/vehicles/save, /delete)
+     - -- "views full 100-slot B1/B2 map" --> B1/B2 Parking Admin Overview (/api/parking/map, setup_bai_do.py)
+     - -- "views revenue & exports CSV" --> Revenue Analytics & CSV Export (/api/analytics/*, /api/report_export)
      -> MySQL Admin DB "(quyen_admin, phan_quyen_admin, app_users, nhan_vien, vehicles, chuyen_nhuong_xe, statistics)".
   2) Subgraph 2 — "Role 2: Guard / Operator (be/roles/guard_user.py)" (Blue):
-     Actor circle "Guard" MUST NOT point with "uses" to Web Dashboards! Instead, draw explicit Guard action arrows into Guard-only boxes:
-     - -- "monitors live IN/OUT cameras & AI" --> Live Camera & AI Mode (/video_feed_*, /api/guard/camera_mode, YOLOv8s + CRNN-CTC + EasyOCR)
-     - -- "verifies entry/exit & Blacklist alerts" --> Gate Verification & Read-Only Vehicle Lookup (/api/guard/verification/{plate}, /api/vehicles)
-     - -- "logs check-in/out & manual plate" --> Manual Gate Entry & Parking Sessions (/api/guard/manual_entry, /api/parking/checkin, /checkout)
+     Actor circle "Guard" draws ONLY these 5 explicit Guard action arrows (zero "uses", zero "operates"):
+     - -- "monitors live IN/OUT AI cameras" --> Live Camera & AI Mode (/video_feed_*, /api/guard/camera_mode, YOLOv8s + CRNN-CTC + EasyOCR)
+     - -- "verifies plates & Blacklist alerts" --> Gate Verification & Read-Only Lookup (/api/guard/verification/{plate}, /api/vehicles)
+     - -- "logs check-in/out & manual plate" --> Manual Gate Entry & Sessions (/api/guard/manual_entry, /api/parking/checkin, /checkout)
      - -- "calculates fees & issues receipts" --> Fee Collection & Billing (/api/guard/collect_fee)
-     - -- "triggers entry/exit barrier" --> Barrier Controller (/api/guard/barrier/trigger)
-     -> MySQL Guard DB "(quyen_baove, phan_quyen_bao_ve, plates, detections, parking_sessions, lich_su_ra_vao, bang_gia, hoa_don)". Admin-only features (Users, Transfers, Analytics) are hidden/forbidden here.
+     - -- "triggers IN/OUT barriers" --> Barrier Controller (/api/guard/barrier/trigger)
+     -> MySQL Guard DB "(quyen_baove, phan_quyen_bao_ve, plates, detections, parking_sessions, lich_su_ra_vao, bang_gia, hoa_don)".
   3) Subgraph 3 — "Role 3: Resident (be/roles/resident_user.py)" (Green):
-     Actor circle "Resident" MUST have distinct action arrows into Resident-only boxes:
+     Actor circle "Resident" draws ONLY these 5 explicit Resident action arrows (zero "uses", never "User"):
      - -- "registers, resets OTP & edits profile" --> Resident Auth & Profile (/register, /forgot-password, /api/resident/profile, update_profile)
-     - -- "adds/edits/deletes own vehicles" --> Apartment Vehicle CRUD (/api/resident/vehicles, /add_vehicle)
-     - -- "selects/changes B1/B2 slot" --> Cinema Slot Map Booking (/api/resident/change_slot)
+     - -- "adds/edits/deletes apartment vehicles" --> Apartment Vehicle CRUD (/api/resident/vehicles, /add_vehicle)
+     - -- "selects/changes B1/B2 parking slot" --> B1/B2 Slot Selection (/api/resident/change_slot)
      - -- "renews monthly ticket & views history" --> Ticket Renewal & Personal History (/api/resident/renew_ticket, /history)
      - -- "submits vehicle transfer request" --> Vehicle Transfer Submission (/api/resident/transfer_vehicle)
      -> MySQL Resident DB "(quyen_user, cu_dan, quan_ly_otp_token, phuong_tien, bai_do, chuyen_nhuong_xe)".
