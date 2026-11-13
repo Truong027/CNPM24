@@ -17,9 +17,8 @@ Hệ thống giải quyết bài toán kiểm soát phương tiện ra/vào chun
 
 ```mermaid
 flowchart TB
-    subgraph Actors["1. Tác Nhân & Kiểm Tra Vai Trò (be/roles/*.py)"]
+    subgraph Actors["1. Đúng 3 Tác Nhân & Kiểm Tra Vai Trò (be/roles/*.py)"]
         direction LR
-        Public["Khách Vãng Lai (Public)<br/>Chưa đăng nhập"]
         Admin["Role 1: Admin (Quản Trị Viên)<br/>be/roles/admin_user.py :: is_admin()"]
         Guard["Role 2: Bảo Vệ (Operator / Security)<br/>be/roles/guard_user.py :: is_guard()"]
         Resident["Role 3: Cư Dân (Resident / User)<br/>be/roles/resident_user.py :: is_resident()"]
@@ -27,15 +26,14 @@ flowchart TB
 
     subgraph RolePerms["2. Phân Rã Quyền Cụ Thể Từng Role (Detailed RBAC Privileges)"]
         direction LR
-        P_Pub["Quyền Public:<br/>• Xem thống kê bãi B1/B2 công khai<br/>• Đăng ký tài khoản Cư dân<br/>• Quên mật khẩu & Reset OTP"]
         P_Admin["Quyền Độc Quyền Admin (quyen_admin):<br/>• Tạo/Sửa/Khóa/Xóa User & Đổi Role<br/>• Duyệt / Từ chối đơn chuyển nhượng xe<br/>• Thêm/Sửa/Xóa xe & Gán Blacklist/Whitelist<br/>• Xem chi tiết 100 ô đỗ B1/B2 (đủ biển số & chủ)<br/>• Thống kê doanh thu, giờ cao điểm, Xuất CSV<br/>• Kiểm thử nhận diện AI ảnh tĩnh"]
         P_Guard["Quyền Ca Trực Bảo Vệ (quyen_baove):<br/>• Xem 2 Camera Live Vào/Ra & đổi AI Auto/In/Out<br/>• Check-in / Check-out & Nhập biển số tay<br/>• Đối chiếu ảnh Vào-Ra & Tra cứu xe (Chỉ xem)<br/>• Chặn xe Blacklist cảnh báo đỏ<br/>• Tính cước phí, Thu tiền & Xuất hóa đơn<br/>• Kích hoạt Mở/Đóng Barrier cổng Vào/Ra"]
-        P_Res["Quyền Cư Dân (quyen_user):<br/>• Xem/Sửa hồ sơ căn hộ & Đổi mật khẩu<br/>• Thêm/Sửa/Xóa phương tiện của mình<br/>• Xem sơ đồ B1/B2 (ẩn biển số hộ khác) & Đổi ô đỗ<br/>• Gia hạn vé tháng trực tuyến<br/>• Lập đơn chuyển nhượng xe (kèm ảnh xác nhận)<br/>• Tra cứu lịch sử ra/vào của xe cá nhân"]
+        P_Res["Quyền Cư Dân (quyen_user):<br/>• Đăng ký tài khoản & Quên MK bằng OTP<br/>• Xem/Sửa hồ sơ căn hộ & Đổi mật khẩu<br/>• Thêm/Sửa/Xóa phương tiện của mình<br/>• Xem sơ đồ B1/B2 (ẩn biển số hộ khác) & Đổi ô đỗ<br/>• Gia hạn vé tháng trực tuyến<br/>• Lập đơn chuyển nhượng xe (kèm ảnh xác nhận)<br/>• Tra cứu lịch sử ra/vào của xe cá nhân"]
     end
 
     subgraph AppLayer["3. Giao Diện & Tầng API Gateway (be/app.py & api/index.js)"]
         direction LR
-        UI_Pub["/ & Auth Pages<br/>public_dashboard.html, login.html<br/>register.html, forgot_password.html"]
+        UI_Auth["Cổng Xác Thực Dùng Chung (Auth UI)<br/>login.html, register.html, forgot_password.html<br/>public_dashboard.html (Trang chủ / trước đăng nhập)"]
         UI_Ops["/operations-dashboard<br/>fe/templates/index.html<br/>public/operations-dashboard.html<br/>(Tự ẩn tab Admin nếu là Bảo vệ)"]
         UI_Res["/resident-dashboard<br/>fe/templates/resident_dashboard.html<br/>public/resident-dashboard.html"]
         API_Server["Flask Server (be/app.py)<br/>& Vercel Serverless (api/index.js)<br/>@login_required + Session Role Check"]
@@ -57,12 +55,15 @@ flowchart TB
         DB_Apt[("Nhóm Bảng Cư Dân & Chỗ Đỗ<br/>bai_do (100 ô Ham_B1 & Ham_B2)<br/>phuong_tien, chuyen_nhuong_xe")]
     end
 
-    Public --> P_Pub --> UI_Pub
+    Admin -->|"Đăng nhập"| UI_Auth
+    Guard -->|"Đăng nhập"| UI_Auth
+    Resident -->|"Đăng ký / Đăng nhập / OTP"| UI_Auth
+
     Admin --> P_Admin --> UI_Ops
     Guard --> P_Guard --> UI_Ops
     Resident --> P_Res --> UI_Res
 
-    UI_Pub <-->|"Public / Auth API"| API_Server
+    UI_Auth <-->|"Auth & OTP API"| API_Server
     UI_Ops <-->|"Admin & Guard API"| API_Server
     UI_Res <-->|"Resident API"| API_Server
 
@@ -150,28 +151,28 @@ flowchart LR
 
 > Chú giải: `✅ Toàn quyền` | `🔹 Chỉ phạm vi cá nhân / căn hộ` | `👁️ Chỉ xem` | `❌ Bị chặn (ẩn UI / HTTP 403)`
 
-| Nhóm Chức Năng | Chức Năng / Hành Động Cụ Thể | Role 1: `Admin` | Role 2: `Guard` (`Operator` / `Security`) | Role 3: `Resident` (`User`) | `Public Guest` |
-| :--- | :--- | :---: | :---: | :---: | :---: |
-| **Xác thực & Hồ sơ** | Xem Dashboard công khai tỷ lệ lấp đầy B1/B2 (`/`) | ✅ | ✅ | ✅ | ✅ |
-| | Đăng ký tài khoản Cư dân (`/register`) & Quên MK OTP (`/forgot-password`) | ✅ | ✅ | ✅ | ✅ |
-| | Cập nhật hồ sơ căn hộ & Đổi mật khẩu (`/resident-dashboard`) | ❌ *(dùng Admin)* | ❌ *(chỉ Bảo vệ)* | 🔹 | ❌ |
-| **Quản lý Tài khoản (RBAC)** | Xem danh sách tất cả User (Admin, Bảo vệ, Cư dân) | ✅ | ❌ | ❌ | ❌ |
-| | Tạo mới tài khoản Bảo vệ / Cư dân | ✅ | ❌ | ❌ | ❌ |
-| | Sửa thông tin, gán/đổi `role`, Khóa/Mở tài khoản, Reset MK, Xóa User | ✅ | ❌ | ❌ | ❌ |
-| **Chuyển nhượng xe** | Lập đơn chuyển nhượng xe + Upload ảnh giấy xác nhận | ❌ | ❌ | 🔹 | ❌ |
-| | Theo dõi trạng thái đơn chuyển nhượng của căn hộ | ❌ | ❌ | 🔹 | ❌ |
-| | Xem tất cả đơn, **Phê duyệt (`Approved`) / Từ chối (`Rejected`)**, sang tên xe & ô đỗ | ✅ | ❌ | ❌ | ❌ |
-| **Phương tiện & An ninh** | Thêm / Sửa / Xóa xe & Gán nhóm `Normal / Whitelist / Blacklist` | ✅ | ❌ *(ẩn nút, HTTP 403)* | ❌ | ❌ |
-| | Tra cứu danh mục phương tiện toàn bãi (`/api/vehicles`) | ✅ | 👁️ | ❌ | ❌ |
-| | Thêm / Sửa / Xóa xe thuộc căn hộ mình & Gia hạn vé tháng | ✅ *(qua tab Xe)* | ❌ | 🔹 | ❌ |
-| **Sơ đồ Bãi đỗ Cinema** | Xem 100 ô đỗ `Ham_B1` / `Ham_B2` kèm **đủ biển số gốc & tên chủ xe** | ✅ | ✅ | ❌ *(bị che biển số hộ khác)* | ❌ *(bị che)* |
-| | Chọn mới hoặc đổi ô đỗ xe của căn hộ mình (`/api/resident/change_slot`) | ❌ *(gán qua CRUD xe)* | ❌ | 🔹 | ❌ |
-| **Trạm Bảo Vệ & Barrier** | Xem 2 Camera Live Vào/Ra & chuyển chế độ AI (`auto`/`in`/`out`) | ✅ | ✅ | ❌ | ❌ |
-| | Đối chiếu ảnh Vào – Ra, nhận cảnh báo `Blacklist` & nhập biển số thủ công | ✅ | ✅ | ❌ | ❌ |
-| | Check-in / Check-out, tính cước `bang_gia`, thu phí `hoa_don` & **Mở Barrier** | ✅ | ✅ | ❌ | ❌ |
-| **Lịch sử & Báo cáo** | Xem lịch sử ra/vào cá nhân của các xe thuộc căn hộ | ❌ | ❌ | 🔹 | ❌ |
-| | Báo cáo doanh thu, giờ cao điểm, biểu đồ tỉnh/loại xe & xuất CSV | ✅ | ❌ *(ẩn menu Reports)* | ❌ | ❌ |
-| | Upload ảnh tĩnh kiểm thử nhận diện AI (`/api/recognize_image`) | ✅ | ✅ | ❌ | ❌ |
+| Nhóm Chức Năng | Chức Năng / Hành Động Cụ Thể | Role 1: `Admin` | Role 2: `Guard` (`Operator` / `Security`) | Role 3: `Resident` (`User`) |
+| :--- | :--- | :---: | :---: | :---: |
+| **Xác thực & Hồ sơ** | Xem trang tổng quan trạng thái bãi B1/B2 (`/`) & Đăng nhập (`/login`) | ✅ | ✅ | ✅ |
+| | Đăng ký tài khoản Cư dân (`/register`) & Quên MK OTP (`/forgot-password`) | ❌ *(Admin tự cấp)* | ❌ *(Admin cấp)* | ✅ |
+| | Cập nhật hồ sơ căn hộ & Đổi mật khẩu (`/resident-dashboard`) | ❌ *(dùng Admin)* | ❌ *(chỉ Bảo vệ)* | 🔹 |
+| **Quản lý Tài khoản (RBAC)** | Xem danh sách tất cả User (Admin, Bảo vệ, Cư dân) | ✅ | ❌ | ❌ |
+| | Tạo mới tài khoản Bảo vệ / Cư dân | ✅ | ❌ | ❌ |
+| | Sửa thông tin, gán/đổi `role`, Khóa/Mở tài khoản, Reset MK, Xóa User | ✅ | ❌ | ❌ |
+| **Chuyển nhượng xe** | Lập đơn chuyển nhượng xe + Upload ảnh giấy xác nhận | ❌ | ❌ | 🔹 |
+| | Theo dõi trạng thái đơn chuyển nhượng của căn hộ | ❌ | ❌ | 🔹 |
+| | Xem tất cả đơn, **Phê duyệt (`Approved`) / Từ chối (`Rejected`)**, sang tên xe & ô đỗ | ✅ | ❌ | ❌ |
+| **Phương tiện & An ninh** | Thêm / Sửa / Xóa xe & Gán nhóm `Normal / Whitelist / Blacklist` | ✅ | ❌ *(ẩn nút, HTTP 403)* | ❌ |
+| | Tra cứu danh mục phương tiện toàn bãi (`/api/vehicles`) | ✅ | 👁️ | ❌ |
+| | Thêm / Sửa / Xóa xe thuộc căn hộ mình & Gia hạn vé tháng | ✅ *(qua tab Xe)* | ❌ | 🔹 |
+| **Sơ đồ Bãi đỗ Cinema** | Xem 100 ô đỗ `Ham_B1` / `Ham_B2` kèm **đủ biển số gốc & tên chủ xe** | ✅ | ✅ | ❌ *(bị che biển số hộ khác)* |
+| | Chọn mới hoặc đổi ô đỗ xe của căn hộ mình (`/api/resident/change_slot`) | ❌ *(gán qua CRUD xe)* | ❌ | 🔹 |
+| **Trạm Bảo Vệ & Barrier** | Xem 2 Camera Live Vào/Ra & chuyển chế độ AI (`auto`/`in`/`out`) | ✅ | ✅ | ❌ |
+| | Đối chiếu ảnh Vào – Ra, nhận cảnh báo `Blacklist` & nhập biển số thủ công | ✅ | ✅ | ❌ |
+| | Check-in / Check-out, tính cước `bang_gia`, thu phí `hoa_don` & **Mở Barrier** | ✅ | ✅ | ❌ |
+| **Lịch sử & Báo cáo** | Xem lịch sử ra/vào cá nhân của các xe thuộc căn hộ | ❌ | ❌ | 🔹 |
+| | Báo cáo doanh thu, giờ cao điểm, biểu đồ tỉnh/loại xe & xuất CSV | ✅ | ❌ *(ẩn menu Reports)* | ❌ |
+| | Upload ảnh tĩnh kiểm thử nhận diện AI (`/api/recognize_image`) | ✅ | ✅ | ❌ |
 
 ### Chi Tiết Module Kiểm Tra Quyền Trong Mã Nguồn
 
@@ -180,7 +181,6 @@ flowchart LR
 | **1. Quản trị viên (`Admin`)** | `Admin` | `be/roles/admin_user.py` (`is_admin`) | `/operations-dashboard` (`fe/templates/index.html`, `public/operations-dashboard.html`) | `quyen_admin`, `phan_quyen_admin` |
 | **2. Bảo vệ (`Guard / Operator`)** | `Operator`, `Security` | `be/roles/guard_user.py` (`is_guard`) | `/operations-dashboard` (tự khóa menu Admin, mở thẳng Bàn trực) | `quyen_baove`, `phan_quyen_bao_ve` |
 | **3. Cư dân (`Resident`)** | `Resident` (hoặc `User` khi tự đăng ký) | `be/roles/resident_user.py` (`is_resident`) | `/resident-dashboard` (`fe/templates/resident_dashboard.html`, `public/resident-dashboard.html`) | `quyen_user` |
-| **4. Khách vãng lai (`Public`)** | Chưa đăng nhập | Public routes (`/` & `/api/public/dashboard`) | `/` (`fe/templates/public_dashboard.html`, `public/public-dashboard.html`) | Chỉ đọc số liệu công khai `bai_do`, `plates` |
 
 ### Luồng Nghiệp Vụ Liên Thông Giữa 3 Vai Trò (Cross-Role Workflow)
 
@@ -209,7 +209,7 @@ sequenceDiagram
     DB->>DB: Kiểm tra vehicles.group_type
     alt Xe thuộc Blacklist
         DB-->>GuardUI: Phát cảnh báo ĐỎ & khóa Barrier
-    else Xe hợp lệ (Whitelist / Vé tháng / Vãng lai)
+    else Xe hợp lệ (Whitelist / Vé tháng / Vé lượt)
         alt Cổng Vào (Gate IN)
             DB->>DB: Tạo phiên parking_sessions ('Parked') & lich_su_ra_vao ('DangTrongBai')
             DB-->>GuardUI: Hiển thị trạng thái & cho phép mở Barrier vào
@@ -247,10 +247,10 @@ Mã nguồn CSDL được định nghĩa trong [`ongthanquoctruong_24CT2_cnpm/be
 
 ## 5. Danh Mục API Endpoints Đầy Đủ (Backend Flask & Vercel Serverless)
 
-### A. Xác thực & Công khai (Public / Auth)
+### A. Cổng Xác Thực Dùng Chung (Authentication & Portal)
 | Method | Endpoint | Chức năng |
 | :--- | :--- | :--- |
-| `GET` | `/`, `/api/public/dashboard` | Trang tổng quan công khai & số liệu B1/B2 real-time |
+| `GET` | `/`, `/api/public/dashboard` | Trang tổng quan bãi B1/B2 trước khi đăng nhập (dẫn tới Đăng nhập / Đăng ký) |
 | `GET`, `POST` | `/login`, `/api/login`, `/api/session`, `/api/logout` | Đăng nhập, kiểm tra phiên làm việc và điều hướng theo role |
 | `GET`, `POST` | `/register`, `/api/register` | Đăng ký tài khoản cư dân mới (kèm xe & vị trí đỗ) |
 | `GET`, `POST` | `/forgot-password`, `/api/forgot-password`, `/reset-password`, `/api/reset-password` | Tạo mã OTP & đặt lại mật khẩu |
@@ -423,6 +423,7 @@ python -m unittest discover -s tests -p "test_*.py"
 Mặc định `gitdiagram.com` thường tóm tắt theo tên file (`Admin role [admin_user.py] -- uses role checks`) nên chưa bung hết từng quyền cụ thể. Để hiển thị đầy đủ quyền hạn 3 Role ngay trên [GitDiagram (Truong027/CNPM24)](https://gitdiagram.com/Truong027/CNPM24), bấm **Regenerate** (xóa cache cũ) hoặc bấm **Modify** và dán đoạn hướng dẫn sau:
 
 ```text
+ONLY include the 3 official actors/roles: Admin, Guard (Operator/Security), and Resident. Do NOT create any 4th actor like "Public visitor", "Guest", or "Anonymous user". Treat login/register/landing pages strictly as the shared Authentication UI layer used by these 3 roles.
 Do NOT show generic labels like "uses role checks", "manages", "operates", or "uses". Expand all 3 roles into explicit permission nodes connected to Flask routes (be/app.py), UI templates (fe/templates/index.html, resident_dashboard.html), and MySQL tables (be/database.py):
 1. Admin (be/roles/admin_user.py -> quyen_admin): User & Role RBAC Management (/api/admin/users/*, /guards/create, /residents/create, toggle_status, reset_password), Approve/Reject Vehicle Transfer Requests (/api/admin/transfer_requests/* -> chuyen_nhuong_xe), Vehicle Master CRUD & Blacklist/Whitelist Assignment (/api/vehicles/save, /delete), Full Cinema Map B1/B2 100 Slots, Revenue/Peak-Hour Analytics & CSV Export (/api/analytics/*, /api/report_export), Static AI Image Recognition Test.
 2. Guard / Operator (be/roles/guard_user.py -> quyen_baove): Guard Station (/operations-dashboard with Admin tabs hidden & vehicles read-only), Live IN/OUT MJPEG Camera Streams & Auto/In/Out Mode (/video_feed_*, /api/guard/camera_mode), Entry/Exit Image Verification (/api/guard/verification/{plate}), Blacklist Gate Block Alert, Manual Plate Entry & Check-in/Check-out, Fee Calculation & Receipt Billing (/api/guard/collect_fee -> hoa_don, bang_gia), Barrier Open/Close Trigger (/api/guard/barrier/trigger).
