@@ -5,8 +5,8 @@
 - **Sinh viên thực hiện**: Ông Thân Quốc Trường
 - **Đơn vị**: Khoa Công nghệ thông tin — Trường Đại học Kiến trúc Đà Nẵng (DAU)
 
-> Xem tài liệu tổng quan cấp repository tại [`../README.md`](../README.md). Hệ thống chính sử dụng **Python Flask (`be/`) + AI (`YOLOv8s + CRNN-CTC + EasyOCR`) + CSDL duy nhất MySQL (`be/database.py` & `be/sql/httt_quan_ly_bai_xe_ai.sql`)**; không dùng Mock DB trong kiến trúc đề tài.
-> Mỗi vai trò (`Admin`, `Guard`, `Resident`) nằm trên một phân hệ độc lập, tuyệt đối không nối mũi tên `"uses"` / `"uses guard view"` hay gộp chung `Resident and admin services` / `Operations dashboard [index.html]`.
+> Xem tài liệu tổng quan cấp repository tại [`../README.md`](../README.md). Hệ thống chính thức vận hành bằng **Python Flask (`be/`) + AI (`YOLOv8s + CRNN-CTC + EasyOCR`) + Frontend Jinja2 (`fe/templates/`) + Cơ sở dữ liệu duy nhất MySQL (`be/database.py` & `be/sql/httt_quan_ly_bai_xe_ai.sql`)**.
+> Kiến trúc chỉ có đúng **3 vai trò độc lập (`Admin`, `Guard`, `Resident`)** nằm trên 3 phân hệ tách rời, không nối chéo và không phát sinh tác nhân ngoài đề tài.
 
 ---
 
@@ -76,16 +76,12 @@ flowchart TB
 
 ```text
 ongthanquoctruong_24CT2_cnpm/
-├── api/                              # Bản mô phỏng xem thử UI trên Vercel (không phải CSDL đề tài)
-├── public/                           # Giao diện tĩnh xem thử (bản chính thức dùng fe/templates/)
-├── fe/                               # Frontend Jinja2 Templates & Static assets (Local Flask)
+├── fe/                               # Frontend Jinja2 Templates & CSS/JS assets (Flask UI)
 ├── be/                               # Backend Flask + YOLOv8 + CRNN/EasyOCR + MySQL + roles/ + sql/ + scripts/
 ├── tests/                            # Bộ kiểm thử tự động (test_full_features.py, test_user_management.py, ...)
 ├── docs/                             # Tuần Tự/, LUONGXULY/, PERT/, Wireframe/, Word báo cáo/, drawio/
-├── doc_images/                       # Ảnh sơ đồ & UI demo dùng cho báo cáo
-├── schema.dbml                       # Lược đồ quan hệ DBML phục vụ GitDiagram
-├── vercel.json                       # Cấu hình định tuyến Vercel
-├── package.json                      # Thông tin package phục vụ Vercel/static serve
+├── doc_images/                       # Kho ảnh sơ đồ & kết quả thực tế chèn báo cáo
+├── schema.dbml                       # Lược đồ quan hệ DBML (ERD & 3 Role)
 ├── requirements.txt                  # Thư viện Python cho Backend & AI
 └── .env.example                      # Mẫu biến môi trường MySQL & SECRET_KEY
 ```

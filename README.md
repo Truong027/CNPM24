@@ -13,13 +13,13 @@
 
 Hệ thống giải quyết bài toán kiểm soát phương tiện ra/vào chung cư, tòa nhà với bãi đỗ xe 2 tầng hầm (**Hầm B1** & **Hầm B2**, tổng **100 vị trí ô tô con** đánh số dãy `A..E` và `VIP`), kết hợp **Thị giác máy tính (YOLOv8s + CRNN-CTC + EasyOCR)** để nhận diện biển số theo thời gian thực, **phân quyền chặt chẽ 3 vai trò độc lập (`Admin`, `Guard`, `Resident`)** trên nền **Python Flask (`be/app.py`)** và **cơ sở dữ liệu duy nhất MySQL (`be/database.py` & `be/sql/httt_quan_ly_bai_xe_ai.sql`)**.
 
-> **Lưu ý kiến trúc quan trọng (cho GitHub & GitDiagram)**:
-> - Toàn bộ dữ liệu thật và nghiệp vụ của đề tài lưu trữ duy nhất trong **MySQL** (`be/database.py` & `be/sql/httt_quan_ly_bai_xe_ai.sql`). Thư mục `api/index.js` + `public/` chỉ là bản mô phỏng giao diện tĩnh xem thử trên Vercel, **không thuộc tầng CSDL (Persistence) của đề tài**.
+> **Lưu ý kiến trúc chính thức của đề tài**:
+> - Toàn bộ logic nghiệp vụ, phân quyền RBAC và xử lý AI chạy trên **Python Flask (`be/app.py`)**, kết xuất giao diện qua **`fe/templates/`** và lưu trữ dữ liệu duy nhất trong **MySQL (`be/database.py` & `be/sql/httt_quan_ly_bai_xe_ai.sql`)**.
 > - Hệ thống chỉ có **3 vai trò độc lập (`Admin`, `Guard`, `Resident`)** nằm trên **3 phân hệ tách biệt hoàn toàn**:
->   - **Admin** chỉ thực hiện nghiệp vụ quản trị (`Quản lý User & RBAC`, `Phê duyệt đơn chuyển nhượng xe`, `Quản lý danh mục xe & Blacklist/Whitelist`, `Xem bản đồ 100 ô đỗ B1/B2`, `Thống kê doanh thu & Xuất báo cáo CSV`). **Admin KHÔNG sử dụng Bàn trực Bảo vệ ("guard view")**.
+>   - **Admin** chỉ thực hiện nghiệp vụ quản trị (`Quản lý User & RBAC`, `Phê duyệt đơn chuyển nhượng xe`, `Quản lý danh mục xe & Blacklist/Whitelist`, `Xem bản đồ 100 ô đỗ B1/B2`, `Thống kê doanh thu & Xuất báo cáo CSV`).
 >   - **Guard (Bảo vệ / Operator)** chỉ thực hiện nghiệp vụ cổng (`Giám sát Camera AI Live`, `Đối chiếu ảnh Vào-Ra & Cảnh báo Blacklist`, `Ghi lượt Check-in/Check-out & Nhập biển số tay`, `Thu phí & Xuất hóa đơn`, `Mở/Đóng Barrier`).
 >   - **Resident (Cư dân)** chỉ thực hiện nghiệp vụ cá nhân (`Đăng ký/OTP & Hồ sơ căn hộ`, `Thêm/Sửa/Xóa xe căn hộ`, `Chọn/Đổi ô đỗ B1/B2`, `Gia hạn vé tháng & Xem lịch sử cá nhân`, `Nộp đơn chuyển nhượng xe`).
-> - Trên mọi sơ đồ kiến trúc, **mỗi mũi tên xuất phát từ `Admin`, `Guard`, `Resident` phải ghi rõ động từ nghiệp vụ cụ thể** (không vẽ mũi tên `"uses"` / `"user"` / `"uses guard view"`, không gộp `"Resident and admin services"` hay nút chung `Operations dashboard [index.html]`).
+> - Trên sơ đồ kiến trúc, chỉ vẽ **đúng 3 tác nhân (`Admin`, `Guard`, `Resident`)** trên **3 phân hệ tách rời** và **mỗi mũi tên từ tác nhân phải ghi rõ động từ nghiệp vụ cụ thể** (không nối chéo giữa 3 phân hệ).
 
 ### Sơ Đồ Kiến Trúc 3 Quyền Tách Biệt Độc Lập (3 Isolated Role Lanes)
 
@@ -283,39 +283,23 @@ Mã nguồn CSDL được định nghĩa trong [`ongthanquoctruong_24CT2_cnpm/be
 - **Sơ đồ Mạng PERT / CPM** — `docs/PERT/` ([`BANG_THONG_SO_PERT.md`](ongthanquoctruong_24CT2_cnpm/docs/PERT/BANG_THONG_SO_PERT.md), [`SO_DO_PERT_DE_1.drawio`](ongthanquoctruong_24CT2_cnpm/docs/PERT/SO_DO_PERT_DE_1.drawio)):
   - Tính toán theo phương pháp $t_s(i)$, $t_m(i)$ và $t_{df}(cv)$ với đỉnh tách `7` (`4 → 7: t_G = 15`, hai cung giả `t'_G` tới `5` và `8`): **Đường găng `A → D → G → J`** (`[0] → (1) → (4) → (7) --t'G--> (8) → [9]`), tổng thời gian hoàn thành dự án **$T_{max} = 38$ ngày**.
 - **Báo cáo Tổng hợp Word / PDF** — `docs/Word báo cáo/BAOCAOBANNOP.docx` & `BAOCAOBANNOP.pdf`:
-  - Đầy đủ Chương 1 & Chương 2 (46 trang): Lý thuyết, Tuần tự, PERT/CPM, Demo 3 bước thiết kế UI/UX, truy vấn SQL thống kê tổng/từng hầm (`Ham_B1`, `Ham_B2`) & thống kê vai trò (`app_users`), ERD, Data Dictionary & dữ liệu thực nghiệm MySQL `httt_quanlybaixe_ai`.
+  - Đầy đủ Chương 1 & Chương 2 (46 trang): Lý thuyết, Tuần tự, PERT/CPM, 3 bước thiết kế giao diện UI/UX thực tế, truy vấn SQL thống kê tổng/từng hầm (`Ham_B1`, `Ham_B2`) & thống kê vai trò (`app_users`), ERD, Data Dictionary & dữ liệu thực nghiệm MySQL `httt_quanlybaixe_ai`.
 
 ---
 
-## 7. Cấu Trúc Thư Mục Dự Án (Project Tree)
+## 7. Cấu Trúc Thư Mục Đề Tài (Core Thesis Project Tree)
 
 ```text
 CNPM24/
-├── README.md                                         # Tài liệu tổng quan kiến trúc & 3 Role (GitHub & GitDiagram)
+├── README.md                                         # Tài liệu tổng quan kiến trúc & 3 Role
 ├── .gitignore                                        # Quy tắc loại trừ file môi trường (.env), cache & dataset thô
 └── ongthanquoctruong_24CT2_cnpm/
-    ├── README.md                                     # Tài liệu chi tiết bên trong thư mục dự án
-    ├── vercel.json                                   # Cấu hình rewrite & deploy Vercel (Static SPA + Serverless API)
-    ├── package.json                                  # Metadata Node.js cho môi trường frontend/Vercel
+    ├── README.md                                     # Tài liệu chi tiết trong thư mục đề tài
     ├── requirements.txt                              # Danh sách thư viện Python (Flask, Torch, Ultralytics, EasyOCR, MySQL)
     ├── schema.dbml                                   # Lược đồ quan hệ DBML phục vụ trực quan hóa ERD & 3 Role
     ├── .env.example                                  # Mẫu biến môi trường kết nối MySQL & APP_SECRET_KEY
     │
-    ├── api/                                          # Bản giả lập xem thử UI trên Vercel (không thuộc CSDL thật của đề tài)
-    │   ├── index.js                                  # Dữ liệu mô phỏng xem nhanh giao diện tĩnh
-    │   └── [...slug].js                              # Catch-all route trỏ về index.js
-    │
-    ├── public/                                       # Bản tĩnh xem thử UI trên Vercel (bản chính thức chạy từ fe/templates/)
-    │   ├── index.html                                # Giao diện Vận hành chính / Guard Station
-    │   ├── public-dashboard.html / public_dashboard.html
-    │   ├── operations-dashboard.html / operations_dashboard.html
-    │   ├── resident-dashboard.html / resident_dashboard.html
-    │   ├── login.html, register.html
-    │   ├── forgot-password.html / forgot_password.html
-    │   ├── reset-password.html / reset_password.html
-    │   └── camera_entry.svg, camera_exit.svg
-    │
-    ├── fe/                                           # PHÂN HỆ FRONTEND LOCAL (JINJA2 TEMPLATES)
+    ├── fe/                                           # PHÂN HỆ FRONTEND FLASK (JINJA2 TEMPLATES)
     │   ├── templates/
     │   │   ├── public_dashboard.html                 # Trang tổng quan chung (/)
     │   │   ├── index.html                            # Phân khu Admin Panel & phân khu Guard Gate Station (/operations-dashboard, tách quyền qua initAuthAndRole)
@@ -401,49 +385,45 @@ cd ongthanquoctruong_24CT2_cnpm
 python -m unittest discover -s tests -p "test_*.py"
 ```
 
-### C. Xem Nhanh Giao Diện Tĩnh Trên Vercel (Tùy Chọn Phụ Trợ)
-
-- [`ongthanquoctruong_24CT2_cnpm/vercel.json`](ongthanquoctruong_24CT2_cnpm/vercel.json) và [`api/index.js`](ongthanquoctruong_24CT2_cnpm/api/index.js) chỉ phục vụ xem thử giao diện tĩnh từ `public/` bằng dữ liệu mẫu; hệ thống chính thức của đề tài chạy bằng **Python Flask (`be/app.py`) + AI + MySQL (`be/database.py`)**.
-
 ---
 
 ## 9. Tùy Biến Sơ Đồ Chi Tiết Trên GitDiagram (`gitdiagram.com`)
 
-Mặc định `gitdiagram.com` sử dụng AI quét cây thư mục file (`index.html`, `app.py`, `database.py`), nên khi bấm **Regenerate** đơn thuần có thể vẫn gom chung giao diện hoặc sinh các nhãn chung chung kiểu `"uses"` / `"uses guard view"`. Để hiển thị chính xác tuyệt đối **3 vai trò tách biệt, không mũi tên `"uses"` ở Admin / Guard / Resident** trên [GitDiagram (Truong027/CNPM24)](https://gitdiagram.com/Truong027/CNPM24), bấm nút **`Modify`** ngay trên trang GitDiagram và dán đoạn hướng dẫn sau:
+Hãy bấm nút **`Modify`** trên [GitDiagram (Truong027/CNPM24)](https://gitdiagram.com/Truong027/CNPM24) và dán đoạn chỉ dẫn sau để lập sơ đồ chuẩn theo kiến trúc **Python Flask (`be/`) + Frontend Jinja2 (`fe/templates/`) + MySQL (`httt_quanlybaixe_ai`)** với đúng **3 vai trò độc lập (`Admin`, `Guard`, `Resident`)**:
 
 ```text
-CRITICAL THESIS ARCHITECTURE & LAYOUT RULES:
-1. EXCLUDE Vercel/static mock files completely! Do NOT include "Mock State [index.js]", "Serverless API [index.js]", "Static web client", or any mock persistence cylinder. The ONLY Database / Persistence in this project is MySQL ("httt_quanlybaixe_ai" via be/database.py & be/sql/httt_quan_ly_bai_xe_ai.sql).
-2. FORBIDDEN LABELS, MERGED BOXES & ARROWS (MUST OBEY FOR ALL 3 ACTORS):
-   - NEVER output the arrow label "uses", "user", "uses guard view", "operates", or "checks role" from ANY actor (NOT from Admin/Administrator, NOT from Guard, NOT from Resident)!
-   - Admin MUST NOT have "uses" or "uses guard view" arrows! Admin does NOT operate Guard Gate Station and MUST NOT point to a shared "Operations dashboard [index.html]".
-   - Resident MUST NOT have a "uses" arrow!
-   - NEVER create shared hubs named "Resident and admin services", "Users and access", "Access and Roles", "Web Dashboards", or "Operations dashboard [index.html]".
-   - Do NOT label parking slots as "Cinema parking slots"; call it "B1/B2 100-Slot Parking Layout [setup_bai_do.py]".
-3. Create 3 COMPLETELY SEPARATE, DISCONNECTED subgraphs / vertical swimlanes — ONE for Admin, ONE for Guard, ONE for Resident — with ZERO crossing edges between them:
+INCLUDE SCOPE ONLY:
+- Include ONLY Python and HTML modules inside ongthanquoctruong_24CT2_cnpm/be/ and ongthanquoctruong_24CT2_cnpm/fe/templates/.
+- Completely OMIT all .js, .json, test, and doc folders outside be/ and fe/templates/.
+
+EXACT 3 ACTORS & 3 DISCONNECTED LANES:
+- Create EXACTLY 3 Actor circles ONLY: Admin, Guard, Resident. Include zero extra actors.
+- Draw 3 completely separate, disconnected subgraphs (one per role) with zero edges connecting the 3 subgraphs to each other, and keep every arrow label as a concrete domain verb (never label an edge "uses", "user", "operates", or "checks role"):
+
   1) Subgraph 1 — "Role 1: Admin (be/roles/admin_user.py)" (Red):
-     Actor circle "Admin" draws ONLY these 5 explicit Admin action arrows (zero "uses", zero "uses guard view"):
+     Actor circle "Admin" draws ONLY these 5 action arrows:
      - -- "manages users & RBAC" --> User & RBAC Admin (/api/admin/users/*, /guards/create, /residents/create, toggle_status, reset_password)
      - -- "approves/rejects transfers" --> Transfer Request Approval (/api/admin/transfer_requests/* -> chuyen_nhuong_xe)
      - -- "manages vehicles & Blacklist" --> Vehicle & Whitelist/Blacklist Master (/api/vehicles/save, /delete)
      - -- "views full 100-slot B1/B2 map" --> B1/B2 Parking Admin Overview (/api/parking/map, setup_bai_do.py)
      - -- "views revenue & exports CSV" --> Revenue Analytics & CSV Export (/api/analytics/*, /api/report_export)
-     -> MySQL Admin DB "(quyen_admin, phan_quyen_admin, app_users, nhan_vien, vehicles, chuyen_nhuong_xe, statistics)".
+     -> MySQL Admin DB "(httt_quanlybaixe_ai: quyen_admin, phan_quyen_admin, app_users, nhan_vien, vehicles, chuyen_nhuong_xe, statistics via be/database.py)".
+
   2) Subgraph 2 — "Role 2: Guard / Operator (be/roles/guard_user.py)" (Blue):
-     Actor circle "Guard" draws ONLY these 5 explicit Guard action arrows (zero "uses", zero "operates"):
+     Actor circle "Guard" draws ONLY these 5 action arrows:
      - -- "monitors live IN/OUT AI cameras" --> Live Camera & AI Mode (/video_feed_*, /api/guard/camera_mode, YOLOv8s + CRNN-CTC + EasyOCR)
      - -- "verifies plates & Blacklist alerts" --> Gate Verification & Read-Only Lookup (/api/guard/verification/{plate}, /api/vehicles)
      - -- "logs check-in/out & manual plate" --> Manual Gate Entry & Sessions (/api/guard/manual_entry, /api/parking/checkin, /checkout)
      - -- "calculates fees & issues receipts" --> Fee Collection & Billing (/api/guard/collect_fee)
      - -- "triggers IN/OUT barriers" --> Barrier Controller (/api/guard/barrier/trigger)
-     -> MySQL Guard DB "(quyen_baove, phan_quyen_bao_ve, plates, detections, parking_sessions, lich_su_ra_vao, bang_gia, hoa_don)".
+     -> MySQL Guard DB "(httt_quanlybaixe_ai: quyen_baove, phan_quyen_bao_ve, plates, detections, parking_sessions, lich_su_ra_vao, bang_gia, hoa_don via be/database.py)".
+
   3) Subgraph 3 — "Role 3: Resident (be/roles/resident_user.py)" (Green):
-     Actor circle "Resident" draws ONLY these 5 explicit Resident action arrows (zero "uses", never "User"):
-     - -- "registers, resets OTP & edits profile" --> Resident Auth & Profile (/register, /forgot-password, /api/resident/profile, update_profile)
+     Actor circle "Resident" draws ONLY these 5 action arrows:
+     - -- "registers, resets OTP & edits profile" --> Resident Auth & Profile (/register, /forgot-password, /resident-dashboard, /api/resident/profile, update_profile)
      - -- "adds/edits/deletes apartment vehicles" --> Apartment Vehicle CRUD (/api/resident/vehicles, /add_vehicle)
      - -- "selects/changes B1/B2 parking slot" --> B1/B2 Slot Selection (/api/resident/change_slot)
      - -- "renews monthly ticket & views history" --> Ticket Renewal & Personal History (/api/resident/renew_ticket, /history)
      - -- "submits vehicle transfer request" --> Vehicle Transfer Submission (/api/resident/transfer_vehicle)
-     -> MySQL Resident DB "(quyen_user, cu_dan, quan_ly_otp_token, phuong_tien, bai_do, chuyen_nhuong_xe)".
-- Do NOT include any 4th actor ("Public visitor", "Guest") and keep ZERO cross-links between Subgraph 1, Subgraph 2, and Subgraph 3.
+     -> MySQL Resident DB "(httt_quanlybaixe_ai: quyen_user, cu_dan, quan_ly_otp_token, phuong_tien, bai_do, chuyen_nhuong_xe via be/database.py)".
 ```
