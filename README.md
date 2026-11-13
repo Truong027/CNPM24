@@ -406,14 +406,33 @@ Mặc định `gitdiagram.com` thường tóm tắt theo tên file (`Admin role 
 ```text
 CRITICAL THESIS ARCHITECTURE & LAYOUT RULES:
 1. EXCLUDE Vercel/static mock files completely! Do NOT include "Mock State [index.js]", "Serverless API [index.js]", "Static web client", or any mock persistence cylinder. The ONLY Database / Persistence in this project is MySQL ("httt_quan_ly_bai_xe_ai" via be/database.py & be/sql/httt_quan_ly_bai_xe_ai.sql).
-2. Create 3 COMPLETELY SEPARATE, DISCONNECTED subgraphs / vertical swimlanes — ONE for Admin, ONE for Guard, ONE for Resident — with ZERO shared arrows or edges connecting them together!
-- Do NOT include any 4th actor ("Public visitor", "Guest", etc.) and do NOT merge the 3 roles into a single circle like "Residents, guards, admins". Create 3 SEPARATE Actor circles: "Admin", "Guard (Operator)", and "Resident".
-- Do NOT route all 3 roles through one giant shared "Flask API [app.py]" hub! Put each role's role-check file, specific permission boxes, endpoints, UI, and MySQL tables INSIDE ITS OWN ISOLATED SUBGRAPH:
+2. FORBIDDEN GENERIC NODES & ARROWS:
+   - NEVER draw a generic arrow labeled "uses", "operates", or "checks role"! Every edge from an Actor MUST describe the exact real permission/action.
+   - NEVER connect Guard, Admin, and Resident together into a shared "Web Dashboards", "Access and Roles", "Flask Routes [app.py]", or "Resident and Admin Services" hub!
+3. Create 3 COMPLETELY SEPARATE, DISCONNECTED subgraphs / vertical swimlanes — ONE for Admin, ONE for Guard, ONE for Resident — with ZERO shared arrows connecting them:
   1) Subgraph 1 — "Role 1: Admin (be/roles/admin_user.py)" (Red):
-     Actor circle "Admin" -> Permissions inside Admin lane ONLY: "User & Role RBAC Management (/api/admin/users/*, /guards/create, /residents/create, toggle_status, reset_password)", "Approve/Reject Vehicle Transfers (/api/admin/transfer_requests/* -> chuyen_nhuong_xe)", "Vehicle CRUD & Blacklist/Whitelist Assignment (/api/vehicles/save, /delete)", "Full Cinema Map B1/B2 100 Slots", "Revenue/Peak-Hour Analytics & CSV Export (/api/analytics/*, /api/report_export)" -> MySQL DB "(quyen_admin, phan_quyen_admin, app_users, nhan_vien, vehicles, chuyen_nhuong_xe, statistics)".
+     Actor circle "Admin" MUST have distinct action arrows into Admin-only boxes:
+     - -- "manages users & roles" --> User & RBAC Management (/api/admin/users/*, /guards/create, /residents/create, toggle_status, reset_password)
+     - -- "approves/rejects transfers" --> Transfer Approval (/api/admin/transfer_requests/* -> chuyen_nhuong_xe)
+     - -- "manages vehicles & Blacklist" --> Vehicle Master & Whitelist/Blacklist (/api/vehicles/save, /delete)
+     - -- "views full 100-slot B1/B2 map" --> Cinema Map Admin View (/api/parking/map)
+     - -- "views revenue & exports CSV" --> Analytics & Reports (/api/analytics/*, /api/report_export)
+     -> MySQL Admin DB "(quyen_admin, phan_quyen_admin, app_users, nhan_vien, vehicles, chuyen_nhuong_xe, statistics)".
   2) Subgraph 2 — "Role 2: Guard / Operator (be/roles/guard_user.py)" (Blue):
-     Actor circle "Guard" -> Permissions inside Guard lane ONLY: "Live IN/OUT MJPEG Camera Streams & Auto/In/Out Mode (/video_feed_*, /api/guard/camera_mode)", "AI Gate Pipeline (YOLOv8s + CRNN-CTC + EasyOCR + IOU Tracker)", "Entry/Exit Verification & Read-Only Vehicle Lookup (/api/guard/verification/{plate}, /api/vehicles)", "Blacklist Alert & Gate Block", "Manual Entry & Check-in/Check-out (/api/guard/manual_entry, /api/parking/checkin|checkout)", "Fee Billing & Receipt (/api/guard/collect_fee)", "Barrier Open/Close Trigger (/api/guard/barrier/trigger)" -> MySQL DB "(quyen_baove, phan_quyen_bao_ve, plates, detections, parking_sessions, lich_su_ra_vao, bang_gia, hoa_don)". Admin-only tabs (Users, Transfers, Analytics) are hidden/forbidden here.
+     Actor circle "Guard" MUST NOT point with "uses" to Web Dashboards! Instead, draw explicit Guard action arrows into Guard-only boxes:
+     - -- "monitors live IN/OUT cameras & AI" --> Live Camera & AI Mode (/video_feed_*, /api/guard/camera_mode, YOLOv8s + CRNN-CTC + EasyOCR)
+     - -- "verifies entry/exit & Blacklist alerts" --> Gate Verification & Read-Only Vehicle Lookup (/api/guard/verification/{plate}, /api/vehicles)
+     - -- "logs check-in/out & manual plate" --> Manual Gate Entry & Parking Sessions (/api/guard/manual_entry, /api/parking/checkin, /checkout)
+     - -- "calculates fees & issues receipts" --> Fee Collection & Billing (/api/guard/collect_fee)
+     - -- "triggers entry/exit barrier" --> Barrier Controller (/api/guard/barrier/trigger)
+     -> MySQL Guard DB "(quyen_baove, phan_quyen_bao_ve, plates, detections, parking_sessions, lich_su_ra_vao, bang_gia, hoa_don)". Admin-only features (Users, Transfers, Analytics) are hidden/forbidden here.
   3) Subgraph 3 — "Role 3: Resident (be/roles/resident_user.py)" (Green):
-     Actor circle "Resident" -> Permissions inside Resident lane ONLY: "Registration & OTP Password Reset (/register, /forgot-password)", "Profile & Password Management (/resident-dashboard -> /api/resident/profile|update_profile|change_password)", "Apartment Vehicle CRUD (/api/resident/vehicles, /add_vehicle)", "Cinema B1/B2 Slot Selection with masked neighbor plates (/api/resident/change_slot)", "Monthly Ticket Renewal (/api/resident/renew_ticket)", "Submit Transfer Request (/api/resident/transfer_vehicle)", "Personal Entry/Exit History (/api/resident/history)" -> MySQL DB "(quyen_user, cu_dan, quan_ly_otp_token, phuong_tien, bai_do)".
-- Keep ZERO cross-links between Subgraph 1, Subgraph 2, and Subgraph 3.
+     Actor circle "Resident" MUST have distinct action arrows into Resident-only boxes:
+     - -- "registers, resets OTP & edits profile" --> Resident Auth & Profile (/register, /forgot-password, /api/resident/profile, update_profile)
+     - -- "adds/edits/deletes own vehicles" --> Apartment Vehicle CRUD (/api/resident/vehicles, /add_vehicle)
+     - -- "selects/changes B1/B2 slot" --> Cinema Slot Map Booking (/api/resident/change_slot)
+     - -- "renews monthly ticket & views history" --> Ticket Renewal & Personal History (/api/resident/renew_ticket, /history)
+     - -- "submits vehicle transfer request" --> Vehicle Transfer Submission (/api/resident/transfer_vehicle)
+     -> MySQL Resident DB "(quyen_user, cu_dan, quan_ly_otp_token, phuong_tien, bai_do, chuyen_nhuong_xe)".
+- Do NOT include any 4th actor ("Public visitor", "Guest") and keep ZERO cross-links between Subgraph 1, Subgraph 2, and Subgraph 3.
 ```
